@@ -49,3 +49,9 @@ line-length = 128
 [tool.isort]
 line_length = 128
 profile = "black"
+
+[tool.pyright]
+pythonPlatform = "Linux"
+pythonVersion = "3.11"
+venv = ".venv"
+venvPath = "."

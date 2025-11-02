@@ -128,7 +128,7 @@ class ExhExhorto(Base, UniversalMixin):
     def municipio_destino_clave(self):
         """Regresa la clave del municipio de destino"""
         return self.autoridad.municipio.clave
-    
+
     @property
     def municipio_destino_nombre(self):
         """Regresa el nombre del municipio de destino"""

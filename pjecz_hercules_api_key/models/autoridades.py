@@ -9,8 +9,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
-
 from ..models.municipios import Municipio
+
 
 class Autoridad(Base, UniversalMixin):
     """Autoridad"""
@@ -88,12 +88,12 @@ class Autoridad(Base, UniversalMixin):
     def materia_nombre(self):
         """Nombre de la materia"""
         return self.materia.nombre
-    
+
     @property
     def municipio_clave(self):
         """Clave de la municipio"""
         return self.municipio.clave
-    
+
     @property
     def municipio_nombre(self):
         """Nombre de la municipio"""
