@@ -2,19 +2,19 @@
 Exh Exhortos, modelos
 """
 
-from datetime import date, datetime
 from typing import List, Optional
 
-from sqlalchemy import JSON, Enum, ForeignKey, String
+from sqlalchemy import Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
-from ..models.exh_areas import ExhArea
-from ..models.exh_exhortos_archivos import ExhExhortoArchivo
-from ..models.exh_exhortos_partes import ExhExhortoParte
-from ..models.exh_tipos_diligencias import ExhTipoDiligencia
-from ..models.municipios import Municipio
+from .autoridades import Autoridad
+from .exh_areas import ExhArea
+from .exh_exhortos_archivos import ExhExhortoArchivo
+from .exh_exhortos_partes import ExhExhortoParte
+from .exh_tipos_diligencias import ExhTipoDiligencia
+from .municipios import Municipio
 
 
 class ExhExhorto(Base, UniversalMixin):

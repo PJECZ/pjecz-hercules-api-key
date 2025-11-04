@@ -7,6 +7,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
+from .modulos import Modulo
+from .roles import Rol
 
 
 class Permiso(Base, UniversalMixin):

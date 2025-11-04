@@ -9,6 +9,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
+from .autoridades import Autoridad
+from .estados import Estado
 
 
 class Municipio(Base, UniversalMixin):
@@ -30,7 +32,6 @@ class Municipio(Base, UniversalMixin):
 
     # Hijos
     autoridades: Mapped[List["Autoridad"]] = relationship("Autoridad", back_populates="municipio")
-    exh_exhortos_origenes: Mapped[List["ExhExhorto"]] = relationship("ExhExhorto", back_populates="municipio_origen")
 
     def __repr__(self):
         """Representación"""

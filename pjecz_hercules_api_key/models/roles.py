@@ -9,6 +9,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
+from .permisos import Permiso
+from .usuarios_roles import UsuarioRol
 
 
 class Rol(Base, UniversalMixin):

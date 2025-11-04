@@ -1,5 +1,5 @@
 """
-Funcionarios
+Funcionarios, modelos
 """
 
 from typing import List
@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
+from .soportes_tickets import SoporteTicket
 
 
 class Funcionario(Base, UniversalMixin):
@@ -28,9 +29,7 @@ class Funcionario(Base, UniversalMixin):
     email: Mapped[str] = mapped_column(String(256), unique=True, index=True)
     puesto: Mapped[str] = mapped_column(String(256), default="")
     en_funciones: Mapped[bool] = mapped_column(default=True)
-    en_sentencias: Mapped[bool] = mapped_column(default=True)
     en_soportes: Mapped[bool] = mapped_column(default=False)
-    en_tesis_jurisprudencias: Mapped[bool] = mapped_column(default=False)
 
     # Hijos
     soportes_tickets: Mapped[List["SoporteTicket"]] = relationship(back_populates="funcionario")
