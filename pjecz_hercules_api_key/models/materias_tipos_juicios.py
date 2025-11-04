@@ -9,8 +9,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
-from .materias import Materia
-from .sentencias import Sentencia
 
 
 class MateriaTipoJuicio(Base, UniversalMixin):

@@ -16,7 +16,7 @@ from ..models.materias_tipos_juicios import MateriaTipoJuicio
 from ..models.permisos import Permiso
 from ..schemas.materias_tipos_juicios import MateriaTipoJuicioOut
 
-materias_tipos_juicios = APIRouter(prefix="/api/v5/materias_tipos_juicios", tags=["sentencias"])
+materias_tipos_juicios = APIRouter(prefix="/api/v5/materias_tipos_juicios", tags=["materias"])
 
 
 @materias_tipos_juicios.get("", response_model=CustomPage[MateriaTipoJuicioOut])

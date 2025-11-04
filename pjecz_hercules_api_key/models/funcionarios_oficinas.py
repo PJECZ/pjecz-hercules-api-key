@@ -7,8 +7,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
-from .funcionarios import Funcionario
-from .oficinas import Oficina
 
 
 class FuncionarioOficina(Base, UniversalMixin):

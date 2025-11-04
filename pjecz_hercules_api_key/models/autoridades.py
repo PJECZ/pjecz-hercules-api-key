@@ -9,14 +9,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
-from .distritos import Distrito
-from .edictos import Edicto
-from .exh_exhortos import ExhExhorto
-from .listas_de_acuerdos import ListaDeAcuerdo
-from .materias import Materia
-from .municipios import Municipio
-from .sentencias import Sentencia
-from .usuarios import Usuario
 
 
 class Autoridad(Base, UniversalMixin):

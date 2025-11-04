@@ -11,7 +11,6 @@ from sqlalchemy.sql.functions import now
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
-from .exh_exhortos import ExhExhorto
 
 
 class ExhExhortoArchivo(Base, UniversalMixin):

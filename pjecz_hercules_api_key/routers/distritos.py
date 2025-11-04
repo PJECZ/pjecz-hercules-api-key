@@ -16,7 +16,7 @@ from ..models.distritos import Distrito
 from ..models.permisos import Permiso
 from ..schemas.distritos import DistritoOut, OneDistritoOut
 
-distritos = APIRouter(prefix="/api/v5/distritos", tags=["distritos"])
+distritos = APIRouter(prefix="/api/v5/distritos", tags=["autoridades"])
 
 
 @distritos.get("/{clave}", response_model=OneDistritoOut)

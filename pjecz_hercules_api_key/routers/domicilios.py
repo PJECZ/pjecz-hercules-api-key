@@ -1,5 +1,5 @@
 """
-Municipios
+Domicilios
 """
 
 from typing import Annotated
@@ -10,20 +10,19 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from ..dependencies.authentications import UsuarioInDB, get_current_active_user
 from ..dependencies.database import Session, get_db
 from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..models.municipios import Municipio
+from ..models.domicilios import Domicilio
 from ..models.permisos import Permiso
-from ..schemas.municipios import MunicipioOut
+from ..schemas.domicilios import DomicilioOut
 
-municipios = APIRouter(prefix="/api/v5/municipios", tags=["municipios"])
+domicilios = APIRouter(prefix="/api/v5/domicilios", tags=["oficinas"])
 
 
-@municipios.get("", response_model=CustomPage[MunicipioOut])
-async def paginado(
+@domicilios.get("", response_model=CustomPage[DomicilioOut])
+async def paginado_domicilios(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
 ):
-    """Paginado de municipios"""
-    if current_user.permissions.get("MUNICIPIOS", 0) < Permiso.VER:
+    """Paginado de domicilios"""
+    if current_user.permissions.get("DOMICILIOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
-    consulta = database.query(Municipio)
-    return paginate(consulta.filter_by(estatus="A").order_by(Municipio.clave))
+    return paginate(database.query(Domicilio).filter(Domicilio.estatus == "A").order_by(Domicilio.edificio))

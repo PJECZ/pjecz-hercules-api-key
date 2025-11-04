@@ -9,12 +9,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
-from .autoridades import Autoridad
-from .exh_areas import ExhArea
-from .exh_exhortos_archivos import ExhExhortoArchivo
-from .exh_exhortos_partes import ExhExhortoParte
-from .exh_tipos_diligencias import ExhTipoDiligencia
-from .municipios import Municipio
 
 
 class ExhExhorto(Base, UniversalMixin):

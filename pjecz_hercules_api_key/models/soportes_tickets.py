@@ -10,9 +10,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
-from .funcionarios import Funcionario
-from .soportes_categorias import SoporteCategoria
-from .usuarios import Usuario
 
 
 class SoporteTicket(Base, UniversalMixin):

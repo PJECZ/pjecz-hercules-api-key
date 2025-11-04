@@ -9,10 +9,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
-from .distritos import Distrito
-from .domicilios import Domicilio
-from .funcionarios_oficinas import FuncionarioOficina
-from .usuarios import Usuario
 
 
 class Oficina(Base, UniversalMixin):
@@ -39,6 +35,21 @@ class Oficina(Base, UniversalMixin):
     # Hijos
     funcionarios_oficinas: Mapped[List["FuncionarioOficina"]] = relationship(back_populates="oficina")
     usuarios: Mapped[List["Usuario"]] = relationship("Usuario", back_populates="oficina")
+
+    @property
+    def distrito_clave(self) -> str:
+        """Clave del distrito"""
+        return self.distrito.clave
+
+    @property
+    def distrito_nombre(self) -> str:
+        """Nombre del distrito"""
+        return self.distrito.nombre
+
+    @property
+    def domicilio_edificio(self) -> str:
+        """Edificio del domicilio"""
+        return self.domicilio.edificio
 
     def __repr__(self):
         """Representación"""

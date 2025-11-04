@@ -10,10 +10,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
-from .autoridades import Autoridad
-from .permisos import Permiso
-from .soportes_tickets import SoporteTicket
-from .usuarios_roles import UsuarioRol
 
 
 class Usuario(Base, UniversalMixin):
