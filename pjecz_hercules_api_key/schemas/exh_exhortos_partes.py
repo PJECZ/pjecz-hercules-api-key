@@ -1,5 +1,5 @@
 """
-Exh Exhortos Partes, esquemas de pydantic
+Exh Exhortos Partes, esquemas
 """
 
 from pydantic import BaseModel, ConfigDict

@@ -56,6 +56,21 @@ class SoporteTicket(Base, UniversalMixin):
         index=True,
     )
 
+    @property
+    def funcionario_nombre(self) -> str:
+        """Nombre del funcionario"""
+        return self.funcionario.nombre
+
+    @property
+    def soporte_categoria_nombre(self) -> str:
+        """Nombre de la categoría de soporte"""
+        return self.soporte_categoria.nombre
+
+    @property
+    def usuario_nombre(self) -> str:
+        """Nombre del usuario"""
+        return self.usuario.nombre
+
     def __repr__(self):
         """Representación"""
         return f"<SoporteTicket {self.id}>"

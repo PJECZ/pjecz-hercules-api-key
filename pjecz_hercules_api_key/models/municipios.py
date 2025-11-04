@@ -33,6 +33,16 @@ class Municipio(Base, UniversalMixin):
     # Hijos
     autoridades: Mapped[List["Autoridad"]] = relationship("Autoridad", back_populates="municipio")
 
+    @property
+    def estado_clave(self) -> str:
+        """Clave del estado"""
+        return self.estado.clave
+
+    @property
+    def estado_nombre(self) -> str:
+        """Nombre del estado"""
+        return self.estado.nombre
+
     def __repr__(self):
         """Representación"""
         return f"<Municipio {self.estado.clave}{self.clave}>"

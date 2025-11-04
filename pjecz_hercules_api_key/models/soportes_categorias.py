@@ -16,9 +16,9 @@ class SoporteCategoria(Base, UniversalMixin):
     """Soporte Categoria"""
 
     DEPARTAMENTOS = {
-        "TODOS": "Todos",
-        "INFORMATICA": "Informatica",
-        "INFRAESTRUCTURA": "Infraestructura",
+        "TODOS": "TODOS",
+        "INFORMATICA": "INFORMATICA",
+        "INFRAESTRUCTURA": "INFRAESTRUCTURA",
     }
 
     # Nombre de la tabla

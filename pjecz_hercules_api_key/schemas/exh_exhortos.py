@@ -1,11 +1,11 @@
 """
-Exh Exhortos, esquemas de pydantic
+Exh Exhortos, esquemas
 """
 
 from pydantic import BaseModel, ConfigDict
 
-from ..schemas.exh_exhortos_archivos import ExhExhortoArchivoIn, ExhExhortoArchivoOut
-from ..schemas.exh_exhortos_partes import ExhExhortoParteIn, ExhExhortoParteOut
+from .exh_exhortos_archivos import ExhExhortoArchivoIn, ExhExhortoArchivoOut
+from .exh_exhortos_partes import ExhExhortoParteIn, ExhExhortoParteOut
 
 
 class ExhExhortoOut(BaseModel):

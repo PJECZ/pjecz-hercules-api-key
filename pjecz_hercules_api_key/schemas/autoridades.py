@@ -1,5 +1,5 @@
 """
-Autoridades, esquemas de pydantic
+Autoridades, esquemas
 """
 
 from pydantic import BaseModel, ConfigDict

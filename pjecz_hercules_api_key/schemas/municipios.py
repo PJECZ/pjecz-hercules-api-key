@@ -1,5 +1,5 @@
 """
-Municipios, esquemas de pydantic
+Municipios, esquemas
 """
 
 from pydantic import BaseModel, ConfigDict
@@ -10,6 +10,8 @@ class MunicipioOut(BaseModel):
 
     clave: str
     nombre: str
+    estado_clave: str
+    estado_nombre: str
     model_config = ConfigDict(from_attributes=True)
 
 

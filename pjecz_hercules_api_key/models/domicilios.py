@@ -39,3 +39,17 @@ class Domicilio(Base, UniversalMixin):
 
     # Hijos
     oficinas: Mapped[List["Oficina"]] = relationship("Oficina", back_populates="domicilio")
+
+    @property
+    def distrito_clave(self) -> str:
+        """Clave del distrito"""
+        return self.distrito.clave
+
+    @property
+    def distrito_nombre(self) -> str:
+        """Nombre del distrito"""
+        return self.distrito.nombre
+
+    def __repr__(self):
+        """Representación"""
+        return f"<Domicilio {self.edificio}>"

@@ -1,5 +1,5 @@
 """
-Permisos, esquemas de pydantic
+Permisos, esquemas
 """
 
 from pydantic import BaseModel, ConfigDict
@@ -9,9 +9,7 @@ class PermisoOut(BaseModel):
     """Esquema para entregar permisos"""
 
     id: int
-    rol_id: int
     rol_nombre: str
-    modulo_id: int
     modulo_nombre: str
     nombre: str
     nivel: int
