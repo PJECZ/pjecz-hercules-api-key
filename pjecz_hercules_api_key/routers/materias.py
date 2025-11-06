@@ -24,7 +24,6 @@ async def detalle(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
     clave: str,
-    distrito_clave: str = "",
 ):
     """Detalle de una materia a partir de su clave"""
     if current_user.permissions.get("MATERIAS", 0) < Permiso.VER:

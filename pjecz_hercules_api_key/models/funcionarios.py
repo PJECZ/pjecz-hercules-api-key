@@ -31,6 +31,7 @@ class Funcionario(Base, UniversalMixin):
     en_soportes: Mapped[bool] = mapped_column(default=False)
 
     # Hijos
+    funcionarios_oficinas: Mapped[List["FuncionarioOficina"]] = relationship(back_populates="funcionario")
     soportes_tickets: Mapped[List["SoporteTicket"]] = relationship(back_populates="funcionario")
 
     @property

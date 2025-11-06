@@ -14,6 +14,7 @@ from .routers.edictos import edictos
 from .routers.estados import estados
 from .routers.exh_exhortos import exh_exhortos
 from .routers.funcionarios import funcionarios
+from .routers.funcionarios_oficinas import funcionarios_oficinas
 from .routers.listas_de_acuerdos import listas_de_acuerdos
 from .routers.materias import materias
 from .routers.materias_tipos_juicios import materias_tipos_juicios
@@ -54,6 +55,7 @@ app.include_router(edictos)
 app.include_router(estados)
 app.include_router(exh_exhortos)
 app.include_router(funcionarios)
+app.include_router(funcionarios_oficinas)
 app.include_router(listas_de_acuerdos)
 app.include_router(materias)
 app.include_router(materias_tipos_juicios)

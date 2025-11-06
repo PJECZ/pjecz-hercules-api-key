@@ -30,6 +30,7 @@ class Municipio(Base, UniversalMixin):
 
     # Hijos
     autoridades: Mapped[List["Autoridad"]] = relationship("Autoridad", back_populates="municipio")
+    exh_exhortos_origenes: Mapped[List["ExhExhorto"]] = relationship("ExhExhorto", back_populates="municipio_origen")
 
     @property
     def estado_clave(self) -> str:

@@ -27,6 +27,16 @@ class FuncionarioOficina(Base, UniversalMixin):
     # Columnas
     descripcion: Mapped[str] = mapped_column(String(256))
 
+    @property
+    def funcionario_nombre(self) -> str:
+        """Nombre del funcionario"""
+        return self.funcionario.nombre_completo
+
+    @property
+    def oficina_nombre(self) -> str:
+        """Nombre de la oficina"""
+        return self.oficina.nombre
+
     def __repr__(self):
         """Representación"""
         return f"<FuncionarioOficina {self.id}>"
