@@ -24,7 +24,6 @@ async def detalle(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
     clave: str,
-    distrito_clave: str = "",
 ):
     """Detalle de una materia a partir de su clave"""
     if current_user.permissions.get("MATERIAS", 0) < Permiso.VER:
@@ -32,7 +31,7 @@ async def detalle(
     try:
         clave = safe_clave(clave)
     except ValueError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No es válida la clave")
+        return OneMateriaOut(success=False, message="No es válida la clave de la materia")
     try:
         materia = database.query(Materia).filter_by(clave=clave).one()
     except (MultipleResultsFound, NoResultFound):

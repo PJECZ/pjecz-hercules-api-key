@@ -4,7 +4,7 @@ Distritos, modelos
 
 from typing import List
 
-from sqlalchemy import String
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
@@ -30,6 +30,8 @@ class Distrito(Base, UniversalMixin):
 
     # Hijos
     autoridades: Mapped[List["Autoridad"]] = relationship("Autoridad", back_populates="distrito")
+    domicilios: Mapped[List["Domicilio"]] = relationship("Domicilio", back_populates="distrito")
+    oficinas: Mapped[List["Oficina"]] = relationship("Oficina", back_populates="distrito")
 
     def __repr__(self):
         """Representación"""

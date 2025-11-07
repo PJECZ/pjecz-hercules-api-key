@@ -10,7 +10,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base
 from ..dependencies.universal_mixin import UniversalMixin
-from ..models.permisos import Permiso
 
 
 class Usuario(Base, UniversalMixin):
@@ -25,6 +24,8 @@ class Usuario(Base, UniversalMixin):
     # Claves foráneas
     autoridad_id: Mapped[int] = mapped_column(ForeignKey("autoridades.id"))
     autoridad: Mapped["Autoridad"] = relationship(back_populates="usuarios")
+    oficina_id: Mapped[int] = mapped_column(ForeignKey("oficinas.id"))
+    oficina: Mapped["Oficina"] = relationship(back_populates="usuarios")
 
     # Columnas
     email: Mapped[str] = mapped_column(String(256), unique=True, index=True)
@@ -39,6 +40,7 @@ class Usuario(Base, UniversalMixin):
     contrasena: Mapped[Optional[str]] = mapped_column(String(256))
 
     # Hijos
+    soportes_tickets: Mapped[List["SoporteTicket"]] = relationship(back_populates="usuario")
     usuarios_roles: Mapped[List["UsuarioRol"]] = relationship("UsuarioRol", back_populates="usuario")
 
     # Propiedades

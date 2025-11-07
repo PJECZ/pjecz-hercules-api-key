@@ -1,5 +1,5 @@
 """
-Materias, esquemas de pydantic
+Materias, esquemas
 """
 
 from pydantic import BaseModel, ConfigDict

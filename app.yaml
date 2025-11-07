@@ -1,4 +1,4 @@
-runtime: python311
+runtime: python313
 instance_class: F1
 service: hercules-api-key
 entrypoint: gunicorn -w 2 -k uvicorn.workers.UvicornWorker pjecz_hercules_api_key.main:app

@@ -1,5 +1,5 @@
 """
-Usuarios-Roles, esquemas de pydantic
+Usuarios-Roles, esquemas
 """
 
 from pydantic import BaseModel, ConfigDict
@@ -11,7 +11,7 @@ class UsuarioRolOut(BaseModel):
     id: int
     rol_id: int
     rol_nombre: str
-    usuario_id: int
+    usuario_email: str
     usuario_nombre: str
     descripcion: str
     model_config = ConfigDict(from_attributes=True)

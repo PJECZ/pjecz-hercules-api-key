@@ -1,5 +1,5 @@
 """
-Sentencias, esquemas de pydantic
+Sentencias, esquemas
 """
 
 from datetime import date, datetime

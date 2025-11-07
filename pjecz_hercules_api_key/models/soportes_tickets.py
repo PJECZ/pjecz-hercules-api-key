@@ -1,0 +1,73 @@
+"""
+Soportes Tickets, modelos
+"""
+
+from datetime import datetime
+from typing import Optional
+
+from sqlalchemy import DateTime, Enum, ForeignKey, Text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from ..dependencies.database import Base
+from ..dependencies.universal_mixin import UniversalMixin
+
+
+class SoporteTicket(Base, UniversalMixin):
+    """Soporte Ticket"""
+
+    ESTADOS = {
+        "SIN ATENDER": "Abierto o pendiente",
+        "TRABAJANDO": "Trabajando",
+        "TERMINADO": "Trabajo concluido, resultado satisfactorio",
+        "CERRADO": "Trabajo concluido, resultado indiferente",
+        "PENDIENTE": "Pendiente de resolver",
+        "CANCELADO": "Cancelado",
+    }
+
+    DEPARTAMENTOS = {
+        "INFORMATICA": "INFORMATICA",
+        "INFRAESTRUCTURA": "INFRAESTRUCTURA",
+    }
+
+    # Nombre de la tabla
+    __tablename__ = "soportes_tickets"
+
+    # Clave primaria
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    # Claves foráneas
+    funcionario_id: Mapped[int] = mapped_column(ForeignKey("funcionarios.id"))
+    funcionario: Mapped["Funcionario"] = relationship(back_populates="soportes_tickets")
+    soporte_categoria_id: Mapped[int] = mapped_column(ForeignKey("soportes_categorias.id"))
+    soporte_categoria: Mapped["SoporteCategoria"] = relationship(back_populates="soportes_tickets")
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuarios.id"))
+    usuario: Mapped["Usuario"] = relationship(back_populates="soportes_tickets")
+
+    # Columnas
+    descripcion: Mapped[str] = mapped_column(Text)
+    estado: Mapped[str] = mapped_column(Enum(*ESTADOS, name="soportes_tickets_estados", native_enum=False), index=True)
+    resolucion: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    soluciones: Mapped[Optional[str]] = mapped_column(Text)
+    departamento: Mapped[str] = mapped_column(
+        Enum(*DEPARTAMENTOS, name="soportes_tickets_departamentos", native_enum=False),
+        index=True,
+    )
+
+    @property
+    def funcionario_nombre(self):
+        """Nombre del funcionario"""
+        return self.funcionario.nombre
+
+    @property
+    def soporte_categoria_nombre(self):
+        """Nombre de la categoría de soporte"""
+        return self.soporte_categoria.nombre
+
+    @property
+    def usuario_nombre(self):
+        """Nombre del usuario"""
+        return self.usuario.nombre
+
+    def __repr__(self):
+        """Representación"""
+        return f"<SoporteTicket {self.id}>"

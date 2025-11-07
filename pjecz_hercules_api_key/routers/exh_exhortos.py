@@ -6,6 +6,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
+from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
 from ..config.settings import Settings, get_settings
 from ..dependencies.authentications import UsuarioInDB, get_current_active_user
@@ -72,17 +73,23 @@ async def detalle(
 async def paginado(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
-    autoridad_clave: str = "",
+    autoridad_clave: str | None = None,
 ):
     """Paginado de exh_exhortos"""
     if current_user.permissions.get("EXH EXHORTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(ExhExhorto)
-    if autoridad_clave:
+    if autoridad_clave is not None:
         try:
             autoridad_clave = safe_clave(autoridad_clave)
         except ValueError:
             return CustomPage(success=False, message="No es válida la clave de la autoridad")
+        try:
+            autoridad = database.query(Autoridad).filter(Autoridad.clave == autoridad_clave).one()
+        except (MultipleResultsFound, NoResultFound):
+            return CustomPage(success=False, message="No existe esa autoridad")
+        if autoridad.estatus != "A":
+            return CustomPage(success=False, message="No está habilitada esa autoridad")
         consulta = consulta.join(Autoridad).filter(Autoridad.clave == autoridad_clave)
     return paginate(consulta.filter(ExhExhorto.estatus == "A").order_by(ExhExhorto.id.desc()))
 

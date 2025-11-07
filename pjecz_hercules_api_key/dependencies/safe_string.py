@@ -115,6 +115,7 @@ def safe_telefono(input_str):
         raise ValueError("Telefono está incompleto")
     return solo_numeros
 
+
 def safe_url(input_str):
     """Safe URL"""
     if not isinstance(input_str, str) or input_str.strip() == "":

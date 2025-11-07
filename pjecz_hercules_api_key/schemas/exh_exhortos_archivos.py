@@ -1,6 +1,7 @@
 """
-Exh Exhortos Archivos, esquemas de pydantic
+Exh Exhortos Archivos, esquemas
 """
+
 from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict

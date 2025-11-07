@@ -32,6 +32,16 @@ class Municipio(Base, UniversalMixin):
     autoridades: Mapped[List["Autoridad"]] = relationship("Autoridad", back_populates="municipio")
     exh_exhortos_origenes: Mapped[List["ExhExhorto"]] = relationship("ExhExhorto", back_populates="municipio_origen")
 
+    @property
+    def estado_clave(self):
+        """Clave del estado"""
+        return self.estado.clave
+
+    @property
+    def estado_nombre(self):
+        """Nombre del estado"""
+        return self.estado.nombre
+
     def __repr__(self):
         """Representación"""
         return f"<Municipio {self.estado.clave}{self.clave}>"
