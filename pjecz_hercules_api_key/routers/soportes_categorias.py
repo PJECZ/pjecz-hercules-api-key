@@ -25,6 +25,4 @@ async def paginado_soportes_categorias(
     """Paginado de Soportes Categorias"""
     if current_user.permissions.get("SOPORTES CATEGORIAS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
-    return paginate(
-        database.query(SoporteCategoria).filter(SoporteCategoria.estatus == "A").order_by(SoporteCategoria.edificio)
-    )
+    return paginate(database.query(SoporteCategoria).filter(SoporteCategoria.estatus == "A").order_by(SoporteCategoria.nombre))

@@ -25,4 +25,4 @@ async def paginado_estados(
     """Paginado de estados"""
     if current_user.permissions.get("ESTADOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
-    return paginate(database.query(Estado).filter(Estado.estatus == "A").order_by(Estado.edificio))
+    return paginate(database.query(Estado).filter(Estado.estatus == "A").order_by(Estado.nombre))

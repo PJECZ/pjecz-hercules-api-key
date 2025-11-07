@@ -20,7 +20,7 @@ class UsuarioOut(BaseModel):
     distrito_clave: str | None = None
     distrito_nombre: str | None = None
     distrito_nombre_corto: str | None = None
-    puesto: str | None = None
+    puesto: str | None
     model_config = ConfigDict(from_attributes=True)
 
 

@@ -7,6 +7,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
+from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
 from ..dependencies.authentications import UsuarioInDB, get_current_active_user
 from ..dependencies.database import Session, get_db
@@ -42,7 +43,7 @@ async def detalle(
 async def paginado(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
-    autoridad_clave: str = "",
+    autoridad_clave: str | None = None,
     fecha: date | None = None,
     fecha_desde: date | None = None,
     fecha_hasta: date | None = None,
@@ -52,12 +53,18 @@ async def paginado(
     if current_user.permissions.get("SENTENCIAS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(Sentencia)
-    if autoridad_clave:
+    if autoridad_clave is not None:
         try:
             autoridad_clave = safe_clave(autoridad_clave)
         except ValueError:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No es válida la clave")
-        consulta = consulta.join(Autoridad).filter(Autoridad.clave == autoridad_clave).filter(Autoridad.estatus == "A")
+            return CustomPage(success=False, message="No es válida la clave de la autoridad")
+        try:
+            autoridad = database.query(Autoridad).filter(Autoridad.clave == autoridad_clave).one()
+        except (MultipleResultsFound, NoResultFound):
+            return CustomPage(success=False, message="No existe esa autoridad")
+        if autoridad.estatus != "A":
+            return CustomPage(success=False, message="No está habilitada esa autoridad")
+        consulta = consulta.join(Autoridad).filter(Autoridad.clave == autoridad_clave)
     if fecha is not None:
         consulta = consulta.filter(Sentencia.fecha == fecha)
     else:
@@ -66,6 +73,12 @@ async def paginado(
         if fecha_hasta is not None:
             consulta = consulta.filter(Sentencia.fecha <= fecha_hasta)
     if materia_tipo_juicio_id is not None:
+        try:
+            materia_tipo_juicio = database.query(MateriaTipoJuicio).filter(MateriaTipoJuicio.id == materia_tipo_juicio_id).one()
+        except (MultipleResultsFound, NoResultFound):
+            return CustomPage(success=False, message="No existe ese tipo de juicio para materia")
+        if materia_tipo_juicio.estatus != "A":
+            return CustomPage(success=False, message="No está habilitado ese tipo de juicio para materia")
         consulta = (
             consulta.join(MateriaTipoJuicio)
             .filter(MateriaTipoJuicio.id == materia_tipo_juicio_id)

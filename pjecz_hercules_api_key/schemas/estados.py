@@ -8,7 +8,6 @@ from pydantic import BaseModel, ConfigDict
 class EstadoOut(BaseModel):
     """Esquema para entregar Estados"""
 
-    id: int
     clave: str
     nombre: str
     model_config = ConfigDict(from_attributes=True)

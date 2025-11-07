@@ -11,7 +11,8 @@ from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from ..dependencies.authentications import UsuarioInDB, get_current_active_user
 from ..dependencies.database import Session, get_db
 from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_email, safe_string
+from ..dependencies.safe_string import safe_clave, safe_email, safe_string
+from ..models.autoridades import Autoridad
 from ..models.permisos import Permiso
 from ..models.usuarios import Usuario
 from ..schemas.usuarios import OneUsuarioOut, UsuarioOut
@@ -31,7 +32,7 @@ async def detalle_usuario(
     try:
         email = str(safe_email(email))
     except ValueError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No es válido el e-mail")
+        return OneUsuarioOut(success=False, message="No es válido el email")
     try:
         usuario = database.query(Usuario).filter_by(email=email).one()
     except (MultipleResultsFound, NoResultFound):
@@ -47,6 +48,7 @@ async def paginado_usuarios(
     database: Annotated[Session, Depends(get_db)],
     apellido_paterno: str | None = None,
     apellido_materno: str | None = None,
+    autoridad_clave: str | None = None,
     email: str | None = None,
     nombres: str | None = None,
 ):
@@ -62,11 +64,23 @@ async def paginado_usuarios(
         apellido_materno = safe_string(apellido_materno)
         if apellido_materno != "":
             consulta = consulta.filter(Usuario.apellido_materno.contains(apellido_materno))
+    if autoridad_clave is not None:
+        try:
+            autoridad_clave = safe_clave(autoridad_clave)
+        except ValueError:
+            return CustomPage(success=False, message="No es válida la clave de la autoridad")
+        try:
+            autoridad = database.query(Autoridad).filter(Autoridad.clave == autoridad_clave).one()
+        except (MultipleResultsFound, NoResultFound):
+            return CustomPage(success=False, message="No existe esa autoridad")
+        if autoridad.estatus != "A":
+            return CustomPage(success=False, message="No está habilitada esa autoridad")
+        consulta = consulta.join(Autoridad).filter(Autoridad.clave == autoridad_clave)
     if email is not None:
         try:
             email = str(safe_email(email, search_fragment=True))
         except ValueError:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No es válido el e-mail")
+            return CustomPage(success=False, message="No es válido el email")
         consulta = consulta.filter(Usuario.email.contains(email))
     if nombres is not None:
         nombres = safe_string(nombres)

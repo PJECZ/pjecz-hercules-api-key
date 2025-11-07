@@ -31,7 +31,7 @@ async def detalle(
     try:
         clave = safe_clave(clave)
     except ValueError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No es válida la clave")
+        return OneDistritoOut(success=False, message="No es válida la clave del distrito")
     try:
         distrito = database.query(Distrito).filter_by(clave=clave).one()
     except (MultipleResultsFound, NoResultFound):
