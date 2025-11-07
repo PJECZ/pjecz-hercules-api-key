@@ -43,6 +43,12 @@ async def paginado_soportes_tickets(
     if current_user.permissions.get("SOPORTES TICKETS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(SoporteTicket)
+    if creado is not None:
+        consulta = consulta.filter(SoporteTicket.creado.cast(date) == creado)
+    if creado_desde is not None:
+        consulta = consulta.filter(SoporteTicket.creado.cast(date) >= creado_desde)
+    if creado_hasta is not None:
+        consulta = consulta.filter(SoporteTicket.creado.cast(date) <= creado_hasta)
     if funcionario_id is not None or funcionario_curp is not None:
         consulta = consulta.join(Funcionario)
         if funcionario_id is not None:
@@ -99,4 +105,4 @@ async def paginado_soportes_tickets(
         if usuario.estatus != "A":
             return CustomPage(success=False, message="No está habilitado ese usuario")
         consulta = consulta.join(Usuario).filter(Usuario.email == usuario_email)
-    return paginate(consulta.filter(SoporteTicket.estatus == "A").order_by(SoporteTicket.edificio))
+    return paginate(consulta.filter(SoporteTicket.estatus == "A").order_by(SoporteTicket.id.desc()))

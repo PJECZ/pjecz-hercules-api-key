@@ -1,5 +1,5 @@
 """
-Unit tests for usuarios-roles
+Unit tests for estados
 """
 
 import unittest
@@ -9,16 +9,16 @@ import requests
 from tests import config
 
 
-class TestUsuariosRoles(unittest.TestCase):
-    """Tests for usuarios-roles"""
+class TestEstados(unittest.TestCase):
+    """Tests for estados"""
 
-    def test_get_usuarios_roles(self):
-        """Test GET method for usuarios-roles"""
+    def test_get_estados(self):
+        """Test GET method for estados"""
 
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/usuarios_roles",
+                f"{config['api_base_url']}/api/v5/estados",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )
@@ -35,18 +35,11 @@ class TestUsuariosRoles(unittest.TestCase):
         # Validar que se haya tenido éxito
         self.assertEqual(contenido["success"], True)
 
-        # Validar que en los datos haya el listado de autoridades
-        self.assertEqual(type(contenido["data"]), list)
-
         # Validar los datos
         self.assertEqual(type(contenido["data"]), list)
         for item in contenido["data"]:
-            self.assertEqual("id" in item, True)
-            self.assertEqual("rol_id" in item, True)
-            self.assertEqual("rol_nombre" in item, True)
-            self.assertEqual("usuario_email" in item, True)
-            self.assertEqual("usuario_nombre" in item, True)
-            self.assertEqual("descripcion" in item, True)
+            self.assertEqual("clave" in item, True)
+            self.assertEqual("nombre" in item, True)
 
 
 if __name__ == "__main__":

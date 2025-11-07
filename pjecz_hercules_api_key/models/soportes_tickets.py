@@ -54,17 +54,17 @@ class SoporteTicket(Base, UniversalMixin):
     )
 
     @property
-    def funcionario_nombre(self) -> str:
+    def funcionario_nombre(self):
         """Nombre del funcionario"""
         return self.funcionario.nombre
 
     @property
-    def soporte_categoria_nombre(self) -> str:
+    def soporte_categoria_nombre(self):
         """Nombre de la categoría de soporte"""
         return self.soporte_categoria.nombre
 
     @property
-    def usuario_nombre(self) -> str:
+    def usuario_nombre(self):
         """Nombre del usuario"""
         return self.usuario.nombre
 

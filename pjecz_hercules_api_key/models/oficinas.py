@@ -37,17 +37,17 @@ class Oficina(Base, UniversalMixin):
     usuarios: Mapped[List["Usuario"]] = relationship("Usuario", back_populates="oficina")
 
     @property
-    def distrito_clave(self) -> str:
+    def distrito_clave(self):
         """Clave del distrito"""
         return self.distrito.clave
 
     @property
-    def distrito_nombre(self) -> str:
+    def distrito_nombre(self):
         """Nombre del distrito"""
         return self.distrito.nombre
 
     @property
-    def domicilio_edificio(self) -> str:
+    def domicilio_edificio(self):
         """Edificio del domicilio"""
         return self.domicilio.edificio
 

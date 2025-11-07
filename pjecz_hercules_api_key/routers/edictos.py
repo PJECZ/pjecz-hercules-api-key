@@ -43,6 +43,9 @@ async def paginado(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
     autoridad_clave: str | None = None,
+    creado: date | None = None,
+    creado_desde: date | None = None,
+    creado_hasta: date | None = None,
     fecha: date | None = None,
     fecha_desde: date | None = None,
     fecha_hasta: date | None = None,
@@ -63,6 +66,12 @@ async def paginado(
         if autoridad.estatus != "A":
             return CustomPage(success=False, message="No está habilitada esa autoridad")
         consulta = consulta.join(Autoridad).filter(Autoridad.clave == autoridad_clave)
+    if creado is not None:
+        consulta = consulta.filter(Edicto.creado.cast(date) == creado)
+    if creado_desde is not None:
+        consulta = consulta.filter(Edicto.creado.cast(date) >= creado_desde)
+    if creado_hasta is not None:
+        consulta = consulta.filter(Edicto.creado.cast(date) <= creado_hasta)
     if fecha is not None:
         consulta = consulta.filter(Edicto.fecha == fecha)
     else:

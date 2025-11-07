@@ -9,7 +9,9 @@ class UsuarioRolOut(BaseModel):
     """Esquema para entregar usuarios-roles"""
 
     id: int
+    rol_id: int
     rol_nombre: str
+    usuario_email: str
     usuario_nombre: str
     descripcion: str
     model_config = ConfigDict(from_attributes=True)

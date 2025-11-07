@@ -11,7 +11,7 @@ class FuncionarioOficinaOut(BaseModel):
     funcionario_id: int
     funcionario_nombre: str
     oficina_id: int
-    oficina_nombre: str
+    oficina_clave: str
     descripcion: str
     model_config = ConfigDict(from_attributes=True)
 

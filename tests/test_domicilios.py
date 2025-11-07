@@ -1,5 +1,5 @@
 """
-Unit tests for usuarios-roles
+Unit tests for domicilios
 """
 
 import unittest
@@ -9,16 +9,16 @@ import requests
 from tests import config
 
 
-class TestUsuariosRoles(unittest.TestCase):
-    """Tests for usuarios-roles"""
+class TestDomicilios(unittest.TestCase):
+    """Tests for domicilios"""
 
-    def test_get_usuarios_roles(self):
-        """Test GET method for usuarios-roles"""
+    def test_get_domicilios(self):
+        """Test GET method for domicilios"""
 
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/usuarios_roles",
+                f"{config['api_base_url']}/api/v5/domicilios",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )
@@ -35,18 +35,20 @@ class TestUsuariosRoles(unittest.TestCase):
         # Validar que se haya tenido éxito
         self.assertEqual(contenido["success"], True)
 
-        # Validar que en los datos haya el listado de autoridades
-        self.assertEqual(type(contenido["data"]), list)
-
         # Validar los datos
         self.assertEqual(type(contenido["data"]), list)
         for item in contenido["data"]:
-            self.assertEqual("id" in item, True)
-            self.assertEqual("rol_id" in item, True)
-            self.assertEqual("rol_nombre" in item, True)
-            self.assertEqual("usuario_email" in item, True)
-            self.assertEqual("usuario_nombre" in item, True)
-            self.assertEqual("descripcion" in item, True)
+            self.assertEqual("distrito_clave" in item, True)
+            self.assertEqual("distrito_nombre" in item, True)
+            self.assertEqual("edificio" in item, True)
+            self.assertEqual("estado" in item, True)
+            self.assertEqual("municipio" in item, True)
+            self.assertEqual("calle" in item, True)
+            self.assertEqual("num_ext" in item, True)
+            self.assertEqual("num_int" in item, True)
+            self.assertEqual("colonia" in item, True)
+            self.assertEqual("cp" in item, True)
+            self.assertEqual("completo" in item, True)
 
 
 if __name__ == "__main__":

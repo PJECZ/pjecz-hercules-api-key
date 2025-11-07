@@ -25,4 +25,8 @@ async def paginado_funcionarios(
     """Paginado de funcionarios"""
     if current_user.permissions.get("FUNCIONARIOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
-    return paginate(database.query(Funcionario).filter(Funcionario.estatus == "A").order_by(Funcionario.edificio))
+    return paginate(
+        database.query(Funcionario)
+        .filter(Funcionario.estatus == "A")
+        .order_by(Funcionario.nombres, Funcionario.apellido_paterno, Funcionario.apellido_materno)
+    )

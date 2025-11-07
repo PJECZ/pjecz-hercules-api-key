@@ -1,5 +1,5 @@
 """
-Unit tests for autoridades
+Unit tests for oficinas
 """
 
 import unittest
@@ -9,16 +9,16 @@ import requests
 from tests import config
 
 
-class TestAutoridades(unittest.TestCase):
-    """Tests for autoridades"""
+class TestOficinas(unittest.TestCase):
+    """Tests for oficinas"""
 
-    def test_get_autoridades(self):
-        """Test GET method for autoridades"""
+    def test_get_oficinas(self):
+        """Test GET method for oficinas"""
 
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/autoridades",
+                f"{config['api_base_url']}/api/v5/oficinas",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )
@@ -38,21 +38,13 @@ class TestAutoridades(unittest.TestCase):
         # Validar los datos
         self.assertEqual(type(contenido["data"]), list)
         for item in contenido["data"]:
-            self.assertEqual("clave" in item, True)
             self.assertEqual("distrito_clave" in item, True)
             self.assertEqual("distrito_nombre" in item, True)
-            self.assertEqual("distrito_nombre_corto" in item, True)
-            self.assertEqual("materia_clave" in item, True)
-            self.assertEqual("materia_nombre" in item, True)
+            self.assertEqual("domicilio_edificio" in item, True)
+            self.assertEqual("clave" in item, True)
             self.assertEqual("descripcion" in item, True)
             self.assertEqual("descripcion_corta" in item, True)
-            self.assertEqual("es_extinto" in item, True)
-            self.assertEqual("es_cemasc" in item, True)
-            self.assertEqual("es_defensoria" in item, True)
             self.assertEqual("es_jurisdiccional" in item, True)
-            self.assertEqual("es_notaria" in item, True)
-            self.assertEqual("es_organo_especializado" in item, True)
-            self.assertEqual("organo_jurisdiccional" in item, True)
 
 
 if __name__ == "__main__":

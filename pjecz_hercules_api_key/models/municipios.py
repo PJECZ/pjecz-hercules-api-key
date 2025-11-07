@@ -33,12 +33,12 @@ class Municipio(Base, UniversalMixin):
     exh_exhortos_origenes: Mapped[List["ExhExhorto"]] = relationship("ExhExhorto", back_populates="municipio_origen")
 
     @property
-    def estado_clave(self) -> str:
+    def estado_clave(self):
         """Clave del estado"""
         return self.estado.clave
 
     @property
-    def estado_nombre(self) -> str:
+    def estado_nombre(self):
         """Nombre del estado"""
         return self.estado.nombre
 

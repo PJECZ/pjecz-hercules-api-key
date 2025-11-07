@@ -2,6 +2,8 @@
 Soportes Tickets, esquemas
 """
 
+from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -14,7 +16,7 @@ class SoporteTicketOut(BaseModel):
     usuario_nombre: str
     descripcion: str
     estado: str
-    resolucion: str
+    resolucion: datetime | None = None
     soluciones: str
     departamento: str
     model_config = ConfigDict(from_attributes=True)
