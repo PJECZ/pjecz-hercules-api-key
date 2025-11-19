@@ -1,5 +1,5 @@
 """
-Listas de Acuerdos, esquemas de pydantic
+Listas de Acuerdos, esquemas
 """
 
 from datetime import date, datetime

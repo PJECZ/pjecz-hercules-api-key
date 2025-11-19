@@ -44,7 +44,7 @@ class TestUsuariosRoles(unittest.TestCase):
             self.assertEqual("id" in item, True)
             self.assertEqual("rol_id" in item, True)
             self.assertEqual("rol_nombre" in item, True)
-            self.assertEqual("usuario_id" in item, True)
+            self.assertEqual("usuario_email" in item, True)
             self.assertEqual("usuario_nombre" in item, True)
             self.assertEqual("descripcion" in item, True)
 

@@ -1,5 +1,5 @@
 """
-Autoridades, esquemas de pydantic
+Autoridades, esquemas
 """
 
 from pydantic import BaseModel, ConfigDict
@@ -14,6 +14,8 @@ class AutoridadOut(BaseModel):
     distrito_nombre_corto: str
     materia_clave: str
     materia_nombre: str
+    municipio_clave: str
+    municipio_nombre: str
     descripcion: str
     descripcion_corta: str
     es_extinto: bool

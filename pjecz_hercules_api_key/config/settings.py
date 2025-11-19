@@ -61,6 +61,7 @@ class Settings(BaseSettings):
     DB_NAME: str = get_secret("db_name")
     DB_PASS: str = get_secret("db_pass")
     DB_USER: str = get_secret("db_user")
+    ESTADO_CLAVE: str = get_secret("estado_clave", "05")  # Por defecto es Coahuila de Zaragoza
     GCP_BUCKET: str = get_secret("gcp_bucket")
     GCP_BUCKET_EDICTOS: str = get_secret("gcp_bucket_edictos")
     GCP_BUCKET_GLOSAS: str = get_secret("gcp_bucket_glosas")

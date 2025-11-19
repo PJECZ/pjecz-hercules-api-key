@@ -34,6 +34,8 @@ class Autoridad(Base, UniversalMixin):
     distrito: Mapped["Distrito"] = relationship(back_populates="autoridades")
     materia_id: Mapped[int] = mapped_column(ForeignKey("materias.id"))
     materia: Mapped["Materia"] = relationship(back_populates="autoridades")
+    municipio_id: Mapped[int] = mapped_column(ForeignKey("municipios.id"))
+    municipio: Mapped["Municipio"] = relationship(back_populates="autoridades")
 
     # Columnas
     clave: Mapped[str] = mapped_column(String(16), unique=True)
@@ -85,6 +87,16 @@ class Autoridad(Base, UniversalMixin):
     def materia_nombre(self):
         """Nombre de la materia"""
         return self.materia.nombre
+
+    @property
+    def municipio_clave(self):
+        """Clave de la municipio"""
+        return self.municipio.clave
+
+    @property
+    def municipio_nombre(self):
+        """Nombre de la municipio"""
+        return self.municipio.nombre
 
     def __repr__(self):
         """Representación"""

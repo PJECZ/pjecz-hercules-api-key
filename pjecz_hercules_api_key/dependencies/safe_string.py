@@ -11,6 +11,7 @@ CURP_REGEXP = r"^[A-Z]{4}\d{6}[A-Z]{6}[A-Z0-9]{2}$"
 EMAIL_REGEXP = r"^[\w.-]+@[\w.-]+\.\w+$"
 PASSWORD_REGEXP = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,24}$"
 TELEFONO_REGEXP = r"^[1-9]\d{9}$"
+URL_REGEXP = r"^(https?:\/\/)[0-9a-z-_]*(\.[0-9a-z-_]+)*(\.[a-z]+)+(:(\d+))?(\/[0-9a-z%-_]*)*?\/?$"
 
 
 def extract_expediente_anio(input_str: str) -> int:
@@ -113,3 +114,13 @@ def safe_telefono(input_str):
     if re.match(TELEFONO_REGEXP, solo_numeros) is None:
         raise ValueError("Telefono está incompleto")
     return solo_numeros
+
+
+def safe_url(input_str):
+    """Safe URL"""
+    if not isinstance(input_str, str) or input_str.strip() == "":
+        return ""
+    input_str = input_str.strip()
+    if re.match(URL_REGEXP, input_str) is None:
+        return ""
+    return input_str
