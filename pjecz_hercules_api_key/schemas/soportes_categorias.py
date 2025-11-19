@@ -10,7 +10,6 @@ class SoporteCategoriaOut(BaseModel):
 
     id: int
     nombre: str
-    instrucciones: str
     departamento: str
     model_config = ConfigDict(from_attributes=True)
 

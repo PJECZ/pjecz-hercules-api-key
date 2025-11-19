@@ -12,7 +12,7 @@ from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from ..dependencies.authentications import UsuarioInDB, get_current_active_user
 from ..dependencies.database import Session, get_db
 from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_clave, safe_curp, safe_email, safe_string
+from ..dependencies.safe_string import safe_curp, safe_email, safe_string
 from ..models.funcionarios import Funcionario
 from ..models.permisos import Permiso
 from ..models.soportes_categorias import SoporteCategoria
@@ -30,6 +30,7 @@ async def paginado_soportes_tickets(
     creado: date | None = None,
     creado_desde: date | None = None,
     creado_hasta: date | None = None,
+    estado: str | None = None,
     funcionario_id: int | None = None,
     funcionario_curp: str | None = None,
     modificado: date | None = None,
@@ -49,6 +50,11 @@ async def paginado_soportes_tickets(
         consulta = consulta.filter(SoporteTicket.creado.cast(date) >= creado_desde)
     if creado_hasta is not None:
         consulta = consulta.filter(SoporteTicket.creado.cast(date) <= creado_hasta)
+    if estado is not None:
+        estado = safe_string(estado)
+        if estado not in SoporteTicket.ESTADOS:
+            return CustomPage(success=False, message="No es válido el estado")
+        consulta = consulta.filter(SoporteTicket.estado == estado)
     if funcionario_id is not None or funcionario_curp is not None:
         consulta = consulta.join(Funcionario)
         if funcionario_id is not None:
@@ -70,6 +76,12 @@ async def paginado_soportes_tickets(
             if funcionario.estatus != "A":
                 return CustomPage(success=False, message="No está habilitado ese funcionario")
         consulta = consulta.filter(Funcionario.id == funcionario_id)
+    if modificado is not None:
+        consulta = consulta.filter(SoporteTicket.modificado.cast(date) == modificado)
+    if modificado_desde is not None:
+        consulta = consulta.filter(SoporteTicket.modificado.cast(date) >= modificado_desde)
+    if modificado_hasta is not None:
+        consulta = consulta.filter(SoporteTicket.modificado.cast(date) <= modificado_hasta)
     if soporte_categoria_id is not None or soporte_categoria_nombre is not None:
         consulta = consulta.join(SoporteCategoria)
         if soporte_categoria_id is not None:
