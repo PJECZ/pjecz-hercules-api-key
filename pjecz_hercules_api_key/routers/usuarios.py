@@ -46,25 +46,25 @@ async def detalle_usuario(
 async def paginado_usuarios(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
-    apellido_paterno: str | None = None,
-    apellido_materno: str | None = None,
-    autoridad_clave: str | None = None,
-    email: str | None = None,
-    nombres: str | None = None,
+    apellido_paterno: str = "",
+    apellido_materno: str = "",
+    autoridad_clave: str = "",
+    email: str = "",
+    nombres: str = "",
 ):
     """Paginado de usuarios"""
     if current_user.permissions.get("USUARIOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(Usuario)
-    if apellido_paterno is not None:
+    if apellido_paterno != "":
         apellido_paterno = safe_string(apellido_paterno)
         if apellido_paterno != "":
             consulta = consulta.filter(Usuario.apellido_paterno.contains(apellido_paterno))
-    if apellido_materno is not None:
+    if apellido_materno != "":
         apellido_materno = safe_string(apellido_materno)
         if apellido_materno != "":
             consulta = consulta.filter(Usuario.apellido_materno.contains(apellido_materno))
-    if autoridad_clave is not None:
+    if autoridad_clave != "":
         try:
             autoridad_clave = safe_clave(autoridad_clave)
         except ValueError:
@@ -76,13 +76,13 @@ async def paginado_usuarios(
         if autoridad.estatus != "A":
             return CustomPage(success=False, message="No está habilitada esa autoridad")
         consulta = consulta.join(Autoridad).filter(Autoridad.clave == autoridad_clave)
-    if email is not None:
+    if email != "":
         try:
             email = str(safe_email(email, search_fragment=True))
         except ValueError:
             return CustomPage(success=False, message="No es válido el email")
         consulta = consulta.filter(Usuario.email.contains(email))
-    if nombres is not None:
+    if nombres != "":
         nombres = safe_string(nombres)
         if nombres != "":
             consulta = consulta.filter(Usuario.nombres.contains(nombres))

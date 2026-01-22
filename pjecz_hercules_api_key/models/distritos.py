@@ -4,7 +4,7 @@ Distritos, modelos
 
 from typing import List
 
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..dependencies.database import Base

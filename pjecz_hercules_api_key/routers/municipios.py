@@ -24,13 +24,13 @@ municipios = APIRouter(prefix="/api/v5/municipios", tags=["municipios"])
 async def paginado(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
-    estado_clave: str | None = None,
+    estado_clave: str = "",
 ):
     """Paginado de municipios"""
     if current_user.permissions.get("MUNICIPIOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(Municipio)
-    if estado_clave is not None:
+    if estado_clave != "":
         try:
             estado_clave = safe_clave(estado_clave)
         except ValueError:

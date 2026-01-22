@@ -5,33 +5,20 @@ Settings
 import os
 from functools import lru_cache
 
-import google.auth
 from google.cloud import secretmanager
 from pydantic_settings import BaseSettings
 
-PROJECT_ID = os.getenv("PROJECT_ID", "")  # Por defecto esta vacio, esto significa estamos en modo local
-SERVICE_PREFIX = os.getenv("SERVICE_PREFIX", "pjecz_plataforma_web_api_key")
-
 
 def get_secret(secret_id: str, default: str = "") -> str:
-    """Get secret from Google Cloud Secret Manager"""
+    """Obtener el valor del secreto desde Google Cloud Secret Manager o desde las variables de entorno"""
+    project_id = os.getenv("PROJECT_ID", "")
+    service_prefix = os.getenv("SERVICE_PREFIX", "pjecz_perseo")
 
-    # Si PROJECT_ID está vacío estamos en modo de desarrollo y debe usar las variables de entorno
-    if PROJECT_ID == "":
-        # Entregar el valor de la variable de entorno, si no esta definida, se entrega el valor por defecto
+    # Si PROJECT_ID está vacío estamos en modo de desarrollo
+    if project_id == "":
         value = os.getenv(secret_id.upper(), "")
+        # Si el valor es texto vacio, entregar el valor por defecto
         if value == "":
-            return default
-        return value
-
-    # Obtener el project_id con la librería de Google Auth
-    _, project_id = google.auth.default()
-
-    # Si NO estamos en Google Cloud, entonces se está ejecutando de forma local
-    if not project_id:
-        # Entregar el valor de la variable de entorno, si no esta definida, se entrega el valor por defecto
-        value = os.getenv(secret_id.upper())
-        if value is None:
             return default
         return value
 
@@ -40,7 +27,7 @@ def get_secret(secret_id: str, default: str = "") -> str:
         # Create the secret manager client
         client = secretmanager.SecretManagerServiceClient()
         # Build the resource name of the secret version
-        secret = f"{SERVICE_PREFIX}_{secret_id}"
+        secret = f"{service_prefix}_{secret_id}".lower()
         name = client.secret_version_path(project_id, secret, "latest")
         # Access the secret version
         response = client.access_secret_version(name=name)
@@ -49,7 +36,7 @@ def get_secret(secret_id: str, default: str = "") -> str:
     except:
         pass
 
-    # Entregar el valor por defecto porque no existe el secreto, ni la variable de entorno
+    # Si no funciona lo anterior, entregar el valor por defecto
     return default
 
 

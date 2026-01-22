@@ -24,13 +24,13 @@ materias_tipos_juicios = APIRouter(prefix="/api/v5/materias_tipos_juicios", tags
 async def paginado(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
-    materia_clave: str | None = None,
+    materia_clave: str = "",
 ):
     """Paginado de materias_tipos_juicios"""
     if current_user.permissions.get("MATERIAS TIPOS JUICIOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(MateriaTipoJuicio)
-    if materia_clave is not None:
+    if materia_clave != "":
         try:
             materia_clave = safe_clave(materia_clave)
         except ValueError:

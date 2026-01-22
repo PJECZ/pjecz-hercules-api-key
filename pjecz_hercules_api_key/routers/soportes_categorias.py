@@ -22,19 +22,19 @@ soportes_categorias = APIRouter(prefix="/api/v5/soportes_categorias", tags=["sop
 async def paginado_soportes_categorias(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
-    departamento: str | None = None,
-    nombre: str | None = None,
+    departamento: str = "",
+    nombre: str = "",
 ):
     """Paginado de Soportes Categorias"""
     if current_user.permissions.get("SOPORTES CATEGORIAS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(SoporteCategoria)
-    if departamento is not None:
+    if departamento != "":
         departamento = safe_string(departamento)
         if departamento not in SoporteCategoria.DEPARTAMENTOS:
             return CustomPage(success=False, message="No es válido el departamento")
         consulta = consulta.filter(SoporteCategoria.departamento == departamento)
-    if nombre is not None:
+    if nombre != "":
         nombre = safe_string(nombre)
         consulta = consulta.filter(SoporteCategoria.nombre.contains(nombre))
     return paginate(consulta.filter_by(estatus="A").order_by(SoporteCategoria.nombre))

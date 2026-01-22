@@ -60,6 +60,7 @@ class Autoridad(Base, UniversalMixin):
     edictos: Mapped[List["Edicto"]] = relationship("Edicto", back_populates="autoridad")
     exh_exhortos: Mapped[List["ExhExhorto"]] = relationship("ExhExhorto", back_populates="autoridad")
     listas_de_acuerdos: Mapped[List["ListaDeAcuerdo"]] = relationship("ListaDeAcuerdo", back_populates="autoridad")
+    redam: Mapped[List["Redam"]] = relationship("Redam", back_populates="autoridad")
     sentencias: Mapped[List["Sentencia"]] = relationship("Sentencia", back_populates="autoridad")
     usuarios: Mapped[List["Usuario"]] = relationship("Usuario", back_populates="autoridad")
 
