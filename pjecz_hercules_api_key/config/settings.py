@@ -12,7 +12,7 @@ from pydantic_settings import BaseSettings
 def get_secret(secret_id: str, default: str = "") -> str:
     """Obtener el valor del secreto desde Google Cloud Secret Manager o desde las variables de entorno"""
     project_id = os.getenv("PROJECT_ID", "")
-    service_prefix = os.getenv("SERVICE_PREFIX", "pjecz_perseo")
+    service_prefix = os.getenv("SERVICE_PREFIX", "pjecz_plataforma_web_api_key")
 
     # Si PROJECT_ID está vacío estamos en modo de desarrollo
     if project_id == "":
