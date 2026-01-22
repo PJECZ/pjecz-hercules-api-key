@@ -25,14 +25,14 @@ oficinas = APIRouter(prefix="/api/v5/oficinas", tags=["oficinas"])
 async def paginado_oficinas(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
-    distrito_clave: str | None = None,
+    distrito_clave: str = "",
     domicilio_id: int | None = None,
 ):
     """Paginado de oficinas"""
     if current_user.permissions.get("OFICINAS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(Oficina)
-    if distrito_clave is not None:
+    if distrito_clave != "":
         try:
             distrito_clave = safe_clave(distrito_clave)
         except ValueError:

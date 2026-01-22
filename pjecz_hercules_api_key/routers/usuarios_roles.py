@@ -26,7 +26,7 @@ async def paginado_usuarios_roles(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
     rol_id: int | None = None,
-    usuario_email: str | None = None,
+    usuario_email: str = "",
 ):
     """Paginado de usuarios-roles"""
     if current_user.permissions.get("USUARIOS ROLES", 0) < Permiso.VER:
@@ -40,7 +40,7 @@ async def paginado_usuarios_roles(
         if rol.estatus != "A":
             return CustomPage(success=False, message="No está habilitado ese rol")
         consulta = consulta.join(Rol).filter(Rol.id == rol_id)
-    if usuario_email is not None:
+    if usuario_email != "":
         try:
             usuario_email = safe_email(usuario_email)
         except ValueError:

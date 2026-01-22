@@ -26,15 +26,15 @@ async def paginado_funcionarios_oficinas(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
     funcionario_id: int | None = None,
-    funcionario_curp: str | None = None,
+    funcionario_curp: str = "",
     oficina_id: int | None = None,
-    oficina_clave: str | None = None,
+    oficina_clave: str = "",
 ):
     """Paginado de funcionarios-oficinas"""
     if current_user.permissions.get("FUNCIONARIOS OFICINAS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(FuncionarioOficina)
-    if funcionario_id is not None or funcionario_curp is not None:
+    if funcionario_id is not None or funcionario_curp != "":
         consulta = consulta.join(Funcionario)
         if funcionario_id is not None:
             try:
@@ -43,7 +43,7 @@ async def paginado_funcionarios_oficinas(
                 return CustomPage(success=False, message="No existe ese funcionario")
             if funcionario.estatus != "A":
                 return CustomPage(success=False, message="No está habilitado ese funcionario")
-        elif funcionario_curp is not None:
+        elif funcionario_curp != "":
             try:
                 funcionario_curp = safe_curp(funcionario_curp)
             except ValueError:
@@ -55,7 +55,7 @@ async def paginado_funcionarios_oficinas(
             if funcionario.estatus != "A":
                 return CustomPage(success=False, message="No está habilitado ese funcionario")
         consulta = consulta.filter(Funcionario.id == funcionario_id)
-    if oficina_id is not None or oficina_clave is not None:
+    if oficina_id is not None or oficina_clave != "":
         consulta = consulta.join(Oficina)
         if oficina_id is not None:
             try:
@@ -64,7 +64,7 @@ async def paginado_funcionarios_oficinas(
                 return CustomPage(success=False, message="No existe esa oficina")
             if oficina.estatus != "A":
                 return CustomPage(success=False, message="No está habilitada esa oficina")
-        elif oficina_clave is not None:
+        elif oficina_clave != "":
             try:
                 oficina_clave = safe_clave(oficina_clave)
             except ValueError:

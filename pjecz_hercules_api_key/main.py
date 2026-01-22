@@ -22,6 +22,7 @@ from .routers.modulos import modulos
 from .routers.municipios import municipios
 from .routers.oficinas import oficinas
 from .routers.permisos import permisos
+from .routers.redams import redams
 from .routers.roles import roles
 from .routers.sentencias import sentencias
 from .routers.soportes_categorias import soportes_categorias
@@ -63,6 +64,7 @@ app.include_router(modulos)
 app.include_router(municipios)
 app.include_router(oficinas)
 app.include_router(permisos)
+app.include_router(redams)
 app.include_router(roles)
 app.include_router(sentencias)
 app.include_router(soportes_categorias)
