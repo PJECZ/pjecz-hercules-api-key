@@ -11,21 +11,9 @@ jobs:
     permissions:
       contents: "read"
       id-token: "write"
-
     steps:
       - name: "Check out the repository"
         uses: "actions/checkout@v3"
-
-      - name: "Setup Python 3.11"
-        uses: "actions/setup-python@v4"
-        with:
-          python-version: '3.11'
-
-      - name: "Create requirements.txt from pyproject.toml with Poetry"
-        run: |
-          pip install 'poetry>=2.0.1'
-          poetry self add poetry-plugin-export
-          poetry export -f requirements.txt --output requirements.txt --without-hashes
 
       - name: "Authenticate"
         uses: "google-github-actions/auth@v1"
