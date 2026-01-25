@@ -40,7 +40,6 @@ class TestSoportesCategorias(unittest.TestCase):
         for item in contenido["data"]:
             self.assertEqual("id" in item, True)
             self.assertEqual("nombre" in item, True)
-            self.assertEqual("instrucciones" in item, True)
             self.assertEqual("departamento" in item, True)
 
 

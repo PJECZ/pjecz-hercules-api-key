@@ -96,7 +96,7 @@ def safe_expediente(input_str):
     return limpio
 
 
-def safe_string(input_str, max_len=250):
+def safe_string(input_str, max_len=250) -> str:
     """Safe string"""
     if not isinstance(input_str, str):
         return ""
