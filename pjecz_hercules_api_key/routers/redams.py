@@ -11,7 +11,7 @@ from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from ..dependencies.authentications import UsuarioInDB, get_current_active_user
 from ..dependencies.database import Session, get_db
 from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_clave
+from ..dependencies.safe_string import safe_clave, safe_string
 from ..models.autoridades import Autoridad
 from ..models.distritos import Distrito
 from ..models.permisos import Permiso
@@ -27,6 +27,7 @@ async def paginado(
     database: Annotated[Session, Depends(get_db)],
     autoridad_clave: str = "",
     distrito_clave: str = "",
+    nombre: str = "",
 ):
     """Paginado de REDAMs"""
     if current_user.permissions.get("REDAMS", 0) < Permiso.VER:
@@ -65,4 +66,8 @@ async def paginado(
             autoridad_clave = safe_clave(autoridad_clave)
         except ValueError:
             return CustomPage(success=False, message="No es válida la clave de la autoridad")
+    if nombre != "":
+        nombre = safe_string(nombre)
+        if nombre != "":
+            consulta = consulta.filter(Redam.nombre.contains(nombre))
     return paginate(consulta.filter(Redam.estatus == "A").order_by(Redam.nombre))
