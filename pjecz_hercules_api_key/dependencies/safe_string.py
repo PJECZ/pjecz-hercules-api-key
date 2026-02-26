@@ -3,6 +3,7 @@ Safe string
 """
 
 import re
+import uuid
 from datetime import date
 
 from unidecode import unidecode
@@ -124,3 +125,11 @@ def safe_url(input_str):
     if re.match(URL_REGEXP, input_str) is None:
         return ""
     return input_str
+
+
+def safe_uuid(uuid_string: str) -> uuid.UUID:
+    """Safe UUID"""
+    try:
+        return uuid.UUID(uuid_string)
+    except ValueError:
+        raise ValueError(f"Invalid UUID: {uuid_string}")
