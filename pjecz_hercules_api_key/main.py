@@ -20,6 +20,9 @@ from .routers.materias import materias
 from .routers.materias_tipos_juicios import materias_tipos_juicios
 from .routers.modulos import modulos
 from .routers.municipios import municipios
+from .routers.ofi_documentos import ofi_documentos
+from .routers.ofi_documentos_adjuntos import ofi_documentos_adjuntos
+from .routers.ofi_documentos_destinatarios import ofi_documentos_destinatarios
 from .routers.oficinas import oficinas
 from .routers.permisos import permisos
 from .routers.redams import redams
@@ -62,6 +65,9 @@ app.include_router(materias)
 app.include_router(materias_tipos_juicios)
 app.include_router(modulos)
 app.include_router(municipios)
+app.include_router(ofi_documentos)
+app.include_router(ofi_documentos_adjuntos)
+app.include_router(ofi_documentos_destinatarios)
 app.include_router(oficinas)
 app.include_router(permisos)
 app.include_router(redams)
