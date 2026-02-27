@@ -57,6 +57,8 @@ class Autoridad(Base, UniversalMixin):
     directorio_sentencias: Mapped[str] = mapped_column(String(256))
 
     # Hijos
+    arc_documentos: Mapped[List["ArcDocumento"]] = relationship("ArcDocumento", back_populates="autoridad")
+    arc_remesas: Mapped[List["ArcRemesa"]] = relationship("ArcRemesa", back_populates="autoridad")
     edictos: Mapped[List["Edicto"]] = relationship("Edicto", back_populates="autoridad")
     exh_exhortos: Mapped[List["ExhExhorto"]] = relationship("ExhExhorto", back_populates="autoridad")
     listas_de_acuerdos: Mapped[List["ListaDeAcuerdo"]] = relationship("ListaDeAcuerdo", back_populates="autoridad")

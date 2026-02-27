@@ -26,7 +26,7 @@ async def detalle(
     ofi_documento_id: str,
 ):
     """Detalle de un documento a partir de su ID"""
-    if current_user.permissions.get("SENTENCIAS", 0) < Permiso.VER:
+    if current_user.permissions.get("OFI DOCUMENTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     try:
         ofi_documento_uuid = safe_uuid(ofi_documento_id)
@@ -56,7 +56,7 @@ async def paginado(
     usuario_email: str = "",
 ):
     """Paginado de documentos"""
-    if current_user.permissions.get("REDAMS", 0) < Permiso.VER:
+    if current_user.permissions.get("OFI DOCUMENTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(OfiDocumento)
     if anio is not None:
@@ -80,7 +80,7 @@ async def paginado(
     if usuario_email != "":
         try:
             usuario_email = safe_email(usuario_email, search_fragment=True)
-        except ValueError as error:
+        except ValueError:
             return CustomPage(success=False, message="El usuario_email no es válido")
         consulta = consulta.join(Usuario).filter(Usuario.email.contains(usuario_email))
     return paginate(consulta.filter(OfiDocumento.estatus == "A").order_by(OfiDocumento.creado.desc()))

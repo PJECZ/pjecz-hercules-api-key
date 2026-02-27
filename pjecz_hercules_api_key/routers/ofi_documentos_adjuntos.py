@@ -26,7 +26,7 @@ async def detalle(
     ofi_documento_adjunto_id: str,
 ):
     """Detalle de un adjunto a partir de su ID"""
-    if current_user.permissions.get("SENTENCIAS", 0) < Permiso.VER:
+    if current_user.permissions.get("OFI DOCUMENTOS ADJUNTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     try:
         ofi_documento_adjunto_uuid = safe_uuid(ofi_documento_adjunto_id)
@@ -52,7 +52,7 @@ async def paginado(
     ofi_documento_id: str = "",
 ):
     """Paginado de adjuntos"""
-    if current_user.permissions.get("REDAMS", 0) < Permiso.VER:
+    if current_user.permissions.get("OFI DOCUMENTOS ADJUNTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(OfiDocumentoAdjunto)
     if descripcion != "":

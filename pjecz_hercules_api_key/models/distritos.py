@@ -29,6 +29,7 @@ class Distrito(Base, UniversalMixin):
     es_jurisdiccional: Mapped[bool] = mapped_column(default=False)
 
     # Hijos
+    arc_juzgados_extintos: Mapped[List["ArcJuzgadoExtinto"]] = relationship("ArcJuzgadoExtinto", back_populates="distrito")
     autoridades: Mapped[List["Autoridad"]] = relationship("Autoridad", back_populates="distrito")
     domicilios: Mapped[List["Domicilio"]] = relationship("Domicilio", back_populates="distrito")
     oficinas: Mapped[List["Oficina"]] = relationship("Oficina", back_populates="distrito")
