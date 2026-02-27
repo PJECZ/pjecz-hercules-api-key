@@ -40,11 +40,12 @@ class Usuario(Base, UniversalMixin):
     contrasena: Mapped[Optional[str]] = mapped_column(String(256))
 
     # Hijos
-    soportes_tickets: Mapped[List["SoporteTicket"]] = relationship(back_populates="usuario")
+    arc_remesas: Mapped[List["ArcRemesa"]] = relationship("ArcRemesa", back_populates="usuario_asignado")
     ofi_documentos: Mapped[List["OfiDocumento"]] = relationship("OfiDocumento", back_populates="usuario")
     ofi_documentos_destinatarios: Mapped[List["OfiDocumentoDestinatario"]] = relationship(
         "OfiDocumentoDestinatario", back_populates="usuario"
     )
+    soportes_tickets: Mapped[List["SoporteTicket"]] = relationship(back_populates="usuario")
     usuarios_roles: Mapped[List["UsuarioRol"]] = relationship("UsuarioRol", back_populates="usuario")
 
     # Propiedades
