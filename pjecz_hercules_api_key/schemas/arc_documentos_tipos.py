@@ -18,4 +18,4 @@ class OneArcDocumentoTipoOut(BaseModel):
 
     success: bool
     message: str
-    data: ArDocumentoTipoOut | None = None
+    data: ArcDocumentoTipoOut | None = None

@@ -22,4 +22,4 @@ class OneArcRemesaDocumentoOut(BaseModel):
 
     success: bool
     message: str
-    data: ArRemesaDocumentoOut | None = None
+    data: ArcRemesaDocumentoOut | None = None
