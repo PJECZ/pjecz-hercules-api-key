@@ -3,6 +3,7 @@ Oficios Documentos, esquemas
 """
 
 import uuid
+from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
@@ -11,6 +12,7 @@ class OfiDocumentoOut(BaseModel):
     """Esquema para entregar documentos"""
 
     id: uuid.UUID
+    creado: datetime
     usuario_email: str
     usuario_nombre: str
     usuario_autoridad_clave: str
@@ -24,6 +26,7 @@ class OfiDocumentoOut(BaseModel):
     contenido_html: str | None
     contenido_md: str | None
     firma_simple: str
+    firma_simple_tiempo: datetime | None
     model_config = ConfigDict(from_attributes=True)
 
 

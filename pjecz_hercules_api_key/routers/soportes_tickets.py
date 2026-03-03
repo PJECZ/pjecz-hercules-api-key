@@ -7,6 +7,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
+from sqlalchemy import Date
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
 from ..dependencies.authentications import UsuarioInDB, get_current_active_user
@@ -45,11 +46,11 @@ async def paginado_soportes_tickets(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(SoporteTicket)
     if creado is not None:
-        consulta = consulta.filter(SoporteTicket.creado.cast(date) == creado)
+        consulta = consulta.filter(SoporteTicket.creado.cast(Date) == creado)
     if creado_desde is not None:
-        consulta = consulta.filter(SoporteTicket.creado.cast(date) >= creado_desde)
+        consulta = consulta.filter(SoporteTicket.creado.cast(Date) >= creado_desde)
     if creado_hasta is not None:
-        consulta = consulta.filter(SoporteTicket.creado.cast(date) <= creado_hasta)
+        consulta = consulta.filter(SoporteTicket.creado.cast(Date) <= creado_hasta)
     if estado != "":
         estado = safe_string(estado)
         if estado not in SoporteTicket.ESTADOS:
@@ -77,11 +78,11 @@ async def paginado_soportes_tickets(
                 return CustomPage(success=False, message="No está habilitado ese funcionario")
         consulta = consulta.filter(Funcionario.id == funcionario_id)
     if modificado is not None:
-        consulta = consulta.filter(SoporteTicket.modificado.cast(date) == modificado)
+        consulta = consulta.filter(SoporteTicket.modificado.cast(Date) == modificado)
     if modificado_desde is not None:
-        consulta = consulta.filter(SoporteTicket.modificado.cast(date) >= modificado_desde)
+        consulta = consulta.filter(SoporteTicket.modificado.cast(Date) >= modificado_desde)
     if modificado_hasta is not None:
-        consulta = consulta.filter(SoporteTicket.modificado.cast(date) <= modificado_hasta)
+        consulta = consulta.filter(SoporteTicket.modificado.cast(Date) <= modificado_hasta)
     if soporte_categoria_id is not None or soporte_categoria_nombre != "":
         consulta = consulta.join(SoporteCategoria)
         if soporte_categoria_id is not None:

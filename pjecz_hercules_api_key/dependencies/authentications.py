@@ -31,6 +31,7 @@ def get_user(
     if usuario:
         return UsuarioInDB(
             id=usuario.id,
+            autoridad_id=usuario.autoridad_id,
             email=usuario.email,
             nombres=usuario.nombres,
             apellido_paterno=usuario.apellido_paterno,
@@ -38,10 +39,10 @@ def get_user(
             puesto=usuario.puesto,
             username=usuario.email,
             permissions=usuario.permissions,
-            hashed_password=usuario.contrasena,
+            hashed_password=usuario.contrasena if usuario.contrasena else "",
             disabled=usuario.estatus != "A",
-            api_key=usuario.api_key,
-            api_key_expiracion=usuario.api_key_expiracion,
+            api_key=usuario.api_key if usuario.api_key else "",
+            api_key_expiracion=usuario.api_key_expiracion if usuario.api_key_expiracion else datetime.min,
         )
     return None
 

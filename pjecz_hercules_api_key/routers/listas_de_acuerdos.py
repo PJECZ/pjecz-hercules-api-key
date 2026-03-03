@@ -11,6 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from fastapi_pagination.ext.sqlalchemy import paginate
 from google.cloud import storage
+from sqlalchemy import Date
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
 from ..config.settings import Settings, get_settings
@@ -141,11 +142,11 @@ async def paginado(
             return CustomPage(success=False, message="No está habilitada esa autoridad")
         consulta = consulta.join(Autoridad).filter(Autoridad.clave == autoridad_clave)
     if creado is not None:
-        consulta = consulta.filter(ListaDeAcuerdo.creado.cast(date) == creado)
+        consulta = consulta.filter(ListaDeAcuerdo.creado.cast(Date) == creado)
     if creado_desde is not None:
-        consulta = consulta.filter(ListaDeAcuerdo.creado.cast(date) >= creado_desde)
+        consulta = consulta.filter(ListaDeAcuerdo.creado.cast(Date) >= creado_desde)
     if creado_hasta is not None:
-        consulta = consulta.filter(ListaDeAcuerdo.creado.cast(date) <= creado_hasta)
+        consulta = consulta.filter(ListaDeAcuerdo.creado.cast(Date) <= creado_hasta)
     if fecha is not None:
         consulta = consulta.filter(ListaDeAcuerdo.fecha == fecha)
     else:
