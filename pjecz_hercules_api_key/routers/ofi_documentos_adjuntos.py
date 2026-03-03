@@ -14,34 +14,9 @@ from ..dependencies.safe_string import safe_string, safe_uuid
 from ..models.ofi_documentos import OfiDocumento
 from ..models.ofi_documentos_adjuntos import OfiDocumentoAdjunto
 from ..models.permisos import Permiso
-from ..schemas.ofi_documentos_adjuntos import OfiDocumentoAdjuntoOut, OneOfiDocumentoAdjuntoOut
+from ..schemas.ofi_documentos_adjuntos import OfiDocumentoAdjuntoOut
 
 ofi_documentos_adjuntos = APIRouter(prefix="/api/v5/ofi_documentos_adjuntos", tags=["oficios"])
-
-
-@ofi_documentos_adjuntos.get("/{ofi_documento_adjunto_id}", response_model=OneOfiDocumentoAdjuntoOut)
-async def detalle(
-    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
-    database: Annotated[Session, Depends(get_db)],
-    ofi_documento_adjunto_id: str,
-):
-    """Detalle de un adjunto a partir de su ID"""
-    if current_user.permissions.get("OFI DOCUMENTOS ADJUNTOS", 0) < Permiso.VER:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
-    try:
-        ofi_documento_adjunto_uuid = safe_uuid(ofi_documento_adjunto_id)
-    except ValueError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No es válida la UUID")
-    ofi_documento_adjunto = database.query(OfiDocumentoAdjunto).get(ofi_documento_adjunto_uuid)
-    if not ofi_documento_adjunto:
-        return OneOfiDocumentoAdjuntoOut(success=False, message="No existe ese adjunto")
-    if ofi_documento_adjunto.estatus != "A":
-        return OneOfiDocumentoAdjuntoOut(success=False, message="No está habilitado ese adjunto")
-    return OneOfiDocumentoAdjuntoOut(
-        success=True,
-        message="Detalle de un adjunto",
-        data=OfiDocumentoAdjuntoOut.model_validate(ofi_documento_adjunto),
-    )
 
 
 @ofi_documentos_adjuntos.get("", response_model=CustomPage[OfiDocumentoAdjuntoOut])

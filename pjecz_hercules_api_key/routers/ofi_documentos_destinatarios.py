@@ -15,34 +15,9 @@ from ..models.ofi_documentos import OfiDocumento
 from ..models.ofi_documentos_destinatarios import OfiDocumentoDestinatario
 from ..models.permisos import Permiso
 from ..models.usuarios import Usuario
-from ..schemas.ofi_documentos_destinatarios import OfiDocumentoDestinatarioOut, OneOfiDocumentoDestinatarioOut
+from ..schemas.ofi_documentos_destinatarios import OfiDocumentoDestinatarioOut
 
 ofi_documentos_destinatarios = APIRouter(prefix="/api/v5/ofi_documentos_destinatarios", tags=["oficios"])
-
-
-@ofi_documentos_destinatarios.get("/{ofi_documento_destinatario_id}", response_model=OneOfiDocumentoDestinatarioOut)
-async def detalle(
-    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
-    database: Annotated[Session, Depends(get_db)],
-    ofi_documento_destinatario_id: str,
-):
-    """Detalle de un destinatario a partir de su ID"""
-    if current_user.permissions.get("OFI DOCUMENTOS DESTINATARIOS", 0) < Permiso.VER:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
-    try:
-        ofi_documento_destinatario_uuid = safe_uuid(ofi_documento_destinatario_id)
-    except ValueError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No es válida la UUID")
-    ofi_documento_destinatario = database.query(OfiDocumentoDestinatario).get(ofi_documento_destinatario_uuid)
-    if not ofi_documento_destinatario:
-        return OneOfiDocumentoDestinatarioOut(success=False, message="No existe ese destinatario")
-    if ofi_documento_destinatario.estatus != "A":
-        return OneOfiDocumentoDestinatarioOut(success=False, message="No está habilitado ese destinatario")
-    return OneOfiDocumentoDestinatarioOut(
-        success=True,
-        message="Detalle de un destinatario",
-        data=OfiDocumentoDestinatarioOut.model_validate(ofi_documento_destinatario),
-    )
 
 
 @ofi_documentos_destinatarios.get("", response_model=CustomPage[OfiDocumentoDestinatarioOut])

@@ -10,6 +10,8 @@ from pydantic import BaseModel, ConfigDict
 class UsuarioOut(BaseModel):
     """Esquema para entregar usuarios"""
 
+    id: int
+    autoridad_id: int
     email: str
     nombres: str
     apellido_paterno: str

@@ -7,6 +7,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
+from sqlalchemy import Date
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
 from ..dependencies.authentications import UsuarioInDB, get_current_active_user
@@ -69,11 +70,11 @@ async def paginado(
             return CustomPage(success=False, message="No está habilitada esa autoridad")
         consulta = consulta.join(Autoridad).filter(Autoridad.clave == autoridad_clave)
     if creado is not None:
-        consulta = consulta.filter(Sentencia.creado.cast(date) == creado)
+        consulta = consulta.filter(Sentencia.creado.cast(Date) == creado)
     if creado_desde is not None:
-        consulta = consulta.filter(Sentencia.creado.cast(date) >= creado_desde)
+        consulta = consulta.filter(Sentencia.creado.cast(Date) >= creado_desde)
     if creado_hasta is not None:
-        consulta = consulta.filter(Sentencia.creado.cast(date) <= creado_hasta)
+        consulta = consulta.filter(Sentencia.creado.cast(Date) <= creado_hasta)
     if fecha is not None:
         consulta = consulta.filter(Sentencia.fecha == fecha)
     else:
