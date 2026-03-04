@@ -18,13 +18,15 @@ from ..config.settings import Settings, get_settings
 from ..dependencies.authentications import UsuarioInDB, get_current_active_user
 from ..dependencies.database import Session, get_db
 from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_clave
+from ..dependencies.safe_string import safe_clave, safe_string
 from ..models.autoridades import Autoridad
+from ..models.bitacoras_apis import BitacoraAPI
 from ..models.listas_de_acuerdos import ListaDeAcuerdo
 from ..models.permisos import Permiso
 from ..schemas.listas_de_acuerdos import ListaDeAcuerdoOut, ListaDeAcuerdoRAGOut, OneListaDeAcuerdoOut
 
-listas_de_acuerdos = APIRouter(prefix="/api/v5/listas_de_acuerdos", tags=["listas de acuerdos"])
+PREFIX = "/api/v5/listas_de_acuerdos"
+listas_de_acuerdos = APIRouter(prefix=PREFIX, tags=["listas de acuerdos"])
 
 
 @listas_de_acuerdos.get("/visualizar/{lista_de_acuerdo_id}")
@@ -98,6 +100,7 @@ async def visualizar(
 async def detalle(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_settings)],
     lista_de_acuerdo_id: int,
 ):
     """Detalle de una lista de acuerdos a partir de su ID"""
@@ -117,6 +120,7 @@ async def detalle(
 async def paginado(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_settings)],
     autoridad_clave: str = "",
     creado: date | None = None,
     creado_desde: date | None = None,
@@ -128,6 +132,7 @@ async def paginado(
     """Paginado de listas_de_acuerdos"""
     if current_user.permissions.get("LISTAS DE ACUERDOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    respuestas_mensajes = []
     consulta = database.query(ListaDeAcuerdo)
     if autoridad_clave != "":
         try:
@@ -141,17 +146,35 @@ async def paginado(
         if autoridad.estatus != "A":
             return CustomPage(success=False, message="No está habilitada esa autoridad")
         consulta = consulta.join(Autoridad).filter(Autoridad.clave == autoridad_clave)
+        respuestas_mensajes.append(f"Autoridad: {autoridad_clave}")
     if creado is not None:
         consulta = consulta.filter(ListaDeAcuerdo.creado.cast(Date) == creado)
+        respuestas_mensajes.append(f"Creado: {creado}")
     if creado_desde is not None:
         consulta = consulta.filter(ListaDeAcuerdo.creado.cast(Date) >= creado_desde)
+        respuestas_mensajes.append(f"Creado desde: {creado_desde}")
     if creado_hasta is not None:
         consulta = consulta.filter(ListaDeAcuerdo.creado.cast(Date) <= creado_hasta)
+        respuestas_mensajes.append(f"Creado hasta: {creado_hasta}")
     if fecha is not None:
         consulta = consulta.filter(ListaDeAcuerdo.fecha == fecha)
+        respuestas_mensajes.append(f"Fecha: {fecha}")
     else:
         if fecha_desde is not None:
             consulta = consulta.filter(ListaDeAcuerdo.fecha >= fecha_desde)
+            respuestas_mensajes.append(f"Fecha desde: {fecha_desde}")
         if fecha_hasta is not None:
             consulta = consulta.filter(ListaDeAcuerdo.fecha <= fecha_hasta)
-    return paginate(consulta.filter(ListaDeAcuerdo.estatus == "A").order_by(ListaDeAcuerdo.id.desc()))
+            respuestas_mensajes.append(f"Fecha hasta: {fecha_hasta}")
+    consulta = consulta.filter(ListaDeAcuerdo.estatus == "A")
+    bitacora_api = BitacoraAPI(
+        usuario_id=current_user.id,
+        api_nombre=settings.API_NOMBRE,
+        api_ruta=PREFIX,
+        peticion="GET",
+        respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
+        respuesta_datos={"total": consulta.count()},
+    )
+    database.add(bitacora_api)
+    database.commit()
+    return paginate(consulta.order_by(ListaDeAcuerdo.id.desc()))

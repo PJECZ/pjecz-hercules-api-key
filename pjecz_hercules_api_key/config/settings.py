@@ -43,6 +43,7 @@ def get_secret(secret_id: str, default: str = "") -> str:
 class Settings(BaseSettings):
     """Settings"""
 
+    API_NOMBRE: str = get_secret("api_nombre", "pjecz_hercules_api_key")
     DB_HOST: str = get_secret("db_host")
     DB_PORT: int = int(get_secret("db_port"))
     DB_NAME: str = get_secret("db_name")
