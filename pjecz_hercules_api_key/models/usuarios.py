@@ -41,6 +41,7 @@ class Usuario(Base, UniversalMixin):
 
     # Hijos
     arc_remesas: Mapped[List["ArcRemesa"]] = relationship("ArcRemesa", back_populates="usuario_asignado")
+    bitacoras_apis: Mapped[List["BitacoraAPI"]] = relationship("BitacoraAPI", back_populates="usuario")
     ofi_documentos: Mapped[List["OfiDocumento"]] = relationship("OfiDocumento", back_populates="usuario")
     ofi_documentos_destinatarios: Mapped[List["OfiDocumentoDestinatario"]] = relationship(
         "OfiDocumentoDestinatario", back_populates="usuario"

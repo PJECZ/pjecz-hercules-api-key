@@ -20,11 +20,13 @@ from ..dependencies.database import Session, get_db
 from ..dependencies.fastapi_pagination_custom_page import CustomPage
 from ..dependencies.safe_string import safe_clave
 from ..models.autoridades import Autoridad
+from ..models.bitacoras_apis import BitacoraAPI
 from ..models.listas_de_acuerdos import ListaDeAcuerdo
 from ..models.permisos import Permiso
 from ..schemas.listas_de_acuerdos import ListaDeAcuerdoOut, ListaDeAcuerdoRAGOut, OneListaDeAcuerdoOut
 
-listas_de_acuerdos = APIRouter(prefix="/api/v5/listas_de_acuerdos", tags=["listas de acuerdos"])
+PREFIX = "/api/v5/listas_de_acuerdos"
+listas_de_acuerdos = APIRouter(prefix=PREFIX, tags=["listas de acuerdos"])
 
 
 @listas_de_acuerdos.get("/visualizar/{lista_de_acuerdo_id}")
@@ -98,6 +100,7 @@ async def visualizar(
 async def detalle(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_settings)],
     lista_de_acuerdo_id: int,
 ):
     """Detalle de una lista de acuerdos a partir de su ID"""
@@ -117,6 +120,7 @@ async def detalle(
 async def paginado(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_settings)],
     autoridad_clave: str = "",
     creado: date | None = None,
     creado_desde: date | None = None,
@@ -154,4 +158,12 @@ async def paginado(
             consulta = consulta.filter(ListaDeAcuerdo.fecha >= fecha_desde)
         if fecha_hasta is not None:
             consulta = consulta.filter(ListaDeAcuerdo.fecha <= fecha_hasta)
+    bitacora_api = BitacoraAPI(
+        usuario_id=current_user.id,
+        api_nombre=settings.API_NOMBRE,
+        api_ruta=PREFIX,
+        peticion="GET",
+    )
+    database.add(bitacora_api)
+    database.commit()
     return paginate(consulta.filter(ListaDeAcuerdo.estatus == "A").order_by(ListaDeAcuerdo.id.desc()))

@@ -10,17 +10,20 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import Date
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
+from ..config.settings import Settings, get_settings
 from ..dependencies.authentications import UsuarioInDB, get_current_active_user
 from ..dependencies.database import Session, get_db
 from ..dependencies.fastapi_pagination_custom_page import CustomPage
 from ..dependencies.safe_string import safe_clave
 from ..models.autoridades import Autoridad
+from ..models.bitacoras_apis import BitacoraAPI
 from ..models.materias_tipos_juicios import MateriaTipoJuicio
 from ..models.permisos import Permiso
 from ..models.sentencias import Sentencia
 from ..schemas.sentencias import OneSentenciaOut, SentenciaOut, SentenciaRAGOut
 
-sentencias = APIRouter(prefix="/api/v5/sentencias", tags=["sentencias"])
+PREFIX = "/api/v5/sentencias"
+sentencias = APIRouter(prefix=PREFIX, tags=["sentencias"])
 
 
 @sentencias.get("/{sentencia_id}", response_model=OneSentenciaOut)
@@ -44,6 +47,7 @@ async def detalle(
 async def paginado(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     database: Annotated[Session, Depends(get_db)],
+    settings: Annotated[Settings, Depends(get_settings)],
     autoridad_clave: str = "",
     creado: date | None = None,
     creado_desde: date | None = None,
@@ -94,4 +98,12 @@ async def paginado(
             .filter(MateriaTipoJuicio.id == materia_tipo_juicio_id)
             .filter(MateriaTipoJuicio.estatus == "A")
         )
+    bitacora_api = BitacoraAPI(
+        usuario_id=current_user.id,
+        api_nombre=settings.API_NOMBRE,
+        api_ruta=PREFIX,
+        peticion="GET",
+    )
+    database.add(bitacora_api)
+    database.commit()
     return paginate(consulta.filter(Sentencia.estatus == "A").order_by(Sentencia.id.desc()))

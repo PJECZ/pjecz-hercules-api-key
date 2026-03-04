@@ -13,6 +13,7 @@ from .routers.arc_juzgados_extintos import arc_juzgados_extintos
 from .routers.arc_remesas import arc_remesas
 from .routers.arc_remesas_documentos import arc_remesas_documentos
 from .routers.autoridades import autoridades
+from .routers.bitacoras_apis import bitacoras_apis
 from .routers.distritos import distritos
 from .routers.domicilios import domicilios
 from .routers.edictos import edictos
@@ -63,6 +64,7 @@ app.include_router(arc_juzgados_extintos)
 app.include_router(arc_remesas)
 app.include_router(arc_remesas_documentos)
 app.include_router(autoridades)
+app.include_router(bitacoras_apis)
 app.include_router(distritos)
 app.include_router(domicilios)
 app.include_router(edictos)
