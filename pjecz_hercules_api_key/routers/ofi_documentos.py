@@ -43,37 +43,47 @@ async def mi_autoridad(
     """Paginado de mi autoridad"""
     if current_user.permissions.get("OFI DOCUMENTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    respuestas_mensajes = []
     consulta = database.query(OfiDocumento)
     if anio is not None:
         consulta = consulta.filter(OfiDocumento.folio_anio == anio)
+        respuestas_mensajes.append(f"Año: {anio}")
     if creado is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) == creado)
+        respuestas_mensajes.append(f"Creado: {creado}")
     if creado_desde is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) >= creado_desde)
+        respuestas_mensajes.append(f"Creado desde: {creado_desde}")
     if creado_hasta is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) <= creado_hasta)
+        respuestas_mensajes.append(f"Creado hasta: {creado_hasta}")
     if descripcion != "":
         descripcion = safe_string(descripcion)
         if descripcion != "":
             consulta = consulta.filter(OfiDocumento.descripcion.contains(descripcion))
+            respuestas_mensajes.append(f"Descripción: {descripcion}")
     if estado != "":
         estado = safe_string(estado)
         if estado in OfiDocumento.ESTADOS:
             consulta = consulta.filter(OfiDocumento.estado == estado)
+            respuestas_mensajes.append(f"Estado: {estado}")
         else:
             return CustomPage(success=False, message="No es válido el estado")
     if folio != "":
         folio = safe_string(folio)
         if folio != "":
             consulta = consulta.filter(OfiDocumento.folio.contains(folio))
+            respuestas_mensajes.append(f"Folio: {folio}")
     if numero is not None:
         consulta = consulta.filter(OfiDocumento.folio_num == numero)
+        respuestas_mensajes.append(f"Folio número: {numero}")
     consulta = consulta.join(Usuario).join(Autoridad).filter(Autoridad.id == current_user.autoridad_id)
     bitacora_api = BitacoraAPI(
         usuario_id=current_user.id,
         api_nombre=settings.API_NOMBRE,
         api_ruta=f"{PREFIX}/mi_autoridad",
         peticion="GET",
+        respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
     )
     database.add(bitacora_api)
     database.commit()
@@ -97,31 +107,40 @@ async def mi_bandeja_de_entrada(
     """Paginado de mi bandeja de entrada, es decir, aquellos en los que el usuario es destinatario"""
     if current_user.permissions.get("OFI DOCUMENTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    respuestas_mensajes = []
     consulta = database.query(OfiDocumento)
     if anio is not None:
         consulta = consulta.filter(OfiDocumento.folio_anio == anio)
+        respuestas_mensajes.append(f"Año: {anio}")
     if creado is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) == creado)
+        respuestas_mensajes.append(f"Creado: {creado}")
     if creado_desde is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) >= creado_desde)
+        respuestas_mensajes.append(f"Creado desde: {creado_desde}")
     if creado_hasta is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) <= creado_hasta)
+        respuestas_mensajes.append(f"Creado hasta: {creado_hasta}")
     if descripcion != "":
         descripcion = safe_string(descripcion)
         if descripcion != "":
             consulta = consulta.filter(OfiDocumento.descripcion.contains(descripcion))
+            respuestas_mensajes.append(f"Descripción: {descripcion}")
     if estado != "":
         estado = safe_string(estado)
         if estado in OfiDocumento.ESTADOS:
             consulta = consulta.filter(OfiDocumento.estado == estado)
+            respuestas_mensajes.append(f"Estado: {estado}")
         else:
             return CustomPage(success=False, message="No es válido el estado")
     if folio != "":
         folio = safe_string(folio)
         if folio != "":
             consulta = consulta.filter(OfiDocumento.folio.contains(folio))
+            respuestas_mensajes.append(f"Folio: {folio}")
     if numero is not None:
         consulta = consulta.filter(OfiDocumento.folio_num == numero)
+        respuestas_mensajes.append(f"Folio número: {numero}")
     consulta = consulta.join(OfiDocumentoDestinatario)
     consulta = consulta.filter(OfiDocumentoDestinatario.usuario_id == current_user.id)
     consulta = consulta.filter(OfiDocumentoDestinatario.estatus == "A")
@@ -153,37 +172,47 @@ async def mis_oficios(
     """Paginado de mis oficios"""
     if current_user.permissions.get("OFI DOCUMENTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    respuestas_mensajes = []
     consulta = database.query(OfiDocumento)
     if anio is not None:
         consulta = consulta.filter(OfiDocumento.folio_anio == anio)
+        respuestas_mensajes.append(f"Año: {anio}")
     if creado is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) == creado)
+        respuestas_mensajes.append(f"Creado: {creado}")
     if creado_desde is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) >= creado_desde)
+        respuestas_mensajes.append(f"Creado desde: {creado_desde}")
     if creado_hasta is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) <= creado_hasta)
+        respuestas_mensajes.append(f"Creado hasta: {creado_hasta}")
     if descripcion != "":
         descripcion = safe_string(descripcion)
         if descripcion != "":
             consulta = consulta.filter(OfiDocumento.descripcion.contains(descripcion))
+            respuestas_mensajes.append(f"Descripción: {descripcion}")
     if estado != "":
         estado = safe_string(estado)
         if estado in OfiDocumento.ESTADOS:
             consulta = consulta.filter(OfiDocumento.estado == estado)
+            respuestas_mensajes.append(f"Estado: {estado}")
         else:
             return CustomPage(success=False, message="No es válido el estado")
     if folio != "":
         folio = safe_string(folio)
         if folio != "":
             consulta = consulta.filter(OfiDocumento.folio.contains(folio))
+            respuestas_mensajes.append(f"Folio: {folio}")
     if numero is not None:
         consulta = consulta.filter(OfiDocumento.folio_num == numero)
+        respuestas_mensajes.append(f"Folio número: {numero}")
     consulta = consulta.filter(OfiDocumento.usuario_id == current_user.id)
     bitacora_api = BitacoraAPI(
         usuario_id=current_user.id,
         api_nombre=settings.API_NOMBRE,
         api_ruta=f"{PREFIX}/mis_oficios",
         peticion="GET",
+        respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
     )
     database.add(bitacora_api)
     database.commit()
@@ -209,6 +238,7 @@ async def paginado(
     """Paginado de todos los oficios"""
     if current_user.permissions.get("OFI DOCUMENTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    respuestas_mensajes = []
     consulta = database.query(OfiDocumento)
     if anio is not None:
         consulta = consulta.filter(OfiDocumento.folio_anio == anio)
@@ -216,39 +246,49 @@ async def paginado(
         autoridad_clave = safe_clave(autoridad_clave)
         if autoridad_clave != "":
             consulta = consulta.join(Usuario).join(Autoridad).filter(Autoridad.clave.contains(autoridad_clave))
+            respuestas_mensajes.append(f"Autoridad: {autoridad_clave}")
     if creado is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) == creado)
+        respuestas_mensajes.append(f"Creado: {creado}")
     if creado_desde is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) >= creado_desde)
+        respuestas_mensajes.append(f"Creado desde: {creado_desde}")
     if creado_hasta is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) <= creado_hasta)
+        respuestas_mensajes.append(f"Creado hasta: {creado_hasta}")
     if descripcion != "":
         descripcion = safe_string(descripcion)
         if descripcion != "":
             consulta = consulta.filter(OfiDocumento.descripcion.contains(descripcion))
+            respuestas_mensajes.append(f"Descripción: {descripcion}")
     if estado != "":
         estado = safe_string(estado)
         if estado in OfiDocumento.ESTADOS:
             consulta = consulta.filter(OfiDocumento.estado == estado)
+            respuestas_mensajes.append(f"Estado: {estado}")
         else:
             return CustomPage(success=False, message="No es válido el estado")
     if folio != "":
         folio = safe_string(folio)
         if folio != "":
             consulta = consulta.filter(OfiDocumento.folio.contains(folio))
+            respuestas_mensajes.append(f"Folio: {folio}")
     if numero is not None:
         consulta = consulta.filter(OfiDocumento.folio_num == numero)
+        respuestas_mensajes.append(f"Folio número: {numero}")
     if usuario_email != "":
         try:
             usuario_email = safe_email(usuario_email, search_fragment=True)
         except ValueError:
             return CustomPage(success=False, message="El usuario_email no es válido")
         consulta = consulta.join(Usuario).filter(Usuario.email.contains(usuario_email))
+        respuestas_mensajes.append(f"Usuario email: {usuario_email}")
     bitacora_api = BitacoraAPI(
         usuario_id=current_user.id,
         api_nombre=settings.API_NOMBRE,
         api_ruta=PREFIX,
         peticion="GET",
+        respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
     )
     database.add(bitacora_api)
     database.commit()

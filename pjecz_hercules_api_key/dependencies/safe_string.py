@@ -97,13 +97,31 @@ def safe_expediente(input_str):
     return limpio
 
 
-def safe_string(input_str, max_len=250) -> str:
+def safe_string(input_str, do_unidecode=True, max_len=250, save_enie=False, to_uppercase=True) -> str:
     """Safe string"""
     if not isinstance(input_str, str):
         return ""
-    new_string = re.sub(r"[^a-zA-Z0-9,/-]+", " ", unidecode(input_str))
+    if do_unidecode:
+        if save_enie:
+            new_string = ""
+            for char in input_str:
+                if char == "ñ":
+                    new_string += "ñ"
+                elif char == "Ñ":
+                    new_string += "Ñ"
+                else:
+                    new_string += unidecode(char)
+        else:
+            new_string = re.sub(r"[^a-zA-Z0-9:.,/-]+", " ", unidecode(input_str))
+    else:
+        if save_enie is False:
+            new_string = re.sub(r"[^a-záéíóúüA-ZÁÉÍÓÚÜ0-9:.,/-]+", " ", input_str)
+        else:
+            new_string = re.sub(r"[^a-záéíóúüñA-ZÁÉÍÓÚÜÑ0-9:.,/-]+", " ", input_str)
     removed_multiple_spaces = re.sub(r"\s+", " ", new_string)
-    final = removed_multiple_spaces.strip().upper()
+    final = removed_multiple_spaces.strip()
+    if to_uppercase:
+        final = final.upper()
     return (final[:max_len] + "...") if len(final) > max_len else final
 
 
