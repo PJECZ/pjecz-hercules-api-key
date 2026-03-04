@@ -107,13 +107,15 @@ async def paginado(
             .filter(MateriaTipoJuicio.estatus == "A")
         )
         respuestas_mensajes.append(f"Tipo de juicio: {materia_tipo_juicio_id}")
+    consulta = consulta.filter(Sentencia.estatus == "A")
     bitacora_api = BitacoraAPI(
         usuario_id=current_user.id,
         api_nombre=settings.API_NOMBRE,
         api_ruta=PREFIX,
         peticion="GET",
         respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
+        respuesta_datos={"total": consulta.count()},
     )
     database.add(bitacora_api)
     database.commit()
-    return paginate(consulta.filter(Sentencia.estatus == "A").order_by(Sentencia.id.desc()))
+    return paginate(consulta.order_by(Sentencia.id.desc()))

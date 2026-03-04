@@ -75,6 +75,7 @@ async def paginado(
         api_ruta=PREFIX,
         peticion="GET",
         respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
+        respuesta_datos={"total": consulta.count()},
     )
     database.add(bitacora_api)
     database.commit()

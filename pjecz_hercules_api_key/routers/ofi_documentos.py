@@ -39,12 +39,13 @@ async def mi_autoridad(
     estado: str = "",
     folio: str = "",
     numero: int | None = None,
+    usuario_email: str = "",
 ):
     """Paginado de mi autoridad"""
     if current_user.permissions.get("OFI DOCUMENTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     respuestas_mensajes = []
-    consulta = database.query(OfiDocumento)
+    consulta = database.query(OfiDocumento).join(Usuario).join(Autoridad)
     if anio is not None:
         consulta = consulta.filter(OfiDocumento.folio_anio == anio)
         respuestas_mensajes.append(f"Año: {anio}")
@@ -77,17 +78,26 @@ async def mi_autoridad(
     if numero is not None:
         consulta = consulta.filter(OfiDocumento.folio_num == numero)
         respuestas_mensajes.append(f"Folio número: {numero}")
-    consulta = consulta.join(Usuario).join(Autoridad).filter(Autoridad.id == current_user.autoridad_id)
+    if usuario_email != "":
+        try:
+            usuario_email = safe_email(usuario_email, search_fragment=True)
+        except ValueError:
+            return CustomPage(success=False, message="El usuario_email no es válido")
+        consulta = consulta.filter(Usuario.email.contains(usuario_email))
+        respuestas_mensajes.append(f"Usuario email: {usuario_email}")
+    consulta = consulta.filter(Autoridad.id == current_user.autoridad_id)
+    consulta = consulta.filter(OfiDocumento.estatus == "A")
     bitacora_api = BitacoraAPI(
         usuario_id=current_user.id,
         api_nombre=settings.API_NOMBRE,
         api_ruta=f"{PREFIX}/mi_autoridad",
         peticion="GET",
         respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
+        respuesta_datos={"total": consulta.count()},
     )
     database.add(bitacora_api)
     database.commit()
-    return paginate(consulta.filter(OfiDocumento.estatus == "A").order_by(OfiDocumento.creado.desc()))
+    return paginate(consulta.order_by(OfiDocumento.creado.desc()))
 
 
 @ofi_documentos.get("/mi_bandeja_de_entrada", response_model=CustomPage[OfiDocumentoOut])
@@ -103,12 +113,13 @@ async def mi_bandeja_de_entrada(
     estado: str = "",
     folio: str = "",
     numero: int | None = None,
+    usuario_email: str = "",
 ):
     """Paginado de mi bandeja de entrada, es decir, aquellos en los que el usuario es destinatario"""
     if current_user.permissions.get("OFI DOCUMENTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     respuestas_mensajes = []
-    consulta = database.query(OfiDocumento)
+    consulta = database.query(OfiDocumento).join(OfiDocumentoDestinatario)
     if anio is not None:
         consulta = consulta.filter(OfiDocumento.folio_anio == anio)
         respuestas_mensajes.append(f"Año: {anio}")
@@ -141,18 +152,27 @@ async def mi_bandeja_de_entrada(
     if numero is not None:
         consulta = consulta.filter(OfiDocumento.folio_num == numero)
         respuestas_mensajes.append(f"Folio número: {numero}")
-    consulta = consulta.join(OfiDocumentoDestinatario)
+    if usuario_email != "":
+        try:
+            usuario_email = safe_email(usuario_email, search_fragment=True)
+        except ValueError:
+            return CustomPage(success=False, message="El usuario_email no es válido")
+        consulta = consulta.join(Usuario, OfiDocumento.usuario_id == Usuario.id).filter(Usuario.email.contains(usuario_email))
+        respuestas_mensajes.append(f"Usuario email: {usuario_email}")
     consulta = consulta.filter(OfiDocumentoDestinatario.usuario_id == current_user.id)
     consulta = consulta.filter(OfiDocumentoDestinatario.estatus == "A")
+    consulta = consulta.filter(OfiDocumento.estatus == "A")
     bitacora_api = BitacoraAPI(
         usuario_id=current_user.id,
         api_nombre=settings.API_NOMBRE,
         api_ruta=f"{PREFIX}/mi_bandeja_de_entrada",
         peticion="GET",
+        respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
+        respuesta_datos={"total": consulta.count()},
     )
     database.add(bitacora_api)
     database.commit()
-    return paginate(consulta.filter(OfiDocumento.estatus == "A").order_by(OfiDocumento.creado.desc()))
+    return paginate(consulta.order_by(OfiDocumento.creado.desc()))
 
 
 @ofi_documentos.get("/mis_oficios", response_model=CustomPage[OfiDocumentoOut])
@@ -207,16 +227,18 @@ async def mis_oficios(
         consulta = consulta.filter(OfiDocumento.folio_num == numero)
         respuestas_mensajes.append(f"Folio número: {numero}")
     consulta = consulta.filter(OfiDocumento.usuario_id == current_user.id)
+    consulta = consulta.filter(OfiDocumento.estatus == "A")
     bitacora_api = BitacoraAPI(
         usuario_id=current_user.id,
         api_nombre=settings.API_NOMBRE,
         api_ruta=f"{PREFIX}/mis_oficios",
         peticion="GET",
         respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
+        respuesta_datos={"total": consulta.count()},
     )
     database.add(bitacora_api)
     database.commit()
-    return paginate(consulta.filter(OfiDocumento.estatus == "A").order_by(OfiDocumento.creado.desc()))
+    return paginate(consulta.order_by(OfiDocumento.creado.desc()))
 
 
 @ofi_documentos.get("", response_model=CustomPage[OfiDocumentoOut])
@@ -239,13 +261,13 @@ async def paginado(
     if current_user.permissions.get("OFI DOCUMENTOS", 0) < Permiso.VER:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     respuestas_mensajes = []
-    consulta = database.query(OfiDocumento)
+    consulta = database.query(OfiDocumento).join(Usuario).join(Autoridad)
     if anio is not None:
         consulta = consulta.filter(OfiDocumento.folio_anio == anio)
     if autoridad_clave != "":
         autoridad_clave = safe_clave(autoridad_clave)
         if autoridad_clave != "":
-            consulta = consulta.join(Usuario).join(Autoridad).filter(Autoridad.clave.contains(autoridad_clave))
+            consulta = consulta.filter(Autoridad.clave.contains(autoridad_clave))
             respuestas_mensajes.append(f"Autoridad: {autoridad_clave}")
     if creado is not None:
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) == creado)
@@ -281,15 +303,17 @@ async def paginado(
             usuario_email = safe_email(usuario_email, search_fragment=True)
         except ValueError:
             return CustomPage(success=False, message="El usuario_email no es válido")
-        consulta = consulta.join(Usuario).filter(Usuario.email.contains(usuario_email))
+        consulta = consulta.filter(Usuario.email.contains(usuario_email))
         respuestas_mensajes.append(f"Usuario email: {usuario_email}")
+    consulta = consulta.filter(OfiDocumento.estatus == "A")
     bitacora_api = BitacoraAPI(
         usuario_id=current_user.id,
         api_nombre=settings.API_NOMBRE,
         api_ruta=PREFIX,
         peticion="GET",
         respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
+        respuesta_datos={"total": consulta.count()},
     )
     database.add(bitacora_api)
     database.commit()
-    return paginate(consulta.filter(OfiDocumento.estatus == "A").order_by(OfiDocumento.creado.desc()))
+    return paginate(consulta.order_by(OfiDocumento.creado.desc()))

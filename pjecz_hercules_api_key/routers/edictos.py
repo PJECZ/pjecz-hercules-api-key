@@ -92,13 +92,15 @@ async def paginado(
         if fecha_hasta is not None:
             consulta = consulta.filter(Edicto.fecha <= fecha_hasta)
             respuestas_mensajes.append(f"Fecha hasta: {fecha_hasta}")
+    consulta = consulta.filter(Edicto.estatus == "A")
     bitacora_api = BitacoraAPI(
         usuario_id=current_user.id,
         api_nombre=settings.API_NOMBRE,
         api_ruta=PREFIX,
         peticion="GET",
         respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
+        respuesta_datos={"total": consulta.count()},
     )
     database.add(bitacora_api)
     database.commit()
-    return paginate(consulta.filter(Edicto.estatus == "A").order_by(Edicto.id.desc()))
+    return paginate(consulta.order_by(Edicto.id.desc()))

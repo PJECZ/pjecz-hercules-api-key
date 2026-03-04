@@ -75,13 +75,15 @@ async def paginado(
             respuestas_mensajes.append(f"Ubicación: {ubicacion}")
         else:
             return CustomPage(success=False, message="No es válida la ubicación")
+    consulta = consulta.filter(ArcDocumento.estatus == "A")
     bitacora_api = BitacoraAPI(
         usuario_id=current_user.id,
         api_nombre=settings.API_NOMBRE,
         api_ruta=PREFIX,
         peticion="GET",
         respuesta_mensaje=safe_string(", ".join(respuestas_mensajes), save_enie=True, to_uppercase=False),
+        respuesta_datos={"total": consulta.count()},
     )
     database.add(bitacora_api)
     database.commit()
-    return paginate(consulta.filter(ArcDocumento.estatus == "A").order_by(ArcDocumento.id.desc()))
+    return paginate(consulta.order_by(ArcDocumento.id.desc()))
