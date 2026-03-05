@@ -41,7 +41,7 @@ async def paginado(
     respuestas_mensajes = []
     consulta = database.query(ArcDocumento)
     if actor != "":
-        actor = safe_string(actor)
+        actor = safe_string(actor, save_enie=True)
         if actor != "":
             consulta = consulta.filter(ArcDocumento.actor.contains(actor))
             respuestas_mensajes.append(f"Actor: {actor}")
@@ -56,7 +56,7 @@ async def paginado(
         consulta = consulta.join(Autoridad).filter(Autoridad.clave.contains(autoridad_clave))
         respuestas_mensajes.append(f"Autoridad: {autoridad_clave}")
     if demandado != "":
-        demandado = safe_string(demandado)
+        demandado = safe_string(demandado, save_enie=True)
         if demandado != "":
             consulta = consulta.filter(ArcDocumento.demandado.contains(demandado))
             respuestas_mensajes.append(f"Demandado: {demandado}")

@@ -59,7 +59,7 @@ async def mi_autoridad(
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) <= creado_hasta)
         respuestas_mensajes.append(f"Creado hasta: {creado_hasta}")
     if descripcion != "":
-        descripcion = safe_string(descripcion)
+        descripcion = safe_string(descripcion, save_enie=True)
         if descripcion != "":
             consulta = consulta.filter(OfiDocumento.descripcion.contains(descripcion))
             respuestas_mensajes.append(f"Descripción: {descripcion}")
@@ -133,7 +133,7 @@ async def mi_bandeja_de_entrada(
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) <= creado_hasta)
         respuestas_mensajes.append(f"Creado hasta: {creado_hasta}")
     if descripcion != "":
-        descripcion = safe_string(descripcion)
+        descripcion = safe_string(descripcion, save_enie=True)
         if descripcion != "":
             consulta = consulta.filter(OfiDocumento.descripcion.contains(descripcion))
             respuestas_mensajes.append(f"Descripción: {descripcion}")
@@ -207,7 +207,7 @@ async def mis_oficios(
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) <= creado_hasta)
         respuestas_mensajes.append(f"Creado hasta: {creado_hasta}")
     if descripcion != "":
-        descripcion = safe_string(descripcion)
+        descripcion = safe_string(descripcion, save_enie=True)
         if descripcion != "":
             consulta = consulta.filter(OfiDocumento.descripcion.contains(descripcion))
             respuestas_mensajes.append(f"Descripción: {descripcion}")
@@ -279,7 +279,7 @@ async def paginado(
         consulta = consulta.filter(OfiDocumento.creado.cast(Date) <= creado_hasta)
         respuestas_mensajes.append(f"Creado hasta: {creado_hasta}")
     if descripcion != "":
-        descripcion = safe_string(descripcion)
+        descripcion = safe_string(descripcion, save_enie=True)
         if descripcion != "":
             consulta = consulta.filter(OfiDocumento.descripcion.contains(descripcion))
             respuestas_mensajes.append(f"Descripción: {descripcion}")

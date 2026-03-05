@@ -35,6 +35,6 @@ async def paginado_soportes_categorias(
             return CustomPage(success=False, message="No es válido el departamento")
         consulta = consulta.filter(SoporteCategoria.departamento == departamento)
     if nombre != "":
-        nombre = safe_string(nombre)
+        nombre = safe_string(nombre, save_enie=True)
         consulta = consulta.filter(SoporteCategoria.nombre.contains(nombre))
     return paginate(consulta.filter_by(estatus="A").order_by(SoporteCategoria.nombre))

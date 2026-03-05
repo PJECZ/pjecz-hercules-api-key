@@ -94,7 +94,7 @@ async def paginado_soportes_tickets(
                 return CustomPage(success=False, message="No está habilitada esa categoría de soporte")
         elif soporte_categoria_nombre != "":
             try:
-                soporte_categoria_nombre = safe_string(soporte_categoria_nombre)
+                soporte_categoria_nombre = safe_string(soporte_categoria_nombre, save_enie=True)
             except ValueError:
                 return CustomPage(success=False, message="No es válido el nombre de la categoría de soporte")
             try:
