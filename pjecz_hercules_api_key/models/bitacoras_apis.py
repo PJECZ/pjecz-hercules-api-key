@@ -40,6 +40,16 @@ class BitacoraAPI(Base, UniversalMixin):
     respuesta_errores: Mapped[list[str]] = mapped_column(JSON)
     respuesta_datos: Mapped[list[dict]] = mapped_column(JSON)
 
+    @property
+    def usuario_email(self):
+        """Email del usuario"""
+        return self.usuario.email
+
+    @property
+    def usuario_nombre(self):
+        """Nombre del usuario"""
+        return self.usuario.nombre
+
     def __repr__(self):
         """Representación"""
         return f"<Bitacora API {self.id}>"
