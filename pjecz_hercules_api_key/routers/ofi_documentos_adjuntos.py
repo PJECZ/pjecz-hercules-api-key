@@ -31,7 +31,7 @@ async def paginado(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(OfiDocumentoAdjunto)
     if descripcion != "":
-        descripcion = safe_string(descripcion)
+        descripcion = safe_string(descripcion, save_enie=True)
         if descripcion != "":
             consulta = consulta.filter(OfiDocumentoAdjunto.descripcion.contains(descripcion))
     if ofi_documento_id != "":

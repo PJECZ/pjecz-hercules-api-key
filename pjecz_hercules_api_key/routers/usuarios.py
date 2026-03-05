@@ -57,11 +57,11 @@ async def paginado_usuarios(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     consulta = database.query(Usuario)
     if apellido_paterno != "":
-        apellido_paterno = safe_string(apellido_paterno)
+        apellido_paterno = safe_string(apellido_paterno, save_enie=True)
         if apellido_paterno != "":
             consulta = consulta.filter(Usuario.apellido_paterno.contains(apellido_paterno))
     if apellido_materno != "":
-        apellido_materno = safe_string(apellido_materno)
+        apellido_materno = safe_string(apellido_materno, save_enie=True)
         if apellido_materno != "":
             consulta = consulta.filter(Usuario.apellido_materno.contains(apellido_materno))
     if autoridad_clave != "":
@@ -83,7 +83,7 @@ async def paginado_usuarios(
             return CustomPage(success=False, message="No es válido el email")
         consulta = consulta.filter(Usuario.email.contains(email))
     if nombres != "":
-        nombres = safe_string(nombres)
+        nombres = safe_string(nombres, save_enie=True)
         if nombres != "":
             consulta = consulta.filter(Usuario.nombres.contains(nombres))
     return paginate(consulta.filter(Usuario.estatus == "A").order_by(Usuario.email))
