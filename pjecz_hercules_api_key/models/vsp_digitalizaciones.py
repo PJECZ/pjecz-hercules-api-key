@@ -1,5 +1,5 @@
 """
-VASPEC Digitalizaciones
+VASPEC Digitalizaciones, modelos
 """
 
 import uuid
