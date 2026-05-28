@@ -38,6 +38,7 @@ from .routers.soportes_categorias import soportes_categorias
 from .routers.soportes_tickets import soportes_tickets
 from .routers.usuarios import usuarios
 from .routers.usuarios_roles import usuarios_roles
+from .routers.vsp_digitalizaciones import vsp_digitalizaciones
 
 # FastAPI
 app = FastAPI(
@@ -89,6 +90,7 @@ app.include_router(soportes_categorias)
 app.include_router(soportes_tickets)
 app.include_router(usuarios)
 app.include_router(usuarios_roles)
+app.include_router(vsp_digitalizaciones)
 
 # Paginación
 add_pagination(app)
