@@ -47,6 +47,7 @@ class Autoridad(Base, UniversalMixin):
     es_jurisdiccional: Mapped[bool] = mapped_column(default=False)
     es_notaria: Mapped[bool] = mapped_column(default=False)
     es_organo_especializado: Mapped[bool] = mapped_column(default=False)
+    es_vsp_digitalizaciones: Mapped[bool] = mapped_column(default=False)
     organo_jurisdiccional: Mapped[str] = mapped_column(
         Enum(*ORGANOS_JURISDICCIONALES, name="autoridades_organos_jurisdiccionales", native_enum=False),
         index=True,
@@ -65,6 +66,7 @@ class Autoridad(Base, UniversalMixin):
     redam: Mapped[List["Redam"]] = relationship("Redam", back_populates="autoridad")
     sentencias: Mapped[List["Sentencia"]] = relationship("Sentencia", back_populates="autoridad")
     usuarios: Mapped[List["Usuario"]] = relationship("Usuario", back_populates="autoridad")
+    vsp_digitalizaciones: Mapped[List["VspDigitalizacion"]] = relationship("VspDigitalizacion", back_populates="autoridad")
 
     @property
     def distrito_clave(self):
