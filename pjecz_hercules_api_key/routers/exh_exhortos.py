@@ -11,23 +11,18 @@ from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
 from pjecz_hercules_api_key.dependencies.database import Session, get_db
 from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
-from pjecz_hercules_api_key.dependencies.safe_string import safe_clave, safe_string, safe_url
-from pjecz_hercules_api_key.schemas.exh_exhortos import ExhExhortoIn, ExhExhortoOut, ExhExhortoPaginadoOut, OneExhExhortoOut
-from pjecz_hercules_api_key.schemas.exh_exhortos_archivos import ExhExhortoArchivoOut
-from pjecz_hercules_api_key.schemas.exh_exhortos_partes import ExhExhortoParteOut
-
-from pjecz_hercules_api_key.config.settings import Settings, get_settings
+from pjecz_hercules_api_key.dependencies.safe_string import safe_clave
 from pjecz_hercules_api_key.models.autoridades import Autoridad
-from pjecz_hercules_api_key.models.estados import Estado
 from pjecz_hercules_api_key.models.exh_areas import ExhArea
 from pjecz_hercules_api_key.models.exh_exhortos import ExhExhorto
 from pjecz_hercules_api_key.models.exh_exhortos_archivos import ExhExhortoArchivo
 from pjecz_hercules_api_key.models.exh_exhortos_partes import ExhExhortoParte
 from pjecz_hercules_api_key.models.exh_tipos_diligencias import ExhTipoDiligencia
-from pjecz_hercules_api_key.models.materias import Materia
-from pjecz_hercules_api_key.models.municipios import Municipio
 from pjecz_hercules_api_key.models.permisos import Permiso
-from pjecz_hercules_api_key.schemasfrom pjecz_hercules_api_key.schemasfrom pjecz_hercules_api_key.schemas
+from pjecz_hercules_api_key.schemas.exh_exhortos import ExhExhortoOut, ExhExhortoPaginadoOut, OneExhExhortoOut
+from pjecz_hercules_api_key.schemas.exh_exhortos_archivos import ExhExhortoArchivoOut
+from pjecz_hercules_api_key.schemas.exh_exhortos_partes import ExhExhortoParteOut
+
 exh_exhortos = APIRouter(prefix="/api/v5/exh_exhortos", tags=["exhortos"])
 
 

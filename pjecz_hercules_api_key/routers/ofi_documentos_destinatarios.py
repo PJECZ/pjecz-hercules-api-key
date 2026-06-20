@@ -11,13 +11,12 @@ from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get
 from pjecz_hercules_api_key.dependencies.database import Session, get_db
 from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
 from pjecz_hercules_api_key.dependencies.safe_string import safe_email, safe_uuid
-from pjecz_hercules_api_key.schemas.ofi_documentos_destinatarios import OfiDocumentoDestinatarioOut
-
 from pjecz_hercules_api_key.models.ofi_documentos import OfiDocumento
 from pjecz_hercules_api_key.models.ofi_documentos_destinatarios import OfiDocumentoDestinatario
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.models.usuarios import Usuario
-from pjecz_hercules_api_key.schemas
+from pjecz_hercules_api_key.schemas.ofi_documentos_destinatarios import OfiDocumentoDestinatarioOut
+
 ofi_documentos_destinatarios = APIRouter(prefix="/api/v5/ofi_documentos_destinatarios", tags=["oficios"])
 
 

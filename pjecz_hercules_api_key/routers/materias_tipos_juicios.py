@@ -12,12 +12,11 @@ from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get
 from pjecz_hercules_api_key.dependencies.database import Session, get_db
 from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
 from pjecz_hercules_api_key.dependencies.safe_string import safe_clave
-from pjecz_hercules_api_key.schemas.materias_tipos_juicios import MateriaTipoJuicioOut
-
 from pjecz_hercules_api_key.models.materias import Materia
 from pjecz_hercules_api_key.models.materias_tipos_juicios import MateriaTipoJuicio
 from pjecz_hercules_api_key.models.permisos import Permiso
-from pjecz_hercules_api_key.schemas
+from pjecz_hercules_api_key.schemas.materias_tipos_juicios import MateriaTipoJuicioOut
+
 materias_tipos_juicios = APIRouter(prefix="/api/v5/materias_tipos_juicios", tags=["materias"])
 
 

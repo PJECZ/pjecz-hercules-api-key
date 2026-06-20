@@ -10,11 +10,10 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
 from pjecz_hercules_api_key.dependencies.database import Session, get_db
 from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
-from pjecz_hercules_api_key.schemas.arc_remesas import ArcRemesaOut
-
 from pjecz_hercules_api_key.models.arc_remesas import ArcRemesa
 from pjecz_hercules_api_key.models.permisos import Permiso
-from pjecz_hercules_api_key.schemas
+from pjecz_hercules_api_key.schemas.arc_remesas import ArcRemesaOut
+
 arc_remesas = APIRouter(prefix="/api/v5/arc_remesas", tags=["archivos"])
 
 

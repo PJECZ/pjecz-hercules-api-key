@@ -14,14 +14,13 @@ from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get
 from pjecz_hercules_api_key.dependencies.database import Session, get_db
 from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
 from pjecz_hercules_api_key.dependencies.safe_string import safe_curp, safe_email, safe_string
-from pjecz_hercules_api_key.schemas.soportes_tickets import SoporteTicketOut
-
 from pjecz_hercules_api_key.models.funcionarios import Funcionario
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.models.soportes_categorias import SoporteCategoria
 from pjecz_hercules_api_key.models.soportes_tickets import SoporteTicket
 from pjecz_hercules_api_key.models.usuarios import Usuario
-from pjecz_hercules_api_key.schemas
+from pjecz_hercules_api_key.schemas.soportes_tickets import SoporteTicketOut
+
 soportes_tickets = APIRouter(prefix="/api/v5/soportes_tickets", tags=["soportes"])
 
 

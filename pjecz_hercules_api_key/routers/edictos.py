@@ -10,18 +10,17 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import Date
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
+from pjecz_hercules_api_key.config.settings import Settings, get_settings
 from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
 from pjecz_hercules_api_key.dependencies.database import Session, get_db
 from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
 from pjecz_hercules_api_key.dependencies.safe_string import safe_clave, safe_string
-from pjecz_hercules_api_key.schemas.edictos import EdictoOut, EdictoRAGOut, OneEdictoOut
-
-from pjecz_hercules_api_key.config.settings import Settings, get_settings
 from pjecz_hercules_api_key.models.autoridades import Autoridad
 from pjecz_hercules_api_key.models.bitacoras_apis import BitacoraAPI
 from pjecz_hercules_api_key.models.edictos import Edicto
 from pjecz_hercules_api_key.models.permisos import Permiso
-from pjecz_hercules_api_key.schemas
+from pjecz_hercules_api_key.schemas.edictos import EdictoOut, EdictoRAGOut, OneEdictoOut
+
 PREFIX = "/api/v5/edictos"
 edictos = APIRouter(prefix=PREFIX, tags=["edictos"])
 

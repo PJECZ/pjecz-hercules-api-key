@@ -10,11 +10,10 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
 from pjecz_hercules_api_key.dependencies.database import Session, get_db
 from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
-from pjecz_hercules_api_key.schemas.arc_juzgados_extintos import ArcJuzgadoExtintoOut
-
 from pjecz_hercules_api_key.models.arc_juzgados_extintos import ArcJuzgadoExtinto
 from pjecz_hercules_api_key.models.permisos import Permiso
-from pjecz_hercules_api_key.schemas
+from pjecz_hercules_api_key.schemas.arc_juzgados_extintos import ArcJuzgadoExtintoOut
+
 arc_juzgados_extintos = APIRouter(prefix="/api/v5/arc_juzgados_extintos", tags=["archivos"])
 
 
