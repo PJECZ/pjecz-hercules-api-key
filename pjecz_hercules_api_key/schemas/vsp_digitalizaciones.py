@@ -18,12 +18,13 @@ class VspDigitalizacionOut(BaseModel):
     expediente: str
     expediente_anio: int
     expediente_num: int
-    descripcion: str
+    descripcion: str | None
     archivo_uuid: uuid.UUID
     archivo: str
     url: str
     tamano: int | None = None
     tiempo: datetime | None = None
+    enviado: datetime | None = None
     model_config = ConfigDict(from_attributes=True)
 
 

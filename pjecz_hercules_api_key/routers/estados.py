@@ -7,13 +7,14 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 
-from ..dependencies.authentications import UsuarioInDB, get_current_active_user
-from ..dependencies.database import Session, get_db
-from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..models.estados import Estado
-from ..models.permisos import Permiso
-from ..schemas.estados import EstadoOut
+from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.dependencies.database import Session, get_db
+from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
+from pjecz_hercules_api_key.schemas.estados import EstadoOut
 
+from pjecz_hercules_api_key.models.estados import Estado
+from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.schemas
 estados = APIRouter(prefix="/api/v5/estados", tags=["municipios"])
 
 

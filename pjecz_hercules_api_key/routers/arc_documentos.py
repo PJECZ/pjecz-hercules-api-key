@@ -7,17 +7,18 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 
-from ..config.settings import Settings, get_settings
-from ..dependencies.authentications import UsuarioInDB, get_current_active_user
-from ..dependencies.database import Session, get_db
-from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_clave, safe_string
-from ..models.arc_documentos import ArcDocumento
-from ..models.autoridades import Autoridad
-from ..models.bitacoras_apis import BitacoraAPI
-from ..models.permisos import Permiso
-from ..schemas.arc_documentos import ArcDocumentoOut
+from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.dependencies.database import Session, get_db
+from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
+from pjecz_hercules_api_key.dependencies.safe_string import safe_clave, safe_string
+from pjecz_hercules_api_key.schemas.arc_documentos import ArcDocumentoOut
 
+from pjecz_hercules_api_key.config.settings import Settings, get_settings
+from pjecz_hercules_api_key.models.arc_documentos import ArcDocumento
+from pjecz_hercules_api_key.models.autoridades import Autoridad
+from pjecz_hercules_api_key.models.bitacoras_apis import BitacoraAPI
+from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.schemas
 PREFIX = "/api/v5/arc_documentos"
 arc_documentos = APIRouter(prefix=PREFIX, tags=["archivos"])
 

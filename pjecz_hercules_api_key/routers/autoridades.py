@@ -8,16 +8,17 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
-from ..dependencies.authentications import UsuarioInDB, get_current_active_user
-from ..dependencies.database import Session, get_db
-from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_clave
-from ..models.autoridades import Autoridad
-from ..models.distritos import Distrito
-from ..models.materias import Materia
-from ..models.permisos import Permiso
-from ..schemas.autoridades import AutoridadOut, OneAutoridadOut
+from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.dependencies.database import Session, get_db
+from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
+from pjecz_hercules_api_key.dependencies.safe_string import safe_clave
+from pjecz_hercules_api_key.schemas.autoridades import AutoridadOut, OneAutoridadOut
 
+from pjecz_hercules_api_key.models.autoridades import Autoridad
+from pjecz_hercules_api_key.models.distritos import Distrito
+from pjecz_hercules_api_key.models.materias import Materia
+from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.schemas
 autoridades = APIRouter(prefix="/api/v5/autoridades", tags=["autoridades"])
 
 
@@ -36,7 +37,7 @@ async def detalle(
         return OneAutoridadOut(success=False, message="No es válida la clave de la autoridad")
     try:
         autoridad = database.query(Autoridad).filter_by(clave=clave).one()
-    except (MultipleResultsFound, NoResultFound):
+    except MultipleResultsFound, NoResultFound:
         return OneAutoridadOut(success=False, message="No existe esa autoridad")
     if autoridad.estatus != "A":
         return OneAutoridadOut(success=False, message="No está habilitada esa autoridad")
@@ -64,7 +65,7 @@ async def paginado(
             return CustomPage(success=False, message="No es válida la clave del distrito")
         try:
             distrito = database.query(Distrito).filter(Distrito.clave == distrito_clave).one()
-        except (MultipleResultsFound, NoResultFound):
+        except MultipleResultsFound, NoResultFound:
             return CustomPage(success=False, message="No existe ese distrito")
         if distrito.estatus != "A":
             return CustomPage(success=False, message="No está habilitado ese distrito")
@@ -82,7 +83,7 @@ async def paginado(
             return CustomPage(success=False, message="No es válida la clave de la materia")
         try:
             materia = database.query(Materia).filter(Materia.clave == materia_clave).one()
-        except (MultipleResultsFound, NoResultFound):
+        except MultipleResultsFound, NoResultFound:
             return CustomPage(success=False, message="No existe esa materia")
         if materia.estatus != "A":
             return CustomPage(success=False, message="No está habilitada esa materia")

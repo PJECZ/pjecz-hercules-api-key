@@ -8,16 +8,17 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
-from ..dependencies.authentications import UsuarioInDB, get_current_active_user
-from ..dependencies.database import Session, get_db
-from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_clave, safe_curp
-from ..models.funcionarios import Funcionario
-from ..models.funcionarios_oficinas import FuncionarioOficina
-from ..models.oficinas import Oficina
-from ..models.permisos import Permiso
-from ..schemas.funcionarios_oficinas import FuncionarioOficinaOut
+from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.dependencies.database import Session, get_db
+from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
+from pjecz_hercules_api_key.dependencies.safe_string import safe_clave, safe_curp
+from pjecz_hercules_api_key.schemas.funcionarios_oficinas import FuncionarioOficinaOut
 
+from pjecz_hercules_api_key.models.funcionarios import Funcionario
+from pjecz_hercules_api_key.models.funcionarios_oficinas import FuncionarioOficina
+from pjecz_hercules_api_key.models.oficinas import Oficina
+from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.schemas
 funcionarios_oficinas = APIRouter(prefix="/api/v5/funcionarios_oficinas", tags=["soportes"])
 
 
@@ -39,7 +40,7 @@ async def paginado_funcionarios_oficinas(
         if funcionario_id is not None:
             try:
                 funcionario = database.query(Funcionario).filter(Funcionario.id == funcionario_id).one()
-            except (MultipleResultsFound, NoResultFound):
+            except MultipleResultsFound, NoResultFound:
                 return CustomPage(success=False, message="No existe ese funcionario")
             if funcionario.estatus != "A":
                 return CustomPage(success=False, message="No está habilitado ese funcionario")
@@ -50,7 +51,7 @@ async def paginado_funcionarios_oficinas(
                 return CustomPage(success=False, message="No es válida la CURP")
             try:
                 funcionario = database.query(Funcionario).filter(Funcionario.curp == funcionario_curp).one()
-            except (MultipleResultsFound, NoResultFound):
+            except MultipleResultsFound, NoResultFound:
                 return CustomPage(success=False, message="No existe ese funcionario")
             if funcionario.estatus != "A":
                 return CustomPage(success=False, message="No está habilitado ese funcionario")
@@ -60,7 +61,7 @@ async def paginado_funcionarios_oficinas(
         if oficina_id is not None:
             try:
                 oficina = database.query(Oficina).filter(Oficina.id == oficina_id).one()
-            except (MultipleResultsFound, NoResultFound):
+            except MultipleResultsFound, NoResultFound:
                 return CustomPage(success=False, message="No existe esa oficina")
             if oficina.estatus != "A":
                 return CustomPage(success=False, message="No está habilitada esa oficina")
@@ -71,7 +72,7 @@ async def paginado_funcionarios_oficinas(
                 return CustomPage(success=False, message="No es válida la clave de la oficina")
             try:
                 oficina = database.query(Oficina).filter(Oficina.clave == oficina_clave).one()
-            except (MultipleResultsFound, NoResultFound):
+            except MultipleResultsFound, NoResultFound:
                 return CustomPage(success=False, message="No existe esa oficina")
             if oficina.estatus != "A":
                 return CustomPage(success=False, message="No está habilitada esa oficina")
