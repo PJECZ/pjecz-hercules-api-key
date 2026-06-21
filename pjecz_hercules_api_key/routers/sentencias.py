@@ -20,7 +20,7 @@ from pjecz_hercules_api_key.models.bitacoras_apis import BitacoraAPI
 from pjecz_hercules_api_key.models.materias_tipos_juicios import MateriaTipoJuicio
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.models.sentencias import Sentencia
-from pjecz_hercules_api_key.schemas.sentencias import OneSentenciaOut, SentenciaOut, SentenciaRAGOut
+from pjecz_hercules_api_key.schemas.sentencias import OneSentenciaOut, SentenciaOut
 
 PREFIX = "/api/v5/sentencias"
 sentencias = APIRouter(prefix=PREFIX, tags=["sentencias"])
@@ -40,7 +40,7 @@ async def detalle(
         return OneSentenciaOut(success=False, message="No existe esa sentencia")
     if sentencia.estatus != "A":
         return OneSentenciaOut(success=False, message="No es activa esa sentencia, está eliminada")
-    return OneSentenciaOut(success=True, message="Detalle de una sentencia", data=SentenciaRAGOut.model_validate(sentencia))
+    return OneSentenciaOut(success=True, message="Detalle de una sentencia", data=SentenciaOut.model_validate(sentencia))
 
 
 @sentencias.get("", response_model=CustomPage[SentenciaOut])

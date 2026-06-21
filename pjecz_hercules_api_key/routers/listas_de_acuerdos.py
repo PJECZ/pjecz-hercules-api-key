@@ -23,7 +23,7 @@ from pjecz_hercules_api_key.models.autoridades import Autoridad
 from pjecz_hercules_api_key.models.bitacoras_apis import BitacoraAPI
 from pjecz_hercules_api_key.models.listas_de_acuerdos import ListaDeAcuerdo
 from pjecz_hercules_api_key.models.permisos import Permiso
-from pjecz_hercules_api_key.schemas.listas_de_acuerdos import ListaDeAcuerdoOut, ListaDeAcuerdoRAGOut, OneListaDeAcuerdoOut
+from pjecz_hercules_api_key.schemas.listas_de_acuerdos import ListaDeAcuerdoOut, OneListaDeAcuerdoOut
 
 PREFIX = "/api/v5/listas_de_acuerdos"
 listas_de_acuerdos = APIRouter(prefix=PREFIX, tags=["listas de acuerdos"])
@@ -112,7 +112,7 @@ async def detalle(
     if lista_de_acuerdo.estatus != "A":
         return OneListaDeAcuerdoOut(success=False, message="No es activa esa lista de acuerdos, está eliminada")
     return OneListaDeAcuerdoOut(
-        success=True, message="Detalle de una lista de acuerdos", data=ListaDeAcuerdoRAGOut.model_validate(lista_de_acuerdo)
+        success=True, message="Detalle de una lista de acuerdos", data=ListaDeAcuerdoOut.model_validate(lista_de_acuerdo)
     )
 
 

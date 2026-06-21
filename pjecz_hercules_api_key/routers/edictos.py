@@ -19,7 +19,7 @@ from pjecz_hercules_api_key.models.autoridades import Autoridad
 from pjecz_hercules_api_key.models.bitacoras_apis import BitacoraAPI
 from pjecz_hercules_api_key.models.edictos import Edicto
 from pjecz_hercules_api_key.models.permisos import Permiso
-from pjecz_hercules_api_key.schemas.edictos import EdictoOut, EdictoRAGOut, OneEdictoOut
+from pjecz_hercules_api_key.schemas.edictos import EdictoOut, OneEdictoOut
 
 PREFIX = "/api/v5/edictos"
 edictos = APIRouter(prefix=PREFIX, tags=["edictos"])
@@ -39,7 +39,7 @@ async def detalle(
         return OneEdictoOut(success=False, message="No existe ese edicto")
     if edicto.estatus != "A":
         return OneEdictoOut(success=False, message="No es activa ese edicto, está eliminado")
-    return OneEdictoOut(success=True, message="Detalle de un edicto", data=EdictoRAGOut.model_validate(edicto))
+    return OneEdictoOut(success=True, message="Detalle de un edicto", data=EdictoOut.model_validate(edicto))
 
 
 @edictos.get("", response_model=CustomPage[EdictoOut])

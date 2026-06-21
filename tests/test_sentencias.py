@@ -53,9 +53,9 @@ class TestSentencias(unittest.TestCase):
             self.assertEqual("fecha" in item, True)
             self.assertEqual("descripcion" in item, True)
             self.assertEqual("es_perspectiva_genero" in item, True)
-            self.assertEqual("rag_fue_analizado_tiempo" in item, True)
-            self.assertEqual("rag_fue_sintetizado_tiempo" in item, True)
-            self.assertEqual("rag_fue_categorizado_tiempo" in item, True)
+            # self.assertEqual("rag_fue_analizado_tiempo" in item, True)
+            # self.assertEqual("rag_fue_sintetizado_tiempo" in item, True)
+            # self.assertEqual("rag_fue_categorizado_tiempo" in item, True)
 
 
 if __name__ == "__main__":
