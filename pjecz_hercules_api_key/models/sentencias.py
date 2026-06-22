@@ -39,14 +39,6 @@ class Sentencia(Base, UniversalMixin):
     archivo: Mapped[str] = mapped_column(String(256), default="")
     url: Mapped[str] = mapped_column(String(512), default="")
 
-    # Columnas para Retrieval-Augmented Generation (RAG)
-    # rag_fue_analizado_tiempo: Mapped[Optional[datetime]]
-    # rag_analisis: Mapped[Optional[dict]] = mapped_column(JSON)
-    # rag_fue_sintetizado_tiempo: Mapped[Optional[datetime]]
-    # rag_sintesis: Mapped[Optional[dict]] = mapped_column(JSON)
-    # rag_fue_categorizado_tiempo: Mapped[Optional[datetime]]
-    # rag_categorias: Mapped[Optional[dict]] = mapped_column(JSON)
-
     @property
     def distrito_clave(self):
         """Distrito clave"""

@@ -34,14 +34,6 @@ class Edicto(Base, UniversalMixin):
     url: Mapped[str] = mapped_column(String(512), default="")
     es_declaracion_de_ausencia: Mapped[bool] = mapped_column(default=False)
 
-    # Columnas para Retrieval-Augmented Generation (RAG)
-    # rag_fue_analizado_tiempo: Mapped[Optional[datetime]]
-    # rag_analisis: Mapped[Optional[dict]] = mapped_column(JSON)
-    # rag_fue_sintetizado_tiempo: Mapped[Optional[datetime]]
-    # rag_sintesis: Mapped[Optional[dict]] = mapped_column(JSON)
-    # rag_fue_categorizado_tiempo: Mapped[Optional[datetime]]
-    # rag_categorias: Mapped[Optional[dict]] = mapped_column(JSON)
-
     @property
     def distrito_clave(self):
         """Distrito clave"""
