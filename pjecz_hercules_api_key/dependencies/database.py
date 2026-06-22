@@ -9,7 +9,7 @@ from sqlalchemy import Engine, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
 
-from ..config.settings import Settings, get_settings
+from pjecz_hercules_api_key.config.settings import Settings, get_settings
 
 Base = declarative_base()
 

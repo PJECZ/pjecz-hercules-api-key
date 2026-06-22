@@ -10,17 +10,17 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import Date
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
-from ..config.settings import Settings, get_settings
-from ..dependencies.authentications import UsuarioInDB, get_current_active_user
-from ..dependencies.database import Session, get_db
-from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_clave, safe_string
-from ..models.autoridades import Autoridad
-from ..models.bitacoras_apis import BitacoraAPI
-from ..models.materias_tipos_juicios import MateriaTipoJuicio
-from ..models.permisos import Permiso
-from ..models.sentencias import Sentencia
-from ..schemas.sentencias import OneSentenciaOut, SentenciaOut, SentenciaRAGOut
+from pjecz_hercules_api_key.config.settings import Settings, get_settings
+from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.dependencies.database import Session, get_db
+from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
+from pjecz_hercules_api_key.dependencies.safe_string import safe_clave, safe_string
+from pjecz_hercules_api_key.models.autoridades import Autoridad
+from pjecz_hercules_api_key.models.bitacoras_apis import BitacoraAPI
+from pjecz_hercules_api_key.models.materias_tipos_juicios import MateriaTipoJuicio
+from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.models.sentencias import Sentencia
+from pjecz_hercules_api_key.schemas.sentencias import OneSentenciaOut, SentenciaOut
 
 PREFIX = "/api/v5/sentencias"
 sentencias = APIRouter(prefix=PREFIX, tags=["sentencias"])
@@ -40,7 +40,7 @@ async def detalle(
         return OneSentenciaOut(success=False, message="No existe esa sentencia")
     if sentencia.estatus != "A":
         return OneSentenciaOut(success=False, message="No es activa esa sentencia, está eliminada")
-    return OneSentenciaOut(success=True, message="Detalle de una sentencia", data=SentenciaRAGOut.model_validate(sentencia))
+    return OneSentenciaOut(success=True, message="Detalle de una sentencia", data=SentenciaOut.model_validate(sentencia))
 
 
 @sentencias.get("", response_model=CustomPage[SentenciaOut])
@@ -69,7 +69,7 @@ async def paginado(
             return CustomPage(success=False, message="No es válida la clave de la autoridad")
         try:
             autoridad = database.query(Autoridad).filter(Autoridad.clave == autoridad_clave).one()
-        except (MultipleResultsFound, NoResultFound):
+        except MultipleResultsFound, NoResultFound:
             return CustomPage(success=False, message="No existe esa autoridad")
         if autoridad.estatus != "A":
             return CustomPage(success=False, message="No está habilitada esa autoridad")
@@ -97,7 +97,7 @@ async def paginado(
     if materia_tipo_juicio_id is not None:
         try:
             materia_tipo_juicio = database.query(MateriaTipoJuicio).filter(MateriaTipoJuicio.id == materia_tipo_juicio_id).one()
-        except (MultipleResultsFound, NoResultFound):
+        except MultipleResultsFound, NoResultFound:
             return CustomPage(success=False, message="No existe ese tipo de juicio para materia")
         if materia_tipo_juicio.estatus != "A":
             return CustomPage(success=False, message="No está habilitado ese tipo de juicio para materia")

@@ -47,9 +47,6 @@ class TestListasDeAcuerdos(unittest.TestCase):
             self.assertEqual("autoridad_descripcion_corta" in item, True)
             self.assertEqual("fecha" in item, True)
             self.assertEqual("descripcion" in item, True)
-            self.assertEqual("rag_fue_analizado_tiempo" in item, True)
-            self.assertEqual("rag_fue_sintetizado_tiempo" in item, True)
-            self.assertEqual("rag_fue_categorizado_tiempo" in item, True)
 
 
 if __name__ == "__main__":

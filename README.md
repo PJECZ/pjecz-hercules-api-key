@@ -131,7 +131,7 @@ then
     echo "   $(poetry --version)"
     echo
     echo "-- FastAPI 127.0.0.1:8000"
-    alias arrancar="uvicorn --host=127.0.0.1 --port 8000 --reload pjecz_hercules_api_key.main:app"
+    alias arrancar="uvicorn --host=127.0.0.1 --port 8000 --reload pjecz_hercules_api_key.app:app"
     echo "   arrancar"
     echo
     if [ -d tests ]

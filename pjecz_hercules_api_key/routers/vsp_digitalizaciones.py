@@ -10,16 +10,16 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import Date
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
-from ..config.settings import Settings, get_settings
-from ..dependencies.authentications import UsuarioInDB, get_current_active_user
-from ..dependencies.database import Session, get_db
-from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_clave, safe_string
-from ..models.autoridades import Autoridad
-from ..models.bitacoras_apis import BitacoraAPI
-from ..models.permisos import Permiso
-from ..models.vsp_digitalizaciones import VspDigitalizacion
-from ..schemas.vsp_digitalizaciones import VspDigitalizacionOut
+from pjecz_hercules_api_key.config.settings import Settings, get_settings
+from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.dependencies.database import Session, get_db
+from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
+from pjecz_hercules_api_key.dependencies.safe_string import safe_clave, safe_string
+from pjecz_hercules_api_key.models.autoridades import Autoridad
+from pjecz_hercules_api_key.models.bitacoras_apis import BitacoraAPI
+from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.models.vsp_digitalizaciones import VspDigitalizacion
+from pjecz_hercules_api_key.schemas.vsp_digitalizaciones import VspDigitalizacionOut
 
 PREFIX = "/api/v5/vsp_digitalizaciones"
 vsp_digitalizaciones = APIRouter(prefix=PREFIX, tags=["vsp digitalizaciones"])

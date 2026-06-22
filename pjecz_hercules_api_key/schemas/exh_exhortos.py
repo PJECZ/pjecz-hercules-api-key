@@ -4,8 +4,8 @@ Exh Exhortos, esquemas
 
 from pydantic import BaseModel, ConfigDict
 
-from .exh_exhortos_archivos import ExhExhortoArchivoIn, ExhExhortoArchivoOut
-from .exh_exhortos_partes import ExhExhortoParteIn, ExhExhortoParteOut
+from pjecz_hercules_api_key.schemas.exh_exhortos_archivos import ExhExhortoArchivoIn, ExhExhortoArchivoOut
+from pjecz_hercules_api_key.schemas.exh_exhortos_partes import ExhExhortoParteIn, ExhExhortoParteOut
 
 
 class ExhExhortoOut(BaseModel):

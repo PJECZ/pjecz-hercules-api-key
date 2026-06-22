@@ -8,7 +8,7 @@ from typing import Any
 from fastapi import Depends
 from hashids import Hashids
 
-from ..config.settings import Settings, get_settings
+from pjecz_hercules_api_key.config.settings import Settings, get_settings
 
 HASHID_REGEXP = re.compile("[0-9a-zA-Z]{8,16}")
 

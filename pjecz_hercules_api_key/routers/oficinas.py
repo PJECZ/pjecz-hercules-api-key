@@ -8,15 +8,15 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
-from ..dependencies.authentications import UsuarioInDB, get_current_active_user
-from ..dependencies.database import Session, get_db
-from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_clave
-from ..models.distritos import Distrito
-from ..models.domicilios import Domicilio
-from ..models.oficinas import Oficina
-from ..models.permisos import Permiso
-from ..schemas.oficinas import OficinaOut
+from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.dependencies.database import Session, get_db
+from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
+from pjecz_hercules_api_key.dependencies.safe_string import safe_clave
+from pjecz_hercules_api_key.models.distritos import Distrito
+from pjecz_hercules_api_key.models.domicilios import Domicilio
+from pjecz_hercules_api_key.models.oficinas import Oficina
+from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.schemas.oficinas import OficinaOut
 
 oficinas = APIRouter(prefix="/api/v5/oficinas", tags=["oficinas"])
 
@@ -39,7 +39,7 @@ async def paginado_oficinas(
             return CustomPage(success=False, message="No es válida la clave del distrito")
         try:
             distrito = database.query(Distrito).filter(Distrito.clave == distrito_clave).one()
-        except (MultipleResultsFound, NoResultFound):
+        except MultipleResultsFound, NoResultFound:
             return CustomPage(success=False, message="No existe ese distrito")
         if distrito.estatus != "A":
             return CustomPage(success=False, message="No está habilitado ese distrito")
@@ -47,7 +47,7 @@ async def paginado_oficinas(
     if domicilio_id is not None:
         try:
             domicilio = database.query(Domicilio).filter(Domicilio.id == domicilio_id).one()
-        except (MultipleResultsFound, NoResultFound):
+        except MultipleResultsFound, NoResultFound:
             return CustomPage(success=False, message="No existe ese domicilio")
         if domicilio.estatus != "A":
             return CustomPage(success=False, message="No está habilitado ese domicilio")

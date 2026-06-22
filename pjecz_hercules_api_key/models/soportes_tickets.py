@@ -8,8 +8,8 @@ from typing import Optional
 from sqlalchemy import DateTime, Enum, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ..dependencies.database import Base
-from ..dependencies.universal_mixin import UniversalMixin
+from pjecz_hercules_api_key.dependencies.database import Base
+from pjecz_hercules_api_key.dependencies.universal_mixin import UniversalMixin
 
 
 class SoporteTicket(Base, UniversalMixin):

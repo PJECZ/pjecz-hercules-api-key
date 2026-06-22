@@ -54,7 +54,7 @@ class CustomPage(AbstractPage[T], ABC):
 
         if total is None or total == 0:
             return cls(
-                success=False,
+                success=True,
                 message="No se encontraron registros",
                 data=[],
                 total=0,

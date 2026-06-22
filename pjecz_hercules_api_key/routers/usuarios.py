@@ -8,14 +8,14 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
-from ..dependencies.authentications import UsuarioInDB, get_current_active_user
-from ..dependencies.database import Session, get_db
-from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_clave, safe_email, safe_string
-from ..models.autoridades import Autoridad
-from ..models.permisos import Permiso
-from ..models.usuarios import Usuario
-from ..schemas.usuarios import OneUsuarioOut, UsuarioOut
+from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.dependencies.database import Session, get_db
+from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
+from pjecz_hercules_api_key.dependencies.safe_string import safe_clave, safe_email, safe_string
+from pjecz_hercules_api_key.models.autoridades import Autoridad
+from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.models.usuarios import Usuario
+from pjecz_hercules_api_key.schemas.usuarios import OneUsuarioOut, UsuarioOut
 
 usuarios = APIRouter(prefix="/api/v5/usuarios", tags=["usuarios"])
 
@@ -35,7 +35,7 @@ async def detalle_usuario(
         return OneUsuarioOut(success=False, message="No es válido el email")
     try:
         usuario = database.query(Usuario).filter_by(email=email).one()
-    except (MultipleResultsFound, NoResultFound):
+    except MultipleResultsFound, NoResultFound:
         return OneUsuarioOut(success=False, message="No existe ese usuario")
     if usuario.estatus != "A":
         return OneUsuarioOut(success=False, message="No está habilitado ese usuario")
@@ -71,7 +71,7 @@ async def paginado_usuarios(
             return CustomPage(success=False, message="No es válida la clave de la autoridad")
         try:
             autoridad = database.query(Autoridad).filter(Autoridad.clave == autoridad_clave).one()
-        except (MultipleResultsFound, NoResultFound):
+        except MultipleResultsFound, NoResultFound:
             return CustomPage(success=False, message="No existe esa autoridad")
         if autoridad.estatus != "A":
             return CustomPage(success=False, message="No está habilitada esa autoridad")

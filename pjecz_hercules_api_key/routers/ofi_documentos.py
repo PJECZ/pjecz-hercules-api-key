@@ -9,18 +9,18 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import Date
 
-from ..config.settings import Settings, get_settings
-from ..dependencies.authentications import UsuarioInDB, get_current_active_user
-from ..dependencies.database import Session, get_db
-from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..dependencies.safe_string import safe_clave, safe_email, safe_string
-from ..models.autoridades import Autoridad
-from ..models.bitacoras_apis import BitacoraAPI
-from ..models.ofi_documentos import OfiDocumento
-from ..models.ofi_documentos_destinatarios import OfiDocumentoDestinatario
-from ..models.permisos import Permiso
-from ..models.usuarios import Usuario
-from ..schemas.ofi_documentos import OfiDocumentoOut
+from pjecz_hercules_api_key.config.settings import Settings, get_settings
+from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.dependencies.database import Session, get_db
+from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
+from pjecz_hercules_api_key.dependencies.safe_string import safe_clave, safe_email, safe_string
+from pjecz_hercules_api_key.models.autoridades import Autoridad
+from pjecz_hercules_api_key.models.bitacoras_apis import BitacoraAPI
+from pjecz_hercules_api_key.models.ofi_documentos import OfiDocumento
+from pjecz_hercules_api_key.models.ofi_documentos_destinatarios import OfiDocumentoDestinatario
+from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.models.usuarios import Usuario
+from pjecz_hercules_api_key.schemas.ofi_documentos import OfiDocumentoOut
 
 PREFIX = "/api/v5/ofi_documentos"
 ofi_documentos = APIRouter(prefix=PREFIX, tags=["oficios"])

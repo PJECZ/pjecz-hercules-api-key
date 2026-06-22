@@ -50,9 +50,6 @@ class TestEdictos(unittest.TestCase):
             self.assertEqual("expediente" in item, True)
             self.assertEqual("numero_publicacion" in item, True)
             self.assertEqual("es_declaracion_de_ausencia" in item, True)
-            self.assertEqual("rag_fue_analizado_tiempo" in item, True)
-            self.assertEqual("rag_fue_sintetizado_tiempo" in item, True)
-            self.assertEqual("rag_fue_categorizado_tiempo" in item, True)
 
 
 if __name__ == "__main__":

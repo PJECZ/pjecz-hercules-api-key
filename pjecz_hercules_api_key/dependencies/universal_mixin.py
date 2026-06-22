@@ -10,7 +10,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql.functions import now
 from sqlalchemy.types import CHAR
 
-from ..config.settings import get_settings
+from pjecz_hercules_api_key.config.settings import get_settings
 
 settings = get_settings()
 hashids = Hashids(salt=settings.SALT, min_length=8)

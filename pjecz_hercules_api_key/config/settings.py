@@ -57,7 +57,7 @@ class Settings(BaseSettings):
     GCP_BUCKET_SENTENCIAS: str = get_secret("gcp_bucket_sentencias")
     ORIGINS: str = get_secret("origins")
     SALT: str = get_secret("salt")
-    TZ: str = "America/Mexico_City"
+    TZ: str = get_secret("tz", "America/Mexico_City")
 
     class Config:
         """Load configuration"""

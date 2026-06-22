@@ -8,8 +8,8 @@ from typing import Optional
 from sqlalchemy import JSON, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ..dependencies.database import Base
-from ..dependencies.universal_mixin import UniversalMixin
+from pjecz_hercules_api_key.dependencies.database import Base
+from pjecz_hercules_api_key.dependencies.universal_mixin import UniversalMixin
 
 
 class Sentencia(Base, UniversalMixin):
@@ -38,14 +38,6 @@ class Sentencia(Base, UniversalMixin):
     es_perspectiva_genero: Mapped[bool] = mapped_column(default=False)
     archivo: Mapped[str] = mapped_column(String(256), default="")
     url: Mapped[str] = mapped_column(String(512), default="")
-
-    # Columnas para Retrieval-Augmented Generation (RAG)
-    rag_fue_analizado_tiempo: Mapped[Optional[datetime]]
-    rag_analisis: Mapped[Optional[dict]] = mapped_column(JSON)
-    rag_fue_sintetizado_tiempo: Mapped[Optional[datetime]]
-    rag_sintesis: Mapped[Optional[dict]] = mapped_column(JSON)
-    rag_fue_categorizado_tiempo: Mapped[Optional[datetime]]
-    rag_categorias: Mapped[Optional[dict]] = mapped_column(JSON)
 
     @property
     def distrito_clave(self):

@@ -19,18 +19,7 @@ class ListaDeAcuerdoOut(BaseModel):
     autoridad_descripcion_corta: str
     fecha: date
     descripcion: str
-    rag_fue_analizado_tiempo: datetime | None = None
-    rag_fue_sintetizado_tiempo: datetime | None = None
-    rag_fue_categorizado_tiempo: datetime | None = None
     model_config = ConfigDict(from_attributes=True)
-
-
-class ListaDeAcuerdoRAGOut(ListaDeAcuerdoOut):
-    """Agregar los campos RAG para cuando se entrega una lista de acuerdos"""
-
-    rag_analisis: dict | None = None
-    rag_sintesis: dict | None = None
-    rag_categorias: dict | None = None
 
 
 class OneListaDeAcuerdoOut(BaseModel):
@@ -38,4 +27,4 @@ class OneListaDeAcuerdoOut(BaseModel):
 
     success: bool
     message: str
-    data: ListaDeAcuerdoRAGOut | None = None
+    data: ListaDeAcuerdoOut | None = None

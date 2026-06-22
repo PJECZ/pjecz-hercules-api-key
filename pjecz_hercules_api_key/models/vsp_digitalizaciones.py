@@ -10,8 +10,8 @@ from sqlalchemy import ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ..dependencies.database import Base
-from ..dependencies.universal_mixin import UniversalMixin
+from pjecz_hercules_api_key.dependencies.database import Base
+from pjecz_hercules_api_key.dependencies.universal_mixin import UniversalMixin
 
 
 class VspDigitalizacion(Base, UniversalMixin):
@@ -36,8 +36,9 @@ class VspDigitalizacion(Base, UniversalMixin):
     archivo_uuid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), default=uuid.uuid4)
     archivo: Mapped[str] = mapped_column(String(256))
     url: Mapped[str] = mapped_column(String(512))
-    tamano: Mapped[Optional[int]]
-    tiempo: Mapped[Optional[datetime]]
+    tamano: Mapped[Optional[int]]  # Bytes
+    tiempo: Mapped[Optional[datetime]]  # Tiempo en el que fue subido a GCS
+    enviado: Mapped[Optional[datetime]]  # Tiempo en el que fue enviado a SAJI, si es nulo aun no ha sido enviado
 
     @property
     def autoridad_clave(self):

@@ -7,8 +7,8 @@ from typing import Optional
 from sqlalchemy import JSON, Boolean, Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ..dependencies.database import Base
-from ..dependencies.universal_mixin import UniversalMixin
+from pjecz_hercules_api_key.dependencies.database import Base
+from pjecz_hercules_api_key.dependencies.universal_mixin import UniversalMixin
 
 
 class BitacoraAPI(Base, UniversalMixin):
@@ -35,10 +35,10 @@ class BitacoraAPI(Base, UniversalMixin):
     api_nombre: Mapped[str] = mapped_column(String(256))
     api_ruta: Mapped[str] = mapped_column(String(512))
     peticion: Mapped[str] = mapped_column(Enum(*PETICIONES, name="peticiones_tipos", native_enum=False), index=True)
-    respuesta_exitosa: Mapped[Optional[bool]] = mapped_column(Boolean, default=True)
-    respuesta_mensaje: Mapped[Optional[str]] = mapped_column(String(256))
-    respuesta_errores: Mapped[list[str]] = mapped_column(JSON)
-    respuesta_datos: Mapped[list[dict]] = mapped_column(JSON)
+    respuesta_exitosa: Mapped[Optional[bool]] = mapped_column(Boolean, default=None)
+    respuesta_mensaje: Mapped[Optional[str]] = mapped_column(String(256), default="")
+    respuesta_errores: Mapped[list[str]] = mapped_column(JSON, default=[])
+    respuesta_datos: Mapped[list[dict]] = mapped_column(JSON, default=[])
 
     @property
     def usuario_email(self):

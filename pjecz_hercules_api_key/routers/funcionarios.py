@@ -7,12 +7,12 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 
-from ..dependencies.authentications import UsuarioInDB, get_current_active_user
-from ..dependencies.database import Session, get_db
-from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..models.funcionarios import Funcionario
-from ..models.permisos import Permiso
-from ..schemas.funcionarios import FuncionarioOut
+from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.dependencies.database import Session, get_db
+from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
+from pjecz_hercules_api_key.models.funcionarios import Funcionario
+from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.schemas.funcionarios import FuncionarioOut
 
 funcionarios = APIRouter(prefix="/api/v5/funcionarios", tags=["soportes"])
 

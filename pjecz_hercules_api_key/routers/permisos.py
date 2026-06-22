@@ -8,13 +8,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
-from ..dependencies.authentications import UsuarioInDB, get_current_active_user
-from ..dependencies.database import Session, get_db
-from ..dependencies.fastapi_pagination_custom_page import CustomPage
-from ..models.modulos import Modulo
-from ..models.permisos import Permiso
-from ..models.roles import Rol
-from ..schemas.permisos import PermisoOut
+from pjecz_hercules_api_key.dependencies.authentications import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.dependencies.database import Session, get_db
+from pjecz_hercules_api_key.dependencies.fastapi_pagination_custom_page import CustomPage
+from pjecz_hercules_api_key.models.modulos import Modulo
+from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.models.roles import Rol
+from pjecz_hercules_api_key.schemas.permisos import PermisoOut
 
 permisos = APIRouter(prefix="/api/v5/permisos", tags=["usuarios"])
 
@@ -33,7 +33,7 @@ async def paginado_permisos(
     if modulo_id is not None:
         try:
             modulo = database.query(Modulo).filter(Modulo.id == modulo_id).one()
-        except (MultipleResultsFound, NoResultFound):
+        except MultipleResultsFound, NoResultFound:
             return CustomPage(success=False, message="No existe ese módulo")
         if modulo.estatus != "A":
             return CustomPage(success=False, message="No está habilitado ese módulo")
@@ -41,7 +41,7 @@ async def paginado_permisos(
     if rol_id is not None:
         try:
             rol = database.query(Rol).filter(Rol.id == rol_id).one()
-        except (MultipleResultsFound, NoResultFound):
+        except MultipleResultsFound, NoResultFound:
             return CustomPage(success=False, message="No existe ese rol")
         if rol.estatus != "A":
             return CustomPage(success=False, message="No está habilitado ese rol")
