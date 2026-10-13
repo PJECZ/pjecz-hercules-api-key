@@ -63,7 +63,7 @@ class Autoridad(Base):
     #listas_de_acuerdos: Mapped[list["ListaDeAcuerdo"]] = relationship("ListaDeAcuerdo", back_populates="autoridad")
     #redam: Mapped[list["Redam"]] = relationship("Redam", back_populates="autoridad")
     #sentencias: Mapped[list["Sentencia"]] = relationship("Sentencia", back_populates="autoridad")
-    #usuarios: Mapped[list["Usuario"]] = relationship("Usuario", back_populates="autoridad")
+    usuarios: Mapped[list["Usuario"]] = relationship("Usuario", back_populates="autoridad")
 
     @property
     def distrito_clave(self):

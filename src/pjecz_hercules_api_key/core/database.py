@@ -22,11 +22,13 @@ Uso en línea de comandos (Typer, scripts, workers):
         # commit automático al salir; rollback si hay excepción
 """
 
+import re
 from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import datetime
 from functools import lru_cache
 
+from hashids import Hashids
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
@@ -35,6 +37,9 @@ from sqlalchemy.types import CHAR
 
 from pjecz_hercules_api_key.config.setttings import get_settings
 
+settings = get_settings()
+hashids = Hashids(salt=settings.SALT, min_length=8)
+
 
 class Base(DeclarativeBase):
     """Clase base declarativa de la que heredan todos los modelos."""
@@ -42,6 +47,20 @@ class Base(DeclarativeBase):
     creado: Mapped[datetime] = mapped_column(default=now(), server_default=now())
     modificado: Mapped[datetime] = mapped_column(default=now(), onupdate=now(), server_default=now())
     estatus: Mapped[str] = mapped_column(CHAR, default="A")
+
+    def encode_id(self):
+        """Convertir el ID de entero a cadena"""
+        return hashids.encode(self.id)
+
+    @classmethod
+    def decode_id(cls, id_encoded: str):
+        """Convertir el ID de entero a cadena"""
+        if re.fullmatch(r"[0-9a-zA-Z]{8,16}", id_encoded) is None:
+            return None
+        descifrado = hashids.decode(id_encoded)
+        if len(descifrado) == 0:
+            return None
+        return descifrado[0]
 
 
 @lru_cache
