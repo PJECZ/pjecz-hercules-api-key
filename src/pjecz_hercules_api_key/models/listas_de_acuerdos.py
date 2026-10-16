@@ -24,10 +24,40 @@ class ListaDeAcuerdo(Base):
     autoridad: Mapped["Autoridad"] = relationship(back_populates="listas_de_acuerdos")
 
     # Columnas
-    fecha: Mapped[date] = mapped_column(index=True)
+    fecha: Mapped[date]
     descripcion: Mapped[str] = mapped_column(String(256))
     archivo: Mapped[str] = mapped_column(String(256))
     url: Mapped[str] = mapped_column(String(512))
+
+    @property
+    def distrito_clave(self):
+        """Distrito clave"""
+        return self.autoridad.distrito.clave
+
+    @property
+    def distrito_nombre(self):
+        """Distrito nombre"""
+        return self.autoridad.distrito.nombre
+
+    @property
+    def distrito_nombre_corto(self):
+        """Distrito nombre corto"""
+        return self.autoridad.distrito.nombre_corto
+
+    @property
+    def autoridad_clave(self):
+        """Autoridad clave"""
+        return self.autoridad.clave
+
+    @property
+    def autoridad_descripcion(self):
+        """Autoridad descripción"""
+        return self.autoridad.descripcion
+
+    @property
+    def autoridad_descripcion_corta(self):
+        """Autoridad descripción corta"""
+        return self.autoridad.descripcion_corta
 
     def __repr__(self):
         """Representación"""

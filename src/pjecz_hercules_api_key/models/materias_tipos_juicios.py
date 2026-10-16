@@ -27,6 +27,16 @@ class MateriaTipoJuicio(Base):
     # Hijos
     sentencias: Mapped[list["Sentencia"]] = relationship(back_populates="materia_tipo_juicio")
 
+    @property
+    def materia_clave(self):
+        """Clave de la materia"""
+        return self.materia.clave
+
+    @property
+    def materia_nombre(self):
+        """Nombre de la materia"""
+        return self.materia.nombre
+
     def __repr__(self):
         """Representación"""
         return f"<MateriaTipoJuicio {self.id}>"

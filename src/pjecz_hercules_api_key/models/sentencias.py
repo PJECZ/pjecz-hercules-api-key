@@ -38,6 +38,51 @@ class Sentencia(Base):
     archivo: Mapped[str] = mapped_column(String(256))
     url: Mapped[str] = mapped_column(String(512))
 
+    @property
+    def distrito_clave(self):
+        """Distrito clave"""
+        return self.autoridad.distrito.clave
+
+    @property
+    def distrito_nombre(self):
+        """Distrito nombre"""
+        return self.autoridad.distrito.nombre
+
+    @property
+    def distrito_nombre_corto(self):
+        """Distrito nombre corto"""
+        return self.autoridad.distrito.nombre_corto
+
+    @property
+    def autoridad_clave(self):
+        """Autoridad clave"""
+        return self.autoridad.clave
+
+    @property
+    def autoridad_descripcion(self):
+        """Autoridad descripción"""
+        return self.autoridad.descripcion
+
+    @property
+    def autoridad_descripcion_corta(self):
+        """Autoridad descripción corta"""
+        return self.autoridad.descripcion_corta
+
+    @property
+    def materia_clave(self):
+        """Materia clave"""
+        return self.materia_tipo_juicio.materia.clave
+
+    @property
+    def materia_nombre(self):
+        """Materia nombre"""
+        return self.materia_tipo_juicio.materia.nombre
+
+    @property
+    def materia_tipo_juicio_descripcion(self):
+        """Materia Tipo juicio descripcion"""
+        return self.materia_tipo_juicio.descripcion
+
     def __repr__(self):
         """Representación"""
         return f"<Sentencia {self.id}>"
