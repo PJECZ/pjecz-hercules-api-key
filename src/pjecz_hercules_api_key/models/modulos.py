@@ -25,7 +25,7 @@ class Modulo(Base):
     en_navegacion: Mapped[bool] = mapped_column(default=False)
 
     # Hijos
-    permisos: Mapped[list["Permiso"]] = relationship("Permiso", back_populates="modulo")
+    permisos: Mapped[list["Permiso"]] = relationship(back_populates="modulo")
 
     def __repr__(self):
         """Representación"""

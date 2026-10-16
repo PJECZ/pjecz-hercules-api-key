@@ -25,7 +25,7 @@ class Materia(Base):
 
     # Hijos
     autoridades: Mapped[list["Autoridad"]] = relationship(back_populates="materia")
-    #materias_tipos_juicios: Mapped[list["MateriaTipoJuicio"]] = relationship(back_populates="materia")
+    materias_tipos_juicios: Mapped[list["MateriaTipoJuicio"]] = relationship(back_populates="materia")
 
     def __repr__(self):
         """Representación"""

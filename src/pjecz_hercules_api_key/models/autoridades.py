@@ -2,8 +2,6 @@
 Autoridades
 """
 
-from typing import Optional
-
 from sqlalchemy import Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -56,14 +54,11 @@ class Autoridad(Base):
     )
 
     # Hijos
-    #arc_documentos: Mapped[list["ArcDocumento"]] = relationship("ArcDocumento", back_populates="autoridad")
-    #arc_remesas: Mapped[list["ArcRemesa"]] = relationship("ArcRemesa", back_populates="autoridad")
-    #edictos: Mapped[list["Edicto"]] = relationship("Edicto", back_populates="autoridad")
-    #exh_exhortos: Mapped[list["ExhExhorto"]] = relationship("ExhExhorto", back_populates="autoridad")
-    #listas_de_acuerdos: Mapped[list["ListaDeAcuerdo"]] = relationship("ListaDeAcuerdo", back_populates="autoridad")
-    #redam: Mapped[list["Redam"]] = relationship("Redam", back_populates="autoridad")
-    #sentencias: Mapped[list["Sentencia"]] = relationship("Sentencia", back_populates="autoridad")
-    usuarios: Mapped[list["Usuario"]] = relationship("Usuario", back_populates="autoridad")
+    edictos: Mapped[list["Edicto"]] = relationship(back_populates="autoridad")
+    glosas: Mapped[list["Glosa"]] = relationship(back_populates="autoridad")
+    listas_de_acuerdos: Mapped[list["ListaDeAcuerdo"]] = relationship(back_populates="autoridad")
+    sentencias: Mapped[list["Sentencia"]] = relationship(back_populates="autoridad")
+    usuarios: Mapped[list["Usuario"]] = relationship(back_populates="autoridad")
 
     @property
     def distrito_clave(self):
