@@ -24,8 +24,8 @@ class SentenciaOut(BaseModel):
     sentencia: str
     sentencia_fecha: date | None = None
     expediente: str
-    expediente_anio: int
-    expediente_num: int
+    expediente_anio: int | None = None
+    expediente_num: int | None = None
     fecha: date
     descripcion: str
     es_perspectiva_genero: bool

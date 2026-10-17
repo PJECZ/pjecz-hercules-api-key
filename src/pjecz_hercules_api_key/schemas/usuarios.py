@@ -16,12 +16,15 @@ class UsuarioOut(BaseModel):
     nombres: str
     apellido_paterno: str
     apellido_materno: str
-    autoridad_clave: str | None = None
-    autoridad_descripcion: str | None = None
-    autoridad_descripcion_corta: str | None = None
-    distrito_clave: str | None = None
-    distrito_nombre: str | None = None
-    distrito_nombre_corto: str | None = None
+    autoridad_clave: str
+    autoridad_descripcion: str
+    autoridad_descripcion_corta: str
+    distrito_clave: str
+    distrito_nombre: str
+    distrito_nombre_corto: str
+    oficina_clave: str
+    oficina_descripcion: str
+    oficina_descripcion_corta: str
     puesto: str | None
     model_config = ConfigDict(from_attributes=True)
 

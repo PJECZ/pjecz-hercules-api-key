@@ -27,6 +27,7 @@ class Distrito(Base):
 
     # Hijos
     autoridades: Mapped[list["Autoridad"]] = relationship(back_populates="distrito")
+    domicilios: Mapped[list["Domicilio"]] = relationship(back_populates="distrito")
 
     def __repr__(self):
         """Representación"""
