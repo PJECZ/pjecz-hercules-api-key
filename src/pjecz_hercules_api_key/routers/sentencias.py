@@ -5,12 +5,12 @@ Sentencias
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi_pagination import LimitOffsetPage
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
 
 from pjecz_hercules_api_key.core.authentication import UsuarioInDB, get_current_active_user
 from pjecz_hercules_api_key.core.database import Session, get_session
+from pjecz_hercules_api_key.core.pagination import CustomPage
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.models.sentencias import Sentencia
 from pjecz_hercules_api_key.schemas.sentencias import SentenciaOut
@@ -18,7 +18,7 @@ from pjecz_hercules_api_key.schemas.sentencias import SentenciaOut
 sentencias = APIRouter(prefix="/api/sentencias")
 
 
-@sentencias.get("", response_model=LimitOffsetPage[SentenciaOut])
+@sentencias.get("", response_model=CustomPage[SentenciaOut])
 def sentencias_paginado(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     session: Annotated[Session, Depends(get_session)],

@@ -5,12 +5,12 @@ Materias Tipos de Juicios
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi_pagination import LimitOffsetPage
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
 
 from pjecz_hercules_api_key.core.authentication import UsuarioInDB, get_current_active_user
 from pjecz_hercules_api_key.core.database import Session, get_session
+from pjecz_hercules_api_key.core.pagination import CustomPage
 from pjecz_hercules_api_key.models.materias_tipos_juicios import MateriaTipoJuicio
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.materias_tipos_juicios import MateriaTipoJuicioOut
@@ -18,7 +18,7 @@ from pjecz_hercules_api_key.schemas.materias_tipos_juicios import MateriaTipoJui
 materias_tipos_juicios = APIRouter(prefix="/api/materias_tipos_juicios")
 
 
-@materias_tipos_juicios.get("", response_model=LimitOffsetPage[MateriaTipoJuicioOut])
+@materias_tipos_juicios.get("", response_model=CustomPage[MateriaTipoJuicioOut])
 def materias_tipos_juicios_paginado(
     current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
     session: Annotated[Session, Depends(get_session)],
