@@ -11,11 +11,6 @@ class UsuarioOut(BaseModel):
     """Esquema para entregar usuarios"""
 
     id: int
-    autoridad_id: int
-    email: str
-    nombres: str
-    apellido_paterno: str
-    apellido_materno: str
     autoridad_clave: str
     autoridad_descripcion: str
     autoridad_descripcion_corta: str
@@ -25,6 +20,10 @@ class UsuarioOut(BaseModel):
     oficina_clave: str
     oficina_descripcion: str
     oficina_descripcion_corta: str
+    email: str
+    nombres: str
+    apellido_paterno: str
+    apellido_materno: str
     puesto: str | None
     model_config = ConfigDict(from_attributes=True)
 

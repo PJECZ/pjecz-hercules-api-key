@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.oficinas import Oficina
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.oficinas import OficinaOut
 
-oficinas = APIRouter(prefix="/api/oficinas")
+oficinas = APIRouter(prefix="/oficinas")
 
 
 @oficinas.get("", response_model=CustomPage[OficinaOut])

@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.listas_de_acuerdos import ListaDeAcuerdo
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.listas_de_acuerdos import ListaDeAcuerdoOut
 
-listas_de_acuerdos = APIRouter(prefix="/api/listas_de_acuerdos")
+listas_de_acuerdos = APIRouter(prefix="/listas_de_acuerdos")
 
 
 @listas_de_acuerdos.get("", response_model=CustomPage[ListaDeAcuerdoOut])

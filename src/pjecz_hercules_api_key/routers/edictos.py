@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.edictos import Edicto
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.edictos import EdictoOut
 
-edictos = APIRouter(prefix="/api/edictos")
+edictos = APIRouter(prefix="/edictos")
 
 
 @edictos.get("", response_model=CustomPage[EdictoOut])

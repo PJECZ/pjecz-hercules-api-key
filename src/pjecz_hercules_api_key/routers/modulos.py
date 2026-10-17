@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.modulos import Modulo
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.modulos import ModuloOut
 
-modulos = APIRouter(prefix="/api/modulos")
+modulos = APIRouter(prefix="/modulos")
 
 
 @modulos.get("", response_model=CustomPage[ModuloOut])

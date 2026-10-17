@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.materias_tipos_juicios import MateriaTipoJuic
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.materias_tipos_juicios import MateriaTipoJuicioOut
 
-materias_tipos_juicios = APIRouter(prefix="/api/materias_tipos_juicios")
+materias_tipos_juicios = APIRouter(prefix="/materias_tipos_juicios")
 
 
 @materias_tipos_juicios.get("", response_model=CustomPage[MateriaTipoJuicioOut])

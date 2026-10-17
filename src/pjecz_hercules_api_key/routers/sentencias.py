@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.models.sentencias import Sentencia
 from pjecz_hercules_api_key.schemas.sentencias import SentenciaOut
 
-sentencias = APIRouter(prefix="/api/sentencias")
+sentencias = APIRouter(prefix="/sentencias")
 
 
 @sentencias.get("", response_model=CustomPage[SentenciaOut])

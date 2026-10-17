@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.models.usuarios_roles import UsuarioRol
 from pjecz_hercules_api_key.schemas.usuarios_roles import UsuarioRolOut
 
-usuarios_roles = APIRouter(prefix="/api/usuarios_roles")
+usuarios_roles = APIRouter(prefix="/usuarios_roles")
 
 
 @usuarios_roles.get("", response_model=CustomPage[UsuarioRolOut])

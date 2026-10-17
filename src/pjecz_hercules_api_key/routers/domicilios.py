@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.domicilios import Domicilio
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.domicilios import DomicilioOut
 
-domicilios = APIRouter(prefix="/api/domicilios")
+domicilios = APIRouter(prefix="/domicilios")
 
 
 @domicilios.get("", response_model=CustomPage[DomicilioOut])

@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.glosas import Glosa
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.glosas import GlosaOut
 
-glosas = APIRouter(prefix="/api/glosas")
+glosas = APIRouter(prefix="/glosas")
 
 
 @glosas.get("", response_model=CustomPage[GlosaOut])

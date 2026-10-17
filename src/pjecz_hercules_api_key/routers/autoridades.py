@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.autoridades import Autoridad
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.autoridades import AutoridadOut
 
-autoridades = APIRouter(prefix="/api/autoridades")
+autoridades = APIRouter(prefix="/autoridades")
 
 
 @autoridades.get("", response_model=CustomPage[AutoridadOut])

@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 
 
 class OficinaOut(BaseModel):
-    """Esquema para entregar municipios"""
+    """Esquema para entregar oficinas"""
 
     distrito_clave: str
     distrito_nombre: str

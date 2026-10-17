@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.distritos import Distrito
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.distritos import DistritoOut
 
-distritos = APIRouter(prefix="/api/distritos")
+distritos = APIRouter(prefix="/distritos")
 
 
 @distritos.get("", response_model=CustomPage[DistritoOut])

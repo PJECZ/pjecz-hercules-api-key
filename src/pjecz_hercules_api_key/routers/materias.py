@@ -15,7 +15,7 @@ from pjecz_hercules_api_key.models.materias import Materia
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.materias import MateriaOut
 
-materias = APIRouter(prefix="/api/materias")
+materias = APIRouter(prefix="/materias")
 
 
 @materias.get("", response_model=CustomPage[MateriaOut])

@@ -14,7 +14,7 @@ from pjecz_hercules_api_key.core.pagination import CustomPage
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.schemas.permisos import PermisoOut
 
-permisos = APIRouter(prefix="/api/permisos")
+permisos = APIRouter(prefix="/permisos")
 
 
 @permisos.get("", response_model=CustomPage[PermisoOut])
