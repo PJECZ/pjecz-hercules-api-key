@@ -8,12 +8,14 @@ from fastapi_pagination import add_pagination
 
 from pjecz_hercules_api_key.routers.autoridades import autoridades
 from pjecz_hercules_api_key.routers.distritos import distritos
+from pjecz_hercules_api_key.routers.domicilios import domicilios
 from pjecz_hercules_api_key.routers.edictos import edictos
 from pjecz_hercules_api_key.routers.glosas import glosas
 from pjecz_hercules_api_key.routers.listas_de_acuerdos import listas_de_acuerdos
 from pjecz_hercules_api_key.routers.materias import materias
 from pjecz_hercules_api_key.routers.materias_tipos_juicios import materias_tipos_juicios
 from pjecz_hercules_api_key.routers.modulos import modulos
+from pjecz_hercules_api_key.routers.oficinas import oficinas
 from pjecz_hercules_api_key.routers.permisos import permisos
 from pjecz_hercules_api_key.routers.roles import roles
 from pjecz_hercules_api_key.routers.sentencias import sentencias
@@ -34,12 +36,14 @@ app.add_middleware(
 # Agregar routers
 app.include_router(autoridades)
 app.include_router(distritos)
+app.include_router(domicilios)
 app.include_router(edictos)
 app.include_router(glosas)
 app.include_router(listas_de_acuerdos)
 app.include_router(materias)
 app.include_router(materias_tipos_juicios)
 app.include_router(modulos)
+app.include_router(oficinas)
 app.include_router(permisos)
 app.include_router(roles)
 app.include_router(sentencias)
