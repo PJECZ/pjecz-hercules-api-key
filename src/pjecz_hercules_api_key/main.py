@@ -30,6 +30,7 @@ from pjecz_hercules_api_key.routers.ofi_documentos_adjuntos import ofi_documento
 from pjecz_hercules_api_key.routers.ofi_documentos_destinatarios import ofi_documentos_destinatarios
 from pjecz_hercules_api_key.routers.oficinas import oficinas
 from pjecz_hercules_api_key.routers.permisos import permisos
+from pjecz_hercules_api_key.routers.redams import redams
 from pjecz_hercules_api_key.routers.roles import roles
 from pjecz_hercules_api_key.routers.sentencias import sentencias
 from pjecz_hercules_api_key.routers.usuarios import usuarios
@@ -71,6 +72,7 @@ app.include_router(ofi_documentos_adjuntos)
 app.include_router(ofi_documentos_destinatarios)
 app.include_router(oficinas)
 app.include_router(permisos)
+app.include_router(redams)
 app.include_router(roles)
 app.include_router(sentencias)
 app.include_router(usuarios)

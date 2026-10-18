@@ -30,6 +30,7 @@ from pjecz_hercules_api_key.models.ofi_documentos_adjuntos import OfiDocumentoAd
 from pjecz_hercules_api_key.models.ofi_documentos_destinatarios import OfiDocumentoDestinatario
 from pjecz_hercules_api_key.models.oficinas import Oficina
 from pjecz_hercules_api_key.models.permisos import Permiso
+from pjecz_hercules_api_key.models.redams import Redam
 from pjecz_hercules_api_key.models.roles import Rol
 from pjecz_hercules_api_key.models.sentencias import Sentencia
 from pjecz_hercules_api_key.models.usuarios import Usuario
@@ -62,6 +63,7 @@ __all__ = [
     "OfiDocumentoDestinatario",
     "Oficina",
     "Permiso",
+    "Redam",
     "Rol",
     "Sentencia",
     "Usuario",
