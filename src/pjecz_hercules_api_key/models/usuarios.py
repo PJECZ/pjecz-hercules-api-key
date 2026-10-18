@@ -40,6 +40,7 @@ class Usuario(Base):
     contrasena: Mapped[Optional[str]] = mapped_column(String(256))
 
     # Hijos
+    arc_remesas: Mapped[list["ArcRemesa"]] = relationship(back_populates="usuario_asignado")
     usuarios_roles: Mapped[list["UsuarioRol"]] = relationship(back_populates="usuario")
 
     # Propiedades
