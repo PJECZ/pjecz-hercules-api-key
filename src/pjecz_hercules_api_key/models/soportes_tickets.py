@@ -46,7 +46,7 @@ class SoporteTicket(Base):
     descripcion: Mapped[str] = mapped_column(Text)
     estado: Mapped[str] = mapped_column(Enum(*ESTADOS, name="soportes_tickets_estados", native_enum=False), index=True)
     resolucion: Mapped[Optional[datetime]]
-    soluciones: Mapped[Optional[str]]
+    soluciones: Mapped[Optional[str]] = mapped_column(Text)
     departamento: Mapped[str] = mapped_column(
         Enum(*DEPARTAMENTOS, name="soportes_tickets_departamentos", native_enum=False),
         index=True,
