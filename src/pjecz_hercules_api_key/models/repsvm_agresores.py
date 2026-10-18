@@ -47,7 +47,7 @@ class RepsvmAgresor(Base):
     observaciones: Mapped[Optional[str]] = mapped_column(String(1024))
     sentencia_url: Mapped[Optional[str]] = mapped_column(String(512))
     tipo_juzgado: Mapped[str] = mapped_column(Enum(*TIPOS_JUZGADOS, name="tipos_juzgados", native_enum=False), index=True)
-    tipo_sentencia: Mapped[str] = mapped_column(Enum(*TIPOS_SENTENCIAS, name="tipos_juzgados", native_enum=False), index=True)
+    tipo_sentencia: Mapped[str] = mapped_column(Enum(*TIPOS_SENTENCIAS, name="tipos_sentencias", native_enum=False), index=True)
 
     @property
     def distrito_clave(self):
