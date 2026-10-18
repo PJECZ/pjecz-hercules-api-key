@@ -62,6 +62,7 @@ class Autoridad(Base):
     exh_exhortos: Mapped[list["ExhExhorto"]] = relationship(back_populates="autoridad")
     glosas: Mapped[list["Glosa"]] = relationship(back_populates="autoridad")
     listas_de_acuerdos: Mapped[list["ListaDeAcuerdo"]] = relationship(back_populates="autoridad")
+    redam: Mapped[list["Redam"]] = relationship(back_populates="autoridad")
     sentencias: Mapped[list["Sentencia"]] = relationship(back_populates="autoridad")
     usuarios: Mapped[list["Usuario"]] = relationship(back_populates="autoridad")
 
