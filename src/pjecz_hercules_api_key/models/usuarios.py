@@ -66,28 +66,6 @@ class Usuario(Base):
                             self.permisos_consultados[etiqueta] = permiso.nivel
         return self.permisos_consultados
 
-    def can(self, modulo_nombre: str, permission: int):
-        """¿Tiene permiso?"""
-        if modulo_nombre in self.permisos:
-            return self.permisos[modulo_nombre] >= permission
-        return False
-
-    def can_view(self, modulo_nombre: str):
-        """¿Tiene permiso para ver?"""
-        return self.can(modulo_nombre, Permiso.VER)
-
-    def can_edit(self, modulo_nombre: str):
-        """¿Tiene permiso para editar?"""
-        return self.can(modulo_nombre, Permiso.MODIFICAR)
-
-    def can_insert(self, modulo_nombre: str):
-        """¿Tiene permiso para agregar?"""
-        return self.can(modulo_nombre, Permiso.CREAR)
-
-    def can_admin(self, modulo_nombre: str):
-        """¿Tiene permiso para administrar?"""
-        return self.can(modulo_nombre, Permiso.ADMINISTRAR)
-
     @property
     def distrito_clave(self):
         """Distrito clave"""
