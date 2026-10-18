@@ -24,7 +24,7 @@ def arc_remesas_documentos_paginado(
     session: Annotated[Session, Depends(get_session)],
 ):
     """Archivos Remesas Documentos paginado"""
-    if current_user.permissions.get("ARC REMESAS DOCUMENTOS", 0) < Permiso.VER:
+    if current_user.permissions.get("ARC REMESAS", 0) < Permiso.VER:  # TODO: Crear un Modulo con el nombre especifico
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     stmt = select(ArcRemesaDocumento).where(ArcRemesaDocumento.estatus == "A").order_by(ArcRemesaDocumento.id.desc())
     return paginate(session, stmt)

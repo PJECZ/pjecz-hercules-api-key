@@ -54,8 +54,8 @@ class Autoridad(Base):
     )
 
     # Hijos
-    arc_documentos: Mapped[List["ArcDocumento"]] = relationship(back_populates="autoridad")
-    arc_remesas: Mapped[List["ArcRemesa"]] = relationship(back_populates="autoridad")
+    arc_documentos: Mapped[list["ArcDocumento"]] = relationship(back_populates="autoridad")
+    arc_remesas: Mapped[list["ArcRemesa"]] = relationship(back_populates="autoridad")
     edictos: Mapped[list["Edicto"]] = relationship(back_populates="autoridad")
     glosas: Mapped[list["Glosa"]] = relationship(back_populates="autoridad")
     listas_de_acuerdos: Mapped[list["ListaDeAcuerdo"]] = relationship(back_populates="autoridad")
