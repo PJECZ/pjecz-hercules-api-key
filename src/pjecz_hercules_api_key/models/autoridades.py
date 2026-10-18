@@ -31,6 +31,8 @@ class Autoridad(Base):
     distrito: Mapped["Distrito"] = relationship(back_populates="autoridades")
     materia_id: Mapped[int] = mapped_column(ForeignKey("materias.id"))
     materia: Mapped["Materia"] = relationship(back_populates="autoridades")
+    municipio_id: Mapped[int] = mapped_column(ForeignKey("municipios.id"))
+    municipio: Mapped["Municipio"] = relationship(back_populates="autoridades")
 
     # Columnas
     clave: Mapped[str] = mapped_column(String(16), unique=True)
@@ -57,6 +59,7 @@ class Autoridad(Base):
     arc_documentos: Mapped[list["ArcDocumento"]] = relationship(back_populates="autoridad")
     arc_remesas: Mapped[list["ArcRemesa"]] = relationship(back_populates="autoridad")
     edictos: Mapped[list["Edicto"]] = relationship(back_populates="autoridad")
+    exh_exhortos: Mapped[list["ExhExhorto"]] = relationship(back_populates="autoridad")
     glosas: Mapped[list["Glosa"]] = relationship(back_populates="autoridad")
     listas_de_acuerdos: Mapped[list["ListaDeAcuerdo"]] = relationship(back_populates="autoridad")
     sentencias: Mapped[list["Sentencia"]] = relationship(back_populates="autoridad")

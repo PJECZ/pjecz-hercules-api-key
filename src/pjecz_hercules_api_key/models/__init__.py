@@ -13,6 +13,9 @@ from pjecz_hercules_api_key.models.autoridades import Autoridad
 from pjecz_hercules_api_key.models.distritos import Distrito
 from pjecz_hercules_api_key.models.domicilios import Domicilio
 from pjecz_hercules_api_key.models.edictos import Edicto
+from pjecz_hercules_api_key.models.exh_exhortos import ExhExhorto
+from pjecz_hercules_api_key.models.exh_exhortos_archivos import ExhExhortoArchivo
+from pjecz_hercules_api_key.models.exh_exhortos_partes import ExhExhortoParte
 from pjecz_hercules_api_key.models.glosas import Glosa
 from pjecz_hercules_api_key.models.listas_de_acuerdos import ListaDeAcuerdo
 from pjecz_hercules_api_key.models.materias import Materia
@@ -38,6 +41,9 @@ __all__ = [
     "Distrito",
     "Domicilio",
     "Edicto",
+    "ExhExhorto",
+    "ExhExhortoArchivo",
+    "ExhExhortoParte",
     "Glosa",
     "ListaDeAcuerdo",
     "Materia",
