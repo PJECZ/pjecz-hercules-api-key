@@ -6,6 +6,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_pagination import add_pagination
 
+from pjecz_hercules_api_key.routers.arc_documentos import arc_documentos
+from pjecz_hercules_api_key.routers.arc_documentos_tipos import arc_documentos_tipos
+from pjecz_hercules_api_key.routers.arc_juzgados_extintos import arc_juzgados_extintos
+from pjecz_hercules_api_key.routers.arc_remesas import arc_remesas
+from pjecz_hercules_api_key.routers.arc_remesas_documentos import arc_remesas_documentos
 from pjecz_hercules_api_key.routers.autoridades import autoridades
 from pjecz_hercules_api_key.routers.distritos import distritos
 from pjecz_hercules_api_key.routers.domicilios import domicilios
@@ -34,6 +39,11 @@ app.add_middleware(
 )
 
 # Agregar routers
+app.include_router(arc_documentos)
+app.include_router(arc_documentos_tipos)
+app.include_router(arc_juzgados_extintos)
+app.include_router(arc_remesas)
+app.include_router(arc_remesas_documentos)
 app.include_router(autoridades)
 app.include_router(distritos)
 app.include_router(domicilios)

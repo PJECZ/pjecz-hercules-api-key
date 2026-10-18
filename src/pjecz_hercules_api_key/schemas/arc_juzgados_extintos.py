@@ -8,6 +8,7 @@ from pydantic import BaseModel, ConfigDict
 class ArcJuzgadoExtintoOut(BaseModel):
     """Esquema para entregar juzgados extintos"""
 
+    id: int
     distrito_clave: str
     distrito_nombre: str
     distrito_nombre_corto: str
