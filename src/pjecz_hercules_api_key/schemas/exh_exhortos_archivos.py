@@ -15,7 +15,7 @@ class ExhExhortoArchivoOut(BaseModel):
     hash_sha1: str | None = None
     hash_sha256: str | None = None
     tipo_documento: int
-    url: str
+    url: str | None = None
     tamano: int | None = None
     fecha_hora_recepcion: datetime
     estado: str

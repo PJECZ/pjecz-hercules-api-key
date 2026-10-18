@@ -15,11 +15,16 @@ from pjecz_hercules_api_key.routers.autoridades import autoridades
 from pjecz_hercules_api_key.routers.distritos import distritos
 from pjecz_hercules_api_key.routers.domicilios import domicilios
 from pjecz_hercules_api_key.routers.edictos import edictos
+from pjecz_hercules_api_key.routers.estados import estados
+from pjecz_hercules_api_key.routers.exh_exhortos import exh_exhortos
+from pjecz_hercules_api_key.routers.exh_exhortos_archivos import exh_exhortos_archivos
+from pjecz_hercules_api_key.routers.exh_exhortos_partes import exh_exhortos_partes
 from pjecz_hercules_api_key.routers.glosas import glosas
 from pjecz_hercules_api_key.routers.listas_de_acuerdos import listas_de_acuerdos
 from pjecz_hercules_api_key.routers.materias import materias
 from pjecz_hercules_api_key.routers.materias_tipos_juicios import materias_tipos_juicios
 from pjecz_hercules_api_key.routers.modulos import modulos
+from pjecz_hercules_api_key.routers.municipios import municipios
 from pjecz_hercules_api_key.routers.ofi_documentos import ofi_documentos
 from pjecz_hercules_api_key.routers.ofi_documentos_adjuntos import ofi_documentos_adjuntos
 from pjecz_hercules_api_key.routers.ofi_documentos_destinatarios import ofi_documentos_destinatarios
@@ -51,11 +56,16 @@ app.include_router(autoridades)
 app.include_router(distritos)
 app.include_router(domicilios)
 app.include_router(edictos)
+app.include_router(estados)
+app.include_router(exh_exhortos)
+app.include_router(exh_exhortos_archivos)
+app.include_router(exh_exhortos_partes)
 app.include_router(glosas)
 app.include_router(listas_de_acuerdos)
 app.include_router(materias)
 app.include_router(materias_tipos_juicios)
 app.include_router(modulos)
+app.include_router(municipios)
 app.include_router(ofi_documentos)
 app.include_router(ofi_documentos_adjuntos)
 app.include_router(ofi_documentos_destinatarios)

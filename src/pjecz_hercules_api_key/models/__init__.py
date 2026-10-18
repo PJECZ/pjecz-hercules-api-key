@@ -13,14 +13,18 @@ from pjecz_hercules_api_key.models.autoridades import Autoridad
 from pjecz_hercules_api_key.models.distritos import Distrito
 from pjecz_hercules_api_key.models.domicilios import Domicilio
 from pjecz_hercules_api_key.models.edictos import Edicto
+from pjecz_hercules_api_key.models.estados import Estado
+from pjecz_hercules_api_key.models.exh_areas import ExhArea
 from pjecz_hercules_api_key.models.exh_exhortos import ExhExhorto
 from pjecz_hercules_api_key.models.exh_exhortos_archivos import ExhExhortoArchivo
 from pjecz_hercules_api_key.models.exh_exhortos_partes import ExhExhortoParte
+from pjecz_hercules_api_key.models.exh_tipos_diligencias import ExhTipoDiligencia
 from pjecz_hercules_api_key.models.glosas import Glosa
 from pjecz_hercules_api_key.models.listas_de_acuerdos import ListaDeAcuerdo
 from pjecz_hercules_api_key.models.materias import Materia
 from pjecz_hercules_api_key.models.materias_tipos_juicios import MateriaTipoJuicio
 from pjecz_hercules_api_key.models.modulos import Modulo
+from pjecz_hercules_api_key.models.municipios import Municipio
 from pjecz_hercules_api_key.models.ofi_documentos import OfiDocumento
 from pjecz_hercules_api_key.models.ofi_documentos_adjuntos import OfiDocumentoAdjunto
 from pjecz_hercules_api_key.models.ofi_documentos_destinatarios import OfiDocumentoDestinatario
@@ -41,14 +45,18 @@ __all__ = [
     "Distrito",
     "Domicilio",
     "Edicto",
+    "Estado",
+    "ExhArea",
     "ExhExhorto",
     "ExhExhortoArchivo",
     "ExhExhortoParte",
+    "ExhTipoDiligencia",
     "Glosa",
     "ListaDeAcuerdo",
     "Materia",
     "MateriaTipoJuicio",
     "Modulo",
+    "Municipio",
     "OfiDocumento",
     "OfiDocumentoAdjunto",
     "OfiDocumentoDestinatario",
