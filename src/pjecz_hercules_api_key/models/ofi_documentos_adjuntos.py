@@ -5,6 +5,7 @@ Oficios Documentos Adjuntos
 import uuid
 
 from sqlalchemy import ForeignKey, String
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from pjecz_hercules_api_key.core.database import Base

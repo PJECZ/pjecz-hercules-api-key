@@ -18,6 +18,9 @@ from pjecz_hercules_api_key.models.listas_de_acuerdos import ListaDeAcuerdo
 from pjecz_hercules_api_key.models.materias import Materia
 from pjecz_hercules_api_key.models.materias_tipos_juicios import MateriaTipoJuicio
 from pjecz_hercules_api_key.models.modulos import Modulo
+from pjecz_hercules_api_key.models.ofi_documentos import OfiDocumento
+from pjecz_hercules_api_key.models.ofi_documentos_adjuntos import OfiDocumentoAdjunto
+from pjecz_hercules_api_key.models.ofi_documentos_destinatarios import OfiDocumentoDestinatario
 from pjecz_hercules_api_key.models.oficinas import Oficina
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.models.roles import Rol
@@ -40,6 +43,9 @@ __all__ = [
     "Materia",
     "MateriaTipoJuicio",
     "Modulo",
+    "OfiDocumento",
+    "OfiDocumentoAdjunto",
+    "OfiDocumentoDestinatario",
     "Oficina",
     "Permiso",
     "Rol",

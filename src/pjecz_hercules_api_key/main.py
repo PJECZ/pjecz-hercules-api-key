@@ -20,6 +20,9 @@ from pjecz_hercules_api_key.routers.listas_de_acuerdos import listas_de_acuerdos
 from pjecz_hercules_api_key.routers.materias import materias
 from pjecz_hercules_api_key.routers.materias_tipos_juicios import materias_tipos_juicios
 from pjecz_hercules_api_key.routers.modulos import modulos
+from pjecz_hercules_api_key.routers.ofi_documentos import ofi_documentos
+from pjecz_hercules_api_key.routers.ofi_documentos_adjuntos import ofi_documentos_adjuntos
+from pjecz_hercules_api_key.routers.ofi_documentos_destinatarios import ofi_documentos_destinatarios
 from pjecz_hercules_api_key.routers.oficinas import oficinas
 from pjecz_hercules_api_key.routers.permisos import permisos
 from pjecz_hercules_api_key.routers.roles import roles
@@ -53,6 +56,9 @@ app.include_router(listas_de_acuerdos)
 app.include_router(materias)
 app.include_router(materias_tipos_juicios)
 app.include_router(modulos)
+app.include_router(ofi_documentos)
+app.include_router(ofi_documentos_adjuntos)
+app.include_router(ofi_documentos_destinatarios)
 app.include_router(oficinas)
 app.include_router(permisos)
 app.include_router(roles)
