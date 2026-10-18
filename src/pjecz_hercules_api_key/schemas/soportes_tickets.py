@@ -20,7 +20,7 @@ class SoporteTicketOut(BaseModel):
     descripcion: str
     estado: str
     resolucion: datetime | None = None
-    soluciones: str
+    soluciones: str | None = None
     departamento: str
     model_config = ConfigDict(from_attributes=True)
 

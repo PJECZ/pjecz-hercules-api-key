@@ -19,6 +19,8 @@ from pjecz_hercules_api_key.routers.estados import estados
 from pjecz_hercules_api_key.routers.exh_exhortos import exh_exhortos
 from pjecz_hercules_api_key.routers.exh_exhortos_archivos import exh_exhortos_archivos
 from pjecz_hercules_api_key.routers.exh_exhortos_partes import exh_exhortos_partes
+from pjecz_hercules_api_key.routers.funcionarios import funcionarios
+from pjecz_hercules_api_key.routers.funcionarios_oficinas import funcionarios_oficinas
 from pjecz_hercules_api_key.routers.glosas import glosas
 from pjecz_hercules_api_key.routers.listas_de_acuerdos import listas_de_acuerdos
 from pjecz_hercules_api_key.routers.materias import materias
@@ -33,6 +35,8 @@ from pjecz_hercules_api_key.routers.permisos import permisos
 from pjecz_hercules_api_key.routers.redams import redams
 from pjecz_hercules_api_key.routers.roles import roles
 from pjecz_hercules_api_key.routers.sentencias import sentencias
+from pjecz_hercules_api_key.routers.soportes_categorias import soportes_categorias
+from pjecz_hercules_api_key.routers.soportes_tickets import soportes_tickets
 from pjecz_hercules_api_key.routers.usuarios import usuarios
 from pjecz_hercules_api_key.routers.usuarios_roles import usuarios_roles
 
@@ -61,6 +65,8 @@ app.include_router(estados)
 app.include_router(exh_exhortos)
 app.include_router(exh_exhortos_archivos)
 app.include_router(exh_exhortos_partes)
+app.include_router(funcionarios)
+app.include_router(funcionarios_oficinas)
 app.include_router(glosas)
 app.include_router(listas_de_acuerdos)
 app.include_router(materias)
@@ -75,6 +81,8 @@ app.include_router(permisos)
 app.include_router(redams)
 app.include_router(roles)
 app.include_router(sentencias)
+app.include_router(soportes_categorias)
+app.include_router(soportes_tickets)
 app.include_router(usuarios)
 app.include_router(usuarios_roles)
 

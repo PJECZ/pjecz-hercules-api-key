@@ -16,7 +16,7 @@ class FuncionarioOficinaOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class OneFuncionarioOficinaOut(FuncionarioOficinaOut):
+class OneFuncionarioOficinaOut(BaseModel):
     """Esquema para entregar un funcionario-oficina"""
 
     success: bool

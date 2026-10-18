@@ -10,7 +10,7 @@ class SoporteCategoriaOut(BaseModel):
 
     id: int
     nombre: str
-    departamento: str
+    departamento: str | None = None
     model_config = ConfigDict(from_attributes=True)
 
 
