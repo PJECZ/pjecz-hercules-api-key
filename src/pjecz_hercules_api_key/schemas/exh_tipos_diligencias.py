@@ -1,0 +1,3 @@
+"""
+EXH Tipos Diligencias
+"""

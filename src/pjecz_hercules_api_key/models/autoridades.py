@@ -2,6 +2,8 @@
 Autoridades
 """
 
+from typing import Optional
+
 from sqlalchemy import Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -58,6 +60,9 @@ class Autoridad(Base):
     # Hijos
     arc_documentos: Mapped[list["ArcDocumento"]] = relationship(back_populates="autoridad")
     arc_remesas: Mapped[list["ArcRemesa"]] = relationship(back_populates="autoridad")
+    dgt_digitalizaciones: Mapped[list["DgtDigitalizacion"]] = relationship(back_populates="autoridad")
+    dgt_plataforma_autoridad: Mapped[Optional["DgtPlataformaAutoridad"]] = relationship(back_populates="autoridad")  # Uno a uno
+    dgt_entregas: Mapped[list["DgtEntrega"]] = relationship(back_populates="autoridad")
     edictos: Mapped[list["Edicto"]] = relationship(back_populates="autoridad")
     exh_exhortos: Mapped[list["ExhExhorto"]] = relationship(back_populates="autoridad")
     glosas: Mapped[list["Glosa"]] = relationship(back_populates="autoridad")

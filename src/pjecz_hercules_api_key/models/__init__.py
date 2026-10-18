@@ -10,6 +10,14 @@ from pjecz_hercules_api_key.models.arc_juzgados_extintos import ArcJuzgadoExtint
 from pjecz_hercules_api_key.models.arc_remesas import ArcRemesa
 from pjecz_hercules_api_key.models.arc_remesas_documentos import ArcRemesaDocumento
 from pjecz_hercules_api_key.models.autoridades import Autoridad
+from pjecz_hercules_api_key.models.dgt_depositos import DgtDepositos
+from pjecz_hercules_api_key.models.dgt_digitalizaciones import DgtDigitalizacion
+from pjecz_hercules_api_key.models.dgt_entregas import DgtEntrega
+from pjecz_hercules_api_key.models.dgt_plataformas import DgtPlataforma
+from pjecz_hercules_api_key.models.dgt_plataformas_autoridades import DgtPlataformaAutoridad
+from pjecz_hercules_api_key.models.dgt_plataformas_endpoints import DgtPlataformaEndpoint
+from pjecz_hercules_api_key.models.dgt_rutas import DgtRuta
+from pjecz_hercules_api_key.models.dgt_tipos import DgtTipo
 from pjecz_hercules_api_key.models.distritos import Distrito
 from pjecz_hercules_api_key.models.domicilios import Domicilio
 from pjecz_hercules_api_key.models.edictos import Edicto
@@ -48,6 +56,14 @@ __all__ = [
     "ArcRemesa",
     "ArcRemesaDocumento",
     "Autoridad",
+    "DgtDepositos",
+    "DgtDigitalizacion",
+    "DgtEntrega",
+    "DgtPlataforma",
+    "DgtPlataformaAutoridad",
+    "DgtPlataformaEndpoint",
+    "DgtRuta",
+    "DgtTipo",
     "Distrito",
     "Domicilio",
     "Edicto",
