@@ -30,7 +30,7 @@ class Oficina(Base):
     es_jurisdiccional: Mapped[bool] = mapped_column(default=False)
 
     # Hijos
-    # funcionarios_oficinas: Mapped[list["FuncionarioOficina"]] = relationship(back_populates="oficina")
+    funcionarios_oficinas: Mapped[list["FuncionarioOficina"]] = relationship(back_populates="oficina")
     usuarios: Mapped[list["Usuario"]] = relationship(back_populates="oficina")
 
     @property

@@ -19,6 +19,8 @@ from pjecz_hercules_api_key.models.exh_exhortos import ExhExhorto
 from pjecz_hercules_api_key.models.exh_exhortos_archivos import ExhExhortoArchivo
 from pjecz_hercules_api_key.models.exh_exhortos_partes import ExhExhortoParte
 from pjecz_hercules_api_key.models.exh_tipos_diligencias import ExhTipoDiligencia
+from pjecz_hercules_api_key.models.funcionarios import Funcionario
+from pjecz_hercules_api_key.models.funcionarios_oficinas import FuncionarioOficina
 from pjecz_hercules_api_key.models.glosas import Glosa
 from pjecz_hercules_api_key.models.listas_de_acuerdos import ListaDeAcuerdo
 from pjecz_hercules_api_key.models.materias import Materia
@@ -33,6 +35,8 @@ from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.models.redams import Redam
 from pjecz_hercules_api_key.models.roles import Rol
 from pjecz_hercules_api_key.models.sentencias import Sentencia
+from pjecz_hercules_api_key.models.soportes_categorias import SoporteCategoria
+from pjecz_hercules_api_key.models.soportes_tickets import SoporteTicket
 from pjecz_hercules_api_key.models.usuarios import Usuario
 from pjecz_hercules_api_key.models.usuarios_roles import UsuarioRol
 
@@ -52,6 +56,8 @@ __all__ = [
     "ExhExhortoArchivo",
     "ExhExhortoParte",
     "ExhTipoDiligencia",
+    "Funcionario",
+    "FuncionarioOficina",
     "Glosa",
     "ListaDeAcuerdo",
     "Materia",
@@ -66,6 +72,8 @@ __all__ = [
     "Redam",
     "Rol",
     "Sentencia",
+    "SoporteCategoria",
+    "SoporteTicket",
     "Usuario",
     "UsuarioRol",
 ]
