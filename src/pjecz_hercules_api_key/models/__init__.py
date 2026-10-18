@@ -33,6 +33,7 @@ from pjecz_hercules_api_key.models.ofi_documentos_destinatarios import OfiDocume
 from pjecz_hercules_api_key.models.oficinas import Oficina
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.models.redams import Redam
+from pjecz_hercules_api_key.models.repsvm_agresores import RepsvmAgresor
 from pjecz_hercules_api_key.models.roles import Rol
 from pjecz_hercules_api_key.models.sentencias import Sentencia
 from pjecz_hercules_api_key.models.soportes_categorias import SoporteCategoria
@@ -70,6 +71,7 @@ __all__ = [
     "Oficina",
     "Permiso",
     "Redam",
+    "RepsvmAgresor",
     "Rol",
     "Sentencia",
     "SoporteCategoria",
