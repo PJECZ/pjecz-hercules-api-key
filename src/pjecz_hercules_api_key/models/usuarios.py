@@ -41,6 +41,8 @@ class Usuario(Base):
 
     # Hijos
     arc_remesas: Mapped[list["ArcRemesa"]] = relationship(back_populates="usuario_asignado")
+    ofi_documentos: Mapped[list["OfiDocumento"]] = relationship(back_populates="usuario")
+    ofi_documentos_destinatarios: Mapped[list["OfiDocumentoDestinatario"]] = relationship(back_populates="usuario")
     usuarios_roles: Mapped[list["UsuarioRol"]] = relationship(back_populates="usuario")
 
     # Propiedades
