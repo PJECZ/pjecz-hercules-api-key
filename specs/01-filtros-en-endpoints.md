@@ -13,11 +13,10 @@
 
 - Crear `src/pjecz_hercules_api_key/core/validation.py` con las funciones de validación y normalización.
 - Agregar parámetros `Query` opcionales al endpoint `GET ""` de cada router listado en la tabla de filtros.
-- Filtros por campos propios de la tabla como texto completo: `expediente`.
+- Filtros por campos propios de la tabla como texto completo: `expediente`, `email`, `usuario_email`, `curp`.
 - Filtros por campos propios de la tabla como texto parcial: `apellido_paterno`, `apellido_materno`, `clave`, `demandado`, `descripcion`, `edificio`, `*_edificio`, `nombre`, `*_nombre`, `nombres`.
 - Filtros por campos propios de la tabla como entero: `expediente_anio` / `anio`, `expediente_num` / `expediente_numero`.
-- Filtros por campos propios de la tabla como correo electrónico parcial: `email`, `usuario_email`.
-- Filtros por campos propios de la tabla como CURP parcial: `curp`, `funcionario_curp`, `usuario_curp`.
+- Filtros por campos propios de la tabla como CURP parcial: `funcionario_curp`, `usuario_curp`.
 - Filtros por campos propios de la tabla como texto completo que debe ser una opcion predeterminada en el modelo: `estado`
 - Filtros por clave de relaciones (`autoridad_clave`, `distrito_clave`, `domicilio_edificio`, `materia_clave`, etc.) mediante `JOIN`.
 - Filtros por campos booleanos (`es_*`, `en_*`)
@@ -65,8 +64,8 @@ Convenciones:
 | --- | --- |
 | `apellido_paterno`, `apellido_materno`, `clave`, `demandado`, `descripcion`, `edificio`, `*_edificio`, `nombre`, `*_nombre`, `nombres` | `ILIKE '%fragmento%'` tras `safe_string`. |
 | `clave`, `*_clave` | `ILIKE '%fragmento%'` tras `safe_clave`. |
-| `curp`, `funcionario_curp`, `usuario_curp` | `ILIKE '%fragmento%'` tras `safe_curp`. |
-| `email` | `ILIKE '%fragmento%'` tras `safe_email`. |
+| `curp`, `funcionario_curp`, `usuario_curp` | Igualdad tras `safe_curp`. |
+| `email` | Igualdad tras `safe_email`. |
 | `fecha` | Igualdad. |
 | `estado` | Igualdad tras `safe_string`. |
 | `fecha_desde` / `fecha_hasta` | `>=` / `<=`. |
@@ -177,7 +176,6 @@ Cada paso deja la API funcionando y se puede hacer commit de él por separado.
 - **Sí:** filtros por `*_clave` de relaciones con `JOIN`. Es el filtro más útil para documentos judiciales.
 - **No:** solo campos propios de la tabla. Dejaría fuera autoridad y distrito.
 - **Sí:** filtro por fragmento de `nombre` además de `descripcion`. Muchos catálogos no tienen `descripcion`.
-- **No:** filtrar por `nombres`, `apellido_*`, `email` en usuarios y funcionarios. No es parte del conjunto acordado.
 - **No:** `funcionarios.nombre`. Es `@property`, no columna; no se puede usar en SQL.
 - **Sí:** el nombre de cada parámetro coincide con el campo del esquema (`anio` y `expediente_numero` en `arc_documentos`; `expediente_anio` y `expediente_num` en los demás).
 - **Sí:** HTTP 422 con `detail` ante parámetros inválidos. Es lo mismo que hace FastAPI con los tipos inválidos.
