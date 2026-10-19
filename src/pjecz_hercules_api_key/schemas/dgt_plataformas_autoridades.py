@@ -14,6 +14,7 @@ class DgtPlataformaAutoridadOut(BaseModel):
     autoridad_clave: str
     autoridad_descripcion: str
     autoridad_descripcion_corta: str
+    dgt_plataforma_clave: str
     dgt_plataforma_descripcion: str
     model_config = ConfigDict(from_attributes=True)
 

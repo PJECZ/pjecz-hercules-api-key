@@ -43,6 +43,11 @@ class DgtPlataformaAutoridad(Base):
         return self.autoridad.descripcion_corta
 
     @property
+    def dgt_plataforma_clave(self):
+        """DGT Plataforma clave"""
+        return self.dgt_plataforma.clave
+
+    @property
     def dgt_plataforma_descripcion(self):
         """DGT Plataforma descripción"""
         return self.dgt_plataforma.descripcion

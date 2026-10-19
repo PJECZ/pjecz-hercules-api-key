@@ -11,6 +11,7 @@ class DgtPlataformaEndpointOut(BaseModel):
     """Esquema para entregar plataformas-endpoints"""
 
     id: uuid.UUID
+    dgt_plataforma_clave: str
     dgt_plataforma_descripcion: str
     descripcion: str
     ruta: str

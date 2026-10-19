@@ -13,12 +13,14 @@
 
 - Crear `src/pjecz_hercules_api_key/core/validation.py` con las funciones de validación y normalización.
 - Agregar parámetros `Query` opcionales al endpoint `GET ""` de cada router listado en la tabla de filtros.
-- Filtros por campos propios de la tabla como texto completo: `expediente`, `email`, `usuario_email`, `curp`.
-- Filtros por campos propios de la tabla como texto parcial: `apellido_paterno`, `apellido_materno`, `clave`, `demandado`, `descripcion`, `edificio`, `*_edificio`, `nombre`, `*_nombre`, `nombres`.
+- Filtros por campos propios de la tabla como texto parcial: `actor`, `apellido_paterno`, `apellido_materno`, `clave`, `demandado`, `descripcion`, `edificio`, `*_edificio`, `nombre`, `*_nombre`, `nombres`.
+- Filtros por campos propios de la tabla como texto completo: `expediente`.
+- Filtros por campos propios de la tabla como texto completo que debe ser una opcion predeterminada en el modelo: `estado`, `ubicacion`.
+- Filtros por campos propios de la tabla como correo electrónico completo: `email`, `usuario_email`.
+- Filtros por campos propios de la tabla como CURP completo: `curp`, `funcionario_curp`, `usuario_curp`.
 - Filtros por campos propios de la tabla como entero: `expediente_anio` / `anio`, `expediente_num` / `expediente_numero`.
-- Filtros por campos propios de la tabla como CURP parcial: `funcionario_curp`, `usuario_curp`.
-- Filtros por campos propios de la tabla como texto completo que debe ser una opcion predeterminada en el modelo: `estado`
-- Filtros por clave de relaciones (`autoridad_clave`, `distrito_clave`, `domicilio_edificio`, `materia_clave`, etc.) mediante `JOIN`.
+- Filtros por clave de relaciones de 16 caracteres (`autoridad_clave`, `distrito_clave`, `domicilio_edificio`, `materia_clave`, etc.) mediante `JOIN`.
+- Filtros por clave de relaciones de 64 caracteres (`dgt_deposito_clave`, `dgt_ruta_clave`, `dgt_tipo_clave`, etc.) mediante `JOIN`.
 - Filtros por campos booleanos (`es_*`, `en_*`)
 - Filtros por fecha directa: `fecha`, `*_fecha`
 - Rango de fechas con `fecha_desde` y `fecha_hasta` en los routers que tienen `fecha`.
@@ -45,7 +47,7 @@ Esta funcionalidad no introduce tablas ni esquemas nuevos. Cada parámetro es el
 | Función | Entrada | Salida | Regla |
 | --- | --- | --- | --- |
 | `safe_clave(clave, max_len)` | `str` | `str` | `safe_string`, luego debe cumplir `^[A-Z0-9_-]+$`; si no, 422. |
-| `safe_curp(texto)` | `str` | `str` | `strip`, luego debe cumplir `^[a-zA-Z]{4}\d{6}[a-zA-Z]{6}[A-Z0-9]{2}$`. |
+| `safe_curp(texto)` | `str` | `str` | `strip`, convierte a MAYÚSCULAS, luego debe cumplir `^[A-Z]{4}\d{6}[A-Z]{6}[A-Z0-9]{2}$`. |
 | `safe_email(texto)` | `str` | `str` | `strip`, luego debe cumplir `^[\w.-]+@[\w.-]+\.\w+$`. |
 | `safe_expediente(expediente)` | `str` | `str` | `safe_string`, luego debe cumplir `^\d{1,5}/(19\|20)\d{2}(-[A-Z0-9]+)?$` (ej. `123/2024`, `45/2023-II`); quita ceros a la izquierda del número; si no cumple, 422. |
 | `safe_string(texto, max_len)` | `str` | `str` | `strip`, colapsa espacios múltiples en uno, convierte a MAYÚSCULAS, aplica `unidecode` a todo **excepto** `Ñ` y `Ü` (se conservan), recorta a `max_len`. |
@@ -62,12 +64,12 @@ Convenciones:
 
 | Parámetro | Comparación |
 | --- | --- |
-| `apellido_paterno`, `apellido_materno`, `clave`, `demandado`, `descripcion`, `edificio`, `*_edificio`, `nombre`, `*_nombre`, `nombres` | `ILIKE '%fragmento%'` tras `safe_string`. |
+| `actor`, `apellido_paterno`, `apellido_materno`, `clave`, `demandado`, `descripcion`, `edificio`, `*_edificio`, `nombre`, `*_nombre`, `nombres` | `ILIKE '%fragmento%'` tras `safe_string`. |
 | `clave`, `*_clave` | `ILIKE '%fragmento%'` tras `safe_clave`. |
 | `curp`, `funcionario_curp`, `usuario_curp` | Igualdad tras `safe_curp`. |
-| `email` | Igualdad tras `safe_email`. |
+| `email`, `usuario_email` | Igualdad tras `safe_email`. |
 | `fecha` | Igualdad. |
-| `estado` | Igualdad tras `safe_string`. |
+| `estado`, `ubicacion` | Igualdad tras `safe_string`. |
 | `fecha_desde` / `fecha_hasta` | `>=` / `<=`. |
 | `expediente` | Igualdad exacta tras `safe_expediente`. |
 | `expediente_anio`, `anio`, `expediente_num`, `expediente_numero` | Igualdad. |
@@ -88,8 +90,8 @@ Convenciones:
 | `dgt_digitalizaciones` | `autoridad_clave`, `dgt_ruta_clave`, `descripcion`, `expediente`, `expediente_anio`, `expediente_num` | `Autoridad`, `DgtRuta` |
 | `dgt_entregas` | `autoridad_clave`, `dgt_ruta_clave`, `descripcion`, `expediente`, `expediente_anio`, `expediente_num` | `Autoridad`, `DgtRuta` |
 | `dgt_plataformas` | `descripcion` | — |
-| `dgt_plataformas_autoridades` | `autoridad_clave` | `Autoridad` |
-| `dgt_plataformas_endpoints` | `descripcion` | — |
+| `dgt_plataformas_autoridades` | `autoridad_clave`, `dgt_plataforma_clave` | `Autoridad`, `DgtPlataforma` |
+| `dgt_plataformas_endpoints` | `descripcion`, `dgt_plataforma_clave` | `DgtPlataforma` |
 | `dgt_rutas` | `clave`, `autoridad_clave` (columna propia), `dgt_tipo_clave` | `DgtTipo` |
 | `dgt_tipos` | `clave`, `descripcion` | — |
 | `distritos` | `clave`, `nombre`, `es_distrito`, `es_jurisdiccional` | — |
@@ -97,7 +99,7 @@ Convenciones:
 | `edictos` | `autoridad_clave`, `distrito_clave`, F, `descripcion`, `expediente` | `Autoridad`, `Distrito` |
 | `estados` | `clave`, `nombre` | — |
 | `exh_areas` | `clave`, `nombre` | — |
-| `exh_exhortos` | `autoridad_clave`, `exh_area_clave`, `materia_clave` (columna propia) | `Autoridad`, `ExhArea` |
+| `exh_exhortos` | `autoridad_clave`, `exh_area_clave`, `materia_clave` (columna propia de 32 caracteres como máximo) | `Autoridad`, `ExhArea` |
 | `exh_exhortos_archivos` | *(sin filtros)* | — |
 | `exh_exhortos_partes` | `nombre`, `apellido_paterno`, `apellido_materno` | — |
 | `exh_tipos_diligencias` | `clave`, `descripcion` | — |
@@ -146,6 +148,8 @@ Cada paso deja la API funcionando y se puede hacer commit de él por separado.
 9. Usuarios: `usuarios`, `usuarios_roles`.
 10. Funcionarios y Soportes: `funcionarios`, `funcionarios_oficinas`, `soportes_tickets`.
 11. Oficios: `ofi_documentos`, `ofi_documentos_adjuntos`, `ofi_documentos_destinatarios`.
+12. `permisos`.
+13. `dgt_plataformas_endpoints`.
 
 ---
 
