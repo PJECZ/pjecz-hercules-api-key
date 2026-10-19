@@ -48,7 +48,7 @@ Esta funcionalidad no introduce tablas ni esquemas nuevos. Cada parámetro es el
 | --- | --- | --- | --- |
 | `safe_clave(clave, max_len)` | `str` | `str` | `safe_string`, luego debe cumplir `^[A-Z0-9_-]+$`; si no, 422. |
 | `safe_curp(texto)` | `str` | `str` | `strip`, convierte a MAYÚSCULAS, luego debe cumplir `^[A-Z]{4}\d{6}[A-Z]{6}[A-Z0-9]{2}$`. |
-| `safe_email(texto)` | `str` | `str` | `strip`, luego debe cumplir `^[\w.-]+@[\w.-]+\.\w+$`. |
+| `safe_email(texto)` | `str` | `str` | `strip`, luego debe cumplir `^[\w.-]+@[\w.-]+\.\w+$` y se permiten MAYÚSCULAS. |
 | `safe_expediente(expediente)` | `str` | `str` | `safe_string`, luego debe cumplir `^\d{1,5}/(19\|20)\d{2}(-[A-Z0-9]+)?$` (ej. `123/2024`, `45/2023-II`); quita ceros a la izquierda del número; si no cumple, 422. |
 | `safe_string(texto, max_len)` | `str` | `str` | `strip`, colapsa espacios múltiples en uno, convierte a MAYÚSCULAS, aplica `unidecode` a todo **excepto** `Ñ` y `Ü` (se conservan), recorta a `max_len`. |
 | `validate_fechas(fecha, fecha_desde, fecha_hasta)` | `date \| None` ×3 | `None` | 422 si se combina `fecha` con `fecha_desde` o `fecha_hasta`; 422 si `fecha_desde > fecha_hasta`. |
