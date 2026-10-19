@@ -1,6 +1,6 @@
 # SPEC 01 — Filtros opcionales en los endpoints paginados
 
-> **Estado:** Borrador
+> **Estado:** Aprobado
 > **Depende de:** —
 > **Fecha:** 2026-10-18
 > **Objetivo:** Agregar parámetros de consulta opcionales a los endpoints paginados para filtrar por clave, fragmento de texto, fecha y expediente, validados con funciones de `core/validation.py`.
@@ -13,8 +13,15 @@
 
 - Crear `src/pjecz_hercules_api_key/core/validation.py` con las funciones de validación y normalización.
 - Agregar parámetros `Query` opcionales al endpoint `GET ""` de cada router listado en la tabla de filtros.
-- Filtros por campos propios de la tabla: `clave`, `descripcion`, `nombre`, `fecha`, `expediente`, `expediente_anio` / `anio`, `expediente_num` / `expediente_numero`.
-- Filtros por clave de relaciones (`autoridad_clave`, `distrito_clave`, `materia_clave`, etc.) mediante `JOIN`.
+- Filtros por campos propios de la tabla como texto completo: `expediente`.
+- Filtros por campos propios de la tabla como texto parcial: `apellido_paterno`, `apellido_materno`, `clave`, `demandado`, `descripcion`, `edificio`, `*_edificio`, `nombre`, `*_nombre`, `nombres`.
+- Filtros por campos propios de la tabla como entero: `expediente_anio` / `anio`, `expediente_num` / `expediente_numero`.
+- Filtros por campos propios de la tabla como correo electrónico parcial: `email`, `usuario_email`.
+- Filtros por campos propios de la tabla como CURP parcial: `curp`, `funcionario_curp`, `usuario_curp`.
+- Filtros por campos propios de la tabla como texto completo que debe ser una opcion predeterminada en el modelo: `estado`
+- Filtros por clave de relaciones (`autoridad_clave`, `distrito_clave`, `domicilio_edificio`, `materia_clave`, etc.) mediante `JOIN`.
+- Filtros por campos booleanos (`es_*`, `en_*`)
+- Filtros por fecha directa: `fecha`, `*_fecha`
 - Rango de fechas con `fecha_desde` y `fecha_hasta` en los routers que tienen `fecha`.
 - Responder HTTP 422 con `detail` cuando un parámetro no pasa la validación.
 
@@ -23,7 +30,7 @@
 - Modificar `tests/`. La verificación es manual desde `/docs` o con `curl`.
 - Modificar modelos, esquemas, `main.py` o cualquier archivo fuera de `routers/` y `core/validation.py`.
 - Filtros por `id` o por UUID de relaciones (`ofi_documento_id`, `rol_id`, etc.).
-- Filtros por campos booleanos (`es_*`, `en_*`), `estado`, `email`, `nombres`, `apellido_*`, `folio_*`, `sentencia_fecha` o campos `datetime`.
+- Filtros por campos `datetime`.
 - Filtrar por `municipio_origen_clave` / `municipio_destino_clave` en exhortos (la clave de municipio no es única entre estados).
 - Endpoints de detalle (`GET /{id}`); hoy no existen.
 - Cambiar el orden de los resultados o el filtro `estatus == "A"` existente.
@@ -38,9 +45,11 @@ Esta funcionalidad no introduce tablas ni esquemas nuevos. Cada parámetro es el
 
 | Función | Entrada | Salida | Regla |
 | --- | --- | --- | --- |
-| `safe_string(texto, max_len)` | `str` | `str` | `strip`, colapsa espacios múltiples en uno, convierte a MAYÚSCULAS, aplica `unidecode` a todo **excepto** `Ñ` y `Ü` (se conservan), recorta a `max_len`. |
 | `safe_clave(clave, max_len)` | `str` | `str` | `safe_string`, luego debe cumplir `^[A-Z0-9_-]+$`; si no, 422. |
+| `safe_curp(texto)` | `str` | `str` | `strip`, luego debe cumplir `^[a-zA-Z]{4}\d{6}[a-zA-Z]{6}[A-Z0-9]{2}$`. |
+| `safe_email(texto)` | `str` | `str` | `strip`, luego debe cumplir `^[\w.-]+@[\w.-]+\.\w+$`. |
 | `safe_expediente(expediente)` | `str` | `str` | `safe_string`, luego debe cumplir `^\d{1,5}/(19\|20)\d{2}(-[A-Z0-9]+)?$` (ej. `123/2024`, `45/2023-II`); quita ceros a la izquierda del número; si no cumple, 422. |
+| `safe_string(texto, max_len)` | `str` | `str` | `strip`, colapsa espacios múltiples en uno, convierte a MAYÚSCULAS, aplica `unidecode` a todo **excepto** `Ñ` y `Ü` (se conservan), recorta a `max_len`. |
 | `validate_fechas(fecha, fecha_desde, fecha_hasta)` | `date \| None` ×3 | `None` | 422 si se combina `fecha` con `fecha_desde` o `fecha_hasta`; 422 si `fecha_desde > fecha_hasta`. |
 
 Convenciones:
@@ -54,9 +63,12 @@ Convenciones:
 
 | Parámetro | Comparación |
 | --- | --- |
-| `clave`, `*_clave` | Igualdad exacta tras `safe_clave`. |
-| `descripcion`, `nombre` | `ILIKE '%fragmento%'` tras `safe_string`. |
+| `apellido_paterno`, `apellido_materno`, `clave`, `demandado`, `descripcion`, `edificio`, `*_edificio`, `nombre`, `*_nombre`, `nombres` | `ILIKE '%fragmento%'` tras `safe_string`. |
+| `clave`, `*_clave` | `ILIKE '%fragmento%'` tras `safe_clave`. |
+| `curp`, `funcionario_curp`, `usuario_curp` | `ILIKE '%fragmento%'` tras `safe_curp`. |
+| `email` | `ILIKE '%fragmento%'` tras `safe_email`. |
 | `fecha` | Igualdad. |
+| `estado` | Igualdad tras `safe_string`. |
 | `fecha_desde` / `fecha_hasta` | `>=` / `<=`. |
 | `expediente` | Igualdad exacta tras `safe_expediente`. |
 | `expediente_anio`, `anio`, `expediente_num`, `expediente_numero` | Igualdad. |
@@ -67,12 +79,12 @@ Convenciones:
 
 | Router | Parámetros | Joins necesarios |
 | --- | --- | --- |
-| `arc_documentos` | `autoridad_clave`, `expediente`, `anio`, `expediente_numero` | `Autoridad` |
+| `arc_documentos` | `actor`, `anio`, `autoridad_clave`, `demandado`, `expediente`, `expediente_numero`, `ubicacion` | `Autoridad` |
 | `arc_documentos_tipos` | `nombre` | — |
 | `arc_juzgados_extintos` | `clave`, `descripcion`, `distrito_clave` | `Distrito` |
 | `arc_remesas` | `autoridad_clave` | `Autoridad` |
 | `arc_remesas_documentos` | *(sin filtros)* | — |
-| `autoridades` | `clave`, `descripcion`, `distrito_clave`, `materia_clave` | `Distrito`, `Materia` |
+| `autoridades` | `clave`, `descripcion`, `distrito_clave`, `materia_clave`, `es_jurisdiccional`, `es_notaria`, `es_extinto` | `Distrito`, `Materia` |
 | `dgt_depositos` | `clave`, `descripcion` | — |
 | `dgt_digitalizaciones` | `autoridad_clave`, `dgt_ruta_clave`, `descripcion`, `expediente`, `expediente_anio`, `expediente_num` | `Autoridad`, `DgtRuta` |
 | `dgt_entregas` | `autoridad_clave`, `dgt_ruta_clave`, `descripcion`, `expediente`, `expediente_anio`, `expediente_num` | `Autoridad`, `DgtRuta` |
@@ -81,36 +93,36 @@ Convenciones:
 | `dgt_plataformas_endpoints` | `descripcion` | — |
 | `dgt_rutas` | `clave`, `autoridad_clave` (columna propia), `dgt_tipo_clave` | `DgtTipo` |
 | `dgt_tipos` | `clave`, `descripcion` | — |
-| `distritos` | `clave`, `nombre` | — |
+| `distritos` | `clave`, `nombre`, `es_distrito`, `es_jurisdiccional` | — |
 | `domicilios` | `distrito_clave` | `Distrito` |
 | `edictos` | `autoridad_clave`, `distrito_clave`, F, `descripcion`, `expediente` | `Autoridad`, `Distrito` |
 | `estados` | `clave`, `nombre` | — |
 | `exh_areas` | `clave`, `nombre` | — |
 | `exh_exhortos` | `autoridad_clave`, `exh_area_clave`, `materia_clave` (columna propia) | `Autoridad`, `ExhArea` |
 | `exh_exhortos_archivos` | *(sin filtros)* | — |
-| `exh_exhortos_partes` | `nombre` | — |
+| `exh_exhortos_partes` | `nombre`, `apellido_paterno`, `apellido_materno` | — |
 | `exh_tipos_diligencias` | `clave`, `descripcion` | — |
-| `funcionarios` | *(sin filtros; `nombre` es `@property`, no columna)* | — |
-| `funcionarios_oficinas` | `oficina_clave`, `descripcion` | `Oficina` |
+| `funcionarios` | `curp`, `nombres`, `apellido_paterno`, `apellido_materno` | — |
+| `funcionarios_oficinas` | `oficina_clave`, `funcionario_curp` | `Funcionario`, `Oficina` |
 | `glosas` | `autoridad_clave`, `distrito_clave`, F, `descripcion`, `expediente` | `Autoridad`, `Distrito` |
 | `listas_de_acuerdos` | `autoridad_clave`, `distrito_clave`, F, `descripcion` | `Autoridad`, `Distrito` |
 | `materias` | `clave`, `nombre` | — |
 | `materias_tipos_juicios` | `materia_clave`, `descripcion` | `Materia` |
 | `modulos` | `nombre` | — |
 | `municipios` | `clave`, `nombre`, `estado_clave` | `Estado` |
-| `oficinas` | `clave`, `descripcion`, `distrito_clave` | `Distrito` |
-| `ofi_documentos` | `usuario_autoridad_clave`, `descripcion` | `Usuario`, `Autoridad` |
+| `oficinas` | `clave`, `descripcion`, `distrito_clave`, `domicilio_edificio` | `Distrito` |
+| `ofi_documentos` | `usuario_autoridad_clave`, `usuario_email`, `descripcion` | `Usuario`, `Autoridad` |
 | `ofi_documentos_adjuntos` | `descripcion` | — |
-| `ofi_documentos_destinatarios` | `usuario_autoridad_clave` | `Usuario`, `Autoridad` |
-| `permisos` | `nombre` | — |
+| `ofi_documentos_destinatarios` | `usuario_autoridad_clave`, `usuario_email` | `Usuario`, `Autoridad` |
+| `permisos` | `modulo_nombre`, `rol_nombre` | `Modulo`, `Rol` |
 | `redams` | `autoridad_clave`, `distrito_clave`, F, `nombre`, `expediente` | `Autoridad`, `Distrito` |
 | `repsvm_agresores` | `distrito_clave`, `nombre` | `Distrito` |
 | `roles` | `nombre` | — |
 | `sentencias` | `autoridad_clave`, `distrito_clave`, `materia_clave`, F, `descripcion`, `expediente`, `expediente_anio`, `expediente_num` | `Autoridad`, `Distrito`, `MateriaTipoJuicio`, `Materia` |
 | `soportes_categorias` | `nombre` | — |
-| `soportes_tickets` | `descripcion` | — |
-| `usuarios` | `autoridad_clave`, `distrito_clave`, `oficina_clave` | `Autoridad`, `Distrito`, `Oficina` |
-| `usuarios_roles` | `descripcion` | — |
+| `soportes_tickets` | `estado`, `funcionario_curp`, `soporte_categoria_nombre`, `usuario_email` | `Funcionario`, `Soporte Categoria`, `Usuario` |
+| `usuarios` | `autoridad_clave`, `distrito_clave`, `curp`, `email`, `oficina_clave`, `nombres`, `apellido_paterno`, `apellido_materno` | `Autoridad`, `Distrito`, `Oficina` |
+| `usuarios_roles` | `usuario_email`, `rol_nombre` | `Rol`, `Usuario` |
 
 Reglas de los joins:
 
@@ -124,15 +136,17 @@ Reglas de los joins:
 
 Cada paso deja la API funcionando y se puede hacer commit de él por separado.
 
-1. Crear `core/validation.py` con `safe_string`, `safe_clave`, `safe_expediente` y `validate_fechas`. Ningún router lo usa todavía. Prueba manual: importar en `python -c` y comprobar `safe_string("  áé  ñü  x ")` → `"AE ÑÜ X"`.
-2. Catálogos con `clave` / `nombre` / `descripcion` sin joins: `arc_documentos_tipos`, `dgt_depositos`, `dgt_plataformas`, `dgt_plataformas_endpoints`, `dgt_tipos`, `distritos`, `estados`, `exh_areas`, `exh_tipos_diligencias`, `materias`, `modulos`, `permisos`, `roles`, `soportes_categorias`. Prueba manual: `GET /distritos?clave=...` regresa un solo registro.
+1. Crear `core/validation.py` con `safe_string`, `safe_clave`, `safe_curp`, `safe_email`, `safe_expediente` y `validate_fechas`. Ningún router lo usa todavía. Prueba manual: importar en `python -c` y comprobar `safe_string("  áé  ñü  x ")` → `"AE ÑÜ X"`.
+2. Catálogos con `clave` / `nombre` / `descripcion` sin joins: `arc_documentos_tipos`, `dgt_depositos`, `dgt_plataformas`, `dgt_tipos`, `distritos`, `estados`, `exh_areas`, `exh_tipos_diligencias`, `materias`, `modulos`, `roles`, `soportes_categorias`. Prueba manual: `GET /distritos?clave=...` regresa un solo registro.
 3. Catálogos con join simple: `arc_juzgados_extintos`, `autoridades`, `domicilios`, `materias_tipos_juicios`, `municipios`, `oficinas`, `repsvm_agresores`. Prueba manual: `GET /autoridades?distrito_clave=...`.
 4. Documentos judiciales sin expediente numérico: `edictos`, `glosas`, `listas_de_acuerdos`, `redams`. Incluye `validate_fechas`. Prueba manual: `GET /edictos?fecha_desde=...&fecha_hasta=...`.
 5. `sentencias`, con todos sus filtros (incluye el join a `Materia`).
 6. Archivo: `arc_documentos`, `arc_remesas`.
 7. DGT: `dgt_digitalizaciones`, `dgt_entregas`, `dgt_plataformas_autoridades`, `dgt_rutas`.
 8. Exhortos: `exh_exhortos`, `exh_exhortos_partes`.
-9. Oficios, usuarios y soportes: `ofi_documentos`, `ofi_documentos_adjuntos`, `ofi_documentos_destinatarios`, `funcionarios_oficinas`, `usuarios`, `usuarios_roles`, `soportes_tickets`.
+9. Usuarios: `usuarios`, `usuarios_roles`.
+10. Funcionarios y Soportes: `funcionarios`, `funcionarios_oficinas`, `soportes_tickets`.
+11. Oficios: `ofi_documentos`, `ofi_documentos_adjuntos`, `ofi_documentos_destinatarios`.
 
 ---
 
@@ -194,7 +208,7 @@ Cada paso deja la API funcionando y se puede hacer commit de él por separado.
 
 - Tests automatizados en `tests/`.
 - Cambios en modelos, esquemas o `main.py`.
-- Filtros por `id`, UUID, booleanos, `estado`, `email`, `nombres`, `folio_*`, `sentencia_fecha` o campos `datetime`.
+- Filtros por `id`, UUID o campos `datetime`.
 - Filtros por clave de municipio en exhortos.
 - Endpoints de detalle.
 
