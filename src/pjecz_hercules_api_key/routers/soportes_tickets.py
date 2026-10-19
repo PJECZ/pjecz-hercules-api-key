@@ -40,10 +40,10 @@ def soportes_tickets_paginado(
             raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="El estado no es válido")
         stmt = stmt.where(SoporteTicket.estado == estado)
     if funcionario_curp and (funcionario_curp := safe_curp(funcionario_curp)):
-        stmt = stmt.join(SoporteTicket.funcionario).where(Funcionario.curp.ilike(f"%{funcionario_curp}%"))
+        stmt = stmt.join(SoporteTicket.funcionario).where(Funcionario.curp == funcionario_curp)
     if soporte_categoria_nombre and (soporte_categoria_nombre := safe_string(soporte_categoria_nombre)):
         stmt = stmt.join(SoporteTicket.soporte_categoria).where(SoporteCategoria.nombre.ilike(f"%{soporte_categoria_nombre}%"))
     if usuario_email and (usuario_email := safe_email(usuario_email)):
-        stmt = stmt.join(SoporteTicket.usuario).where(Usuario.email.ilike(f"%{usuario_email}%"))
+        stmt = stmt.join(SoporteTicket.usuario).where(Usuario.email == usuario_email)
     stmt = stmt.order_by(SoporteTicket.id.desc())
     return paginate(session, stmt)

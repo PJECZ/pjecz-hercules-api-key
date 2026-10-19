@@ -33,7 +33,7 @@ def usuarios_roles_paginado(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     stmt = select(UsuarioRol).where(UsuarioRol.estatus == "A")
     if usuario_email and (usuario_email := safe_email(usuario_email)):
-        stmt = stmt.join(UsuarioRol.usuario).where(Usuario.email.ilike(f"%{usuario_email}%"))
+        stmt = stmt.join(UsuarioRol.usuario).where(Usuario.email == usuario_email)
     if rol_nombre and (rol_nombre := safe_string(rol_nombre)):
         stmt = stmt.join(UsuarioRol.rol).where(Rol.nombre.ilike(f"%{rol_nombre}%"))
     stmt = stmt.order_by(UsuarioRol.id)

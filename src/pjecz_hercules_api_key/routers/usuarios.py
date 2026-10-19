@@ -46,9 +46,9 @@ def usuarios_paginado(
             stmt = stmt.join(Usuario.autoridad)
         stmt = stmt.join(Autoridad.distrito).where(Distrito.clave.ilike(f"%{distrito_clave}%"))
     if curp and (curp := safe_curp(curp)):
-        stmt = stmt.where(Usuario.curp.ilike(f"%{curp}%"))
+        stmt = stmt.where(Usuario.curp == curp)
     if email and (email := safe_email(email)):
-        stmt = stmt.where(Usuario.email.ilike(f"%{email}%"))
+        stmt = stmt.where(Usuario.email == email)
     if oficina_clave and (oficina_clave := safe_clave(oficina_clave, 32)):
         stmt = stmt.join(Usuario.oficina).where(Oficina.clave.ilike(f"%{oficina_clave}%"))
     if nombres and (nombres := safe_string(nombres)):

@@ -40,7 +40,7 @@ def ofi_documentos_paginado(
     if usuario_email and (usuario_email := safe_email(usuario_email)):
         if not usuario_autoridad_clave:
             stmt = stmt.join(OfiDocumento.usuario)
-        stmt = stmt.where(Usuario.email.ilike(f"%{usuario_email}%"))
+        stmt = stmt.where(Usuario.email == usuario_email)
     if descripcion and (descripcion := safe_string(descripcion)):
         stmt = stmt.where(OfiDocumento.descripcion.ilike(f"%{descripcion}%"))
     stmt = stmt.order_by(OfiDocumento.creado.desc())

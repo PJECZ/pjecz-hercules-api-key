@@ -33,7 +33,7 @@ def funcionarios_paginado(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
     stmt = select(Funcionario).where(Funcionario.estatus == "A")
     if curp and (curp := safe_curp(curp)):
-        stmt = stmt.where(Funcionario.curp.ilike(f"%{curp}%"))
+        stmt = stmt.where(Funcionario.curp == curp)
     if nombres and (nombres := safe_string(nombres)):
         stmt = stmt.where(Funcionario.nombres.ilike(f"%{nombres}%"))
     if apellido_paterno and (apellido_paterno := safe_string(apellido_paterno)):

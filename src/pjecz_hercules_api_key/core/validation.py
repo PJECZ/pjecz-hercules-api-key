@@ -13,7 +13,7 @@ from fastapi import HTTPException, status
 from unidecode import unidecode
 
 CLAVE_REGEXP = r"^[A-Z0-9_-]+$"
-CURP_REGEXP = r"^[a-zA-Z]{4}\d{6}[a-zA-Z]{6}[A-Z0-9]{2}$"
+CURP_REGEXP = r"^[A-Z]{4}\d{6}[A-Z]{6}[A-Z0-9]{2}$"
 EMAIL_REGEXP = r"^[\w.-]+@[\w.-]+\.\w+$"
 EXPEDIENTE_REGEXP = r"^\d{1,5}/(19|20)\d{2}(-[A-Z0-9]+)?$"
 CARACTERES_CONSERVADOS = "ÑÜ"
@@ -44,7 +44,7 @@ def safe_clave(clave: str, max_len: int = 16) -> str:
 
 def safe_curp(texto: str) -> str:
     """Validar un CURP"""
-    texto = texto.strip()
+    texto = texto.strip().upper()
     if texto == "":
         return ""
     if re.match(CURP_REGEXP, texto) is None:

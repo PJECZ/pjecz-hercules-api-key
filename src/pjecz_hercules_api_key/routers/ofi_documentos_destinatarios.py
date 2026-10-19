@@ -41,6 +41,6 @@ def ofi_documentos_destinatarios_paginado(
     if usuario_email and (usuario_email := safe_email(usuario_email)):
         if not usuario_autoridad_clave:
             stmt = stmt.join(OfiDocumentoDestinatario.usuario)
-        stmt = stmt.where(Usuario.email.ilike(f"%{usuario_email}%"))
+        stmt = stmt.where(Usuario.email == usuario_email)
     stmt = stmt.order_by(OfiDocumentoDestinatario.creado.desc())
     return paginate(session, stmt)

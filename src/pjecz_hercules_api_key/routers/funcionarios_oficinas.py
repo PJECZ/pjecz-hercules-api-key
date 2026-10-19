@@ -35,6 +35,6 @@ def funcionarios_oficinas_paginado(
     if oficina_clave and (oficina_clave := safe_clave(oficina_clave, 32)):
         stmt = stmt.join(FuncionarioOficina.oficina).where(Oficina.clave.ilike(f"%{oficina_clave}%"))
     if funcionario_curp and (funcionario_curp := safe_curp(funcionario_curp)):
-        stmt = stmt.join(FuncionarioOficina.funcionario).where(Funcionario.curp.ilike(f"%{funcionario_curp}%"))
+        stmt = stmt.join(FuncionarioOficina.funcionario).where(Funcionario.curp == funcionario_curp)
     stmt = stmt.order_by(FuncionarioOficina.id.desc())
     return paginate(session, stmt)
