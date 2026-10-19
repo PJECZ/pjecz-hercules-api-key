@@ -12,13 +12,23 @@ from pjecz_hercules_api_key.routers.arc_juzgados_extintos import arc_juzgados_ex
 from pjecz_hercules_api_key.routers.arc_remesas import arc_remesas
 from pjecz_hercules_api_key.routers.arc_remesas_documentos import arc_remesas_documentos
 from pjecz_hercules_api_key.routers.autoridades import autoridades
+from pjecz_hercules_api_key.routers.dgt_depositos import dgt_depositos
+from pjecz_hercules_api_key.routers.dgt_digitalizaciones import dgt_digitalizaciones
+from pjecz_hercules_api_key.routers.dgt_entregas import dgt_entregas
+from pjecz_hercules_api_key.routers.dgt_plataformas import dgt_plataformas
+from pjecz_hercules_api_key.routers.dgt_plataformas_autoridades import dgt_plataformas_autoridades
+from pjecz_hercules_api_key.routers.dgt_plataformas_endpoints import dgt_plataformas_endpoints
+from pjecz_hercules_api_key.routers.dgt_rutas import dgt_rutas
+from pjecz_hercules_api_key.routers.dgt_tipos import dgt_tipos
 from pjecz_hercules_api_key.routers.distritos import distritos
 from pjecz_hercules_api_key.routers.domicilios import domicilios
 from pjecz_hercules_api_key.routers.edictos import edictos
 from pjecz_hercules_api_key.routers.estados import estados
+from pjecz_hercules_api_key.routers.exh_areas import exh_areas
 from pjecz_hercules_api_key.routers.exh_exhortos import exh_exhortos
 from pjecz_hercules_api_key.routers.exh_exhortos_archivos import exh_exhortos_archivos
 from pjecz_hercules_api_key.routers.exh_exhortos_partes import exh_exhortos_partes
+from pjecz_hercules_api_key.routers.exh_tipos_diligencias import exh_tipos_diligencias
 from pjecz_hercules_api_key.routers.funcionarios import funcionarios
 from pjecz_hercules_api_key.routers.funcionarios_oficinas import funcionarios_oficinas
 from pjecz_hercules_api_key.routers.glosas import glosas
@@ -59,13 +69,23 @@ app.include_router(arc_juzgados_extintos)
 app.include_router(arc_remesas)
 app.include_router(arc_remesas_documentos)
 app.include_router(autoridades)
+app.include_router(dgt_depositos)
+app.include_router(dgt_digitalizaciones)
+app.include_router(dgt_entregas)
+app.include_router(dgt_plataformas)
+app.include_router(dgt_plataformas_autoridades)
+app.include_router(dgt_plataformas_endpoints)
+app.include_router(dgt_rutas)
+app.include_router(dgt_tipos)
 app.include_router(distritos)
 app.include_router(domicilios)
 app.include_router(edictos)
 app.include_router(estados)
+app.include_router(exh_areas)
 app.include_router(exh_exhortos)
 app.include_router(exh_exhortos_archivos)
 app.include_router(exh_exhortos_partes)
+app.include_router(exh_tipos_diligencias)
 app.include_router(funcionarios)
 app.include_router(funcionarios_oficinas)
 app.include_router(glosas)
