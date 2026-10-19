@@ -110,7 +110,7 @@ Convenciones:
 | `materias_tipos_juicios` | `materia_clave`, `descripcion` | `Materia` |
 | `modulos` | `nombre` | — |
 | `municipios` | `clave`, `nombre`, `estado_clave` | `Estado` |
-| `oficinas` | `clave`, `descripcion`, `distrito_clave`, `domicilio_edificio` | `Distrito` |
+| `oficinas` | `clave`, `descripcion`, `distrito_clave`, `domicilio_edificio` | `Distrito`, `Domicilio` |
 | `ofi_documentos` | `usuario_autoridad_clave`, `usuario_email`, `descripcion` | `Usuario`, `Autoridad` |
 | `ofi_documentos_adjuntos` | `descripcion` | — |
 | `ofi_documentos_destinatarios` | `usuario_autoridad_clave`, `usuario_email` | `Usuario`, `Autoridad` |
