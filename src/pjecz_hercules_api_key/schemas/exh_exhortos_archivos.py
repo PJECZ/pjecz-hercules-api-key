@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict
 
 
 class ExhExhortoArchivoOut(BaseModel):
-    """Esquema para entregar exhortos Archivos"""
+    """Esquema para entregar exhortos-archivos"""
 
     id: int
     nombre_archivo: str
@@ -22,10 +22,9 @@ class ExhExhortoArchivoOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class ExhExhortoArchivoIn(BaseModel):
-    """Esquema para recibir exhortos Archivo"""
+class OneExhExhortoArchivoOut(BaseModel):
+    """Esquema para entregar un exhorto-archivo"""
 
-    nombre_archivo: str
-    tipo_documento: int
-    url: str
-    tamano: int | None = None
+    success: bool
+    message: str
+    data: ExhExhortoArchivoOut | None = None

@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 
 
 class ExhExhortoParteOut(BaseModel):
-    """Esquema para entregar exhortos Partes"""
+    """Esquema para entregar exhortos-partes"""
 
     id: int
     nombre: str
@@ -19,13 +19,9 @@ class ExhExhortoParteOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class ExhExhortoParteIn(BaseModel):
-    """Esquema para recibir exhortos Parte"""
+class OneExhExhortoParteOut(BaseModel):
+    """Esquema para entregar un exhorto-parte"""
 
-    nombre: str
-    apellido_paterno: str | None = None
-    apellido_materno: str | None = None
-    genero: str | None = None
-    es_persona_moral: bool
-    tipo_parte: int
-    tipo_parte_nombre: str | None = None
+    success: bool
+    message: str
+    data: ExhExhortoParteOut | None = None

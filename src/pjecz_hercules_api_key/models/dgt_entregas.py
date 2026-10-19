@@ -52,7 +52,27 @@ class DgtEntrega(Base):
     archivo_uuid: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True))  # Ya fue entregado a dgt_digitalizaciones
 
     # Hijos
-    dgt_entregas_bitacoras: Mapped[list["DgtEntregaBitacora"]] = relationship(back_populates="dgt_entrega")
+    #dgt_entregas_bitacoras: Mapped[list["DgtEntregaBitacora"]] = relationship(back_populates="dgt_entrega")
+
+    @property
+    def autoridad_clave(self):
+        """Autoridad clave"""
+        return self.autoridad.clave
+
+    @property
+    def autoridad_descripcion(self):
+        """Autoridad descripción"""
+        return self.autoridad.descripcion
+
+    @property
+    def autoridad_descripcion_corta(self):
+        """Autoridad descripción corta"""
+        return self.autoridad.descripcion_corta
+
+    @property
+    def dgt_ruta_clave(self):
+        """DGT Ruta clave"""
+        return self.dgt_ruta.clave
 
     def __repr__(self):
         """Representación"""

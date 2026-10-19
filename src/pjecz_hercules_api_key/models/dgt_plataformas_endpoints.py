@@ -46,9 +46,14 @@ class DgtPlataformaEndpoint(Base):
     payload_muestra: Mapped[dict] = mapped_column(JSON, default={})
 
     # Hijos
-    dgt_plataformas_endpoints_bitacoras: Mapped[list["DgtPlataformaEndpointBitacora"]] = relationship(
-        back_populates="dgt_plataforma_endpoint"
-    )
+    #dgt_plataformas_endpoints_bitacoras: Mapped[list["DgtPlataformaEndpointBitacora"]] = relationship(
+    #    back_populates="dgt_plataforma_endpoint"
+    #)
+
+    @property
+    def dgt_plataforma_descripcion(self):
+        """DGT Plataforma descripción"""
+        return self.dgt_plataforma.descripcion
 
     def __repr__(self):
         """Representación"""

@@ -27,6 +27,26 @@ class DgtPlataformaAutoridad(Base):
     dgt_plataforma_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("dgt_plataformas.id"), index=True)
     dgt_plataforma: Mapped["DgtPlataforma"] = relationship(back_populates="dgt_plataformas_autoridades")
 
+    @property
+    def autoridad_clave(self):
+        """Autoridad clave"""
+        return self.autoridad.clave
+
+    @property
+    def autoridad_descripcion(self):
+        """Autoridad descripción"""
+        return self.autoridad.descripcion
+
+    @property
+    def autoridad_descripcion_corta(self):
+        """Autoridad descripción corta"""
+        return self.autoridad.descripcion_corta
+
+    @property
+    def dgt_plataforma_descripcion(self):
+        """DGT Plataforma descripción"""
+        return self.dgt_plataforma.descripcion
+
     def __repr__(self):
         """Representación"""
         return f"<DgtPlataformaAutoridad {self.id}>"

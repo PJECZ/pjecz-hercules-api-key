@@ -50,7 +50,27 @@ class DgtDigitalizacion(Base):
     ultimo_evento_creado: Mapped[datetime]
 
     # Hijos
-    dgt_digitalizaciones_bitacoras: Mapped[list["DgtDigitalizacionBitacora"]] = relationship(back_populates="dgt_digitalizacion")
+    #dgt_digitalizaciones_bitacoras: Mapped[list["DgtDigitalizacionBitacora"]] = relationship(back_populates="dgt_digitalizacion")
+
+    @property
+    def autoridad_clave(self):
+        """Autoridad clave"""
+        return self.autoridad.clave
+
+    @property
+    def autoridad_descripcion(self):
+        """Autoridad descripción"""
+        return self.autoridad.descripcion
+
+    @property
+    def autoridad_descripcion_corta(self):
+        """Autoridad descripción corta"""
+        return self.autoridad.descripcion_corta
+
+    @property
+    def dgt_ruta_clave(self):
+        """DGT Ruta clave"""
+        return self.dgt_ruta.clave
 
     def __repr__(self):
         """Representación"""

@@ -35,6 +35,26 @@ class DgtRuta(Base):
     dgt_digitalizaciones: Mapped[list["DgtDigitalizacion"]] = relationship(back_populates="dgt_ruta")
     dgt_entregas: Mapped[list["DgtEntrega"]] = relationship(back_populates="dgt_ruta")
 
+    @property
+    def dgt_deposito_descripcion(self):
+        """DGT Deposito descripcion"""
+        return self.dgt_deposito.descripcion
+
+    @property
+    def dgt_deposito_proposito(self):
+        """DGT Deposito proposito"""
+        return self.dgt_deposito.proposito
+
+    @property
+    def dgt_tipo_clave(self):
+        """DGT Tipo clave"""
+        return self.dgt_tipo.clave
+
+    @property
+    def dgt_tipo_descripcion(self):
+        """DGT Tipo descripcion"""
+        return self.dgt_tipo.descripcion
+
     def __repr__(self):
         """Representación"""
         return f"<DgtRuta {self.id}>"
