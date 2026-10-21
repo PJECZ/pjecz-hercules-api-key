@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     DB_PORT: int = 5432
     DB_NAME: str = ""
     ESTADO_CLAVE: str = "05"
+    GCP_BUCKET_EDICTOS: str = ""
+    GCP_BUCKET_GLOSAS: str = ""
+    GCP_BUCKET_LISTAS_DE_ACUERDOS: str = ""
+    GCP_BUCKET_OFICIOS: str = ""
+    GCP_BUCKET_SENTENCIAS: str = ""
     SALT: str = ""
     SQLALCHEMY_DATABASE_URI: str = ""
     TZ: str = "America/Mexico_City"
