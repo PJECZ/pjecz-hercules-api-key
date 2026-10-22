@@ -69,6 +69,24 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        """Secret Manager tiene prioridad sobre las variables de entorno y .env"""
+        return (
+            init_settings,
+            SecretManagerSettingsSource(settings_cls),
+            env_settings,
+            dotenv_settings,
+            file_secret_settings,
+        )
+
     def build_database_uri(self) -> str:
         """Construye la URI cuando no está provista directamente."""
         if self.SQLALCHEMY_DATABASE_URI:

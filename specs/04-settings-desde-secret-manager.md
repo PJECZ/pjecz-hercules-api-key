@@ -1,6 +1,6 @@
 # SPEC 04 — Configuración desde Google Cloud Secret Manager
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** —
 > **Fecha:** 2026-10-21
 > **Objetivo:** Hacer que `Settings` lea cada propiedad primero de Google Cloud Secret Manager cuando `PROJECT_ID` está definido, después de las variables de entorno y al final de su valor por defecto.
@@ -97,18 +97,18 @@ Cada paso deja la API funcionando y se puede hacer commit de él por separado.
 
 ## Criterios de aceptación
 
-- [ ] `config/setttings.py` contiene `SecretManagerSettingsSource` y `Settings.settings_customise_sources`.
-- [ ] Sin `PROJECT_ID`, `SecretManagerSettingsSource(Settings)()` regresa `{}` y no crea `SecretManagerServiceClient`.
-- [ ] Sin `PROJECT_ID`, `DB_NAME=x python -c "...get_settings().DB_NAME"` imprime `x`.
-- [ ] Sin `PROJECT_ID` ni variable `TZ`, `get_settings().TZ` es `"America/Mexico_City"`.
-- [ ] Con `PROJECT_ID` definido y `SERVICE_PREFIX` vacío, `Settings()` lanza `ValueError`.
+- [x] `config/setttings.py` contiene `SecretManagerSettingsSource` y `Settings.settings_customise_sources`.
+- [x] Sin `PROJECT_ID`, `SecretManagerSettingsSource(Settings)()` regresa `{}` y no crea `SecretManagerServiceClient`.
+- [x] Sin `PROJECT_ID`, `DB_NAME=x python -c "...get_settings().DB_NAME"` imprime `x`.
+- [x] Sin `PROJECT_ID` ni variable `TZ`, `get_settings().TZ` es `"America/Mexico_City"`.
+- [x] Con `PROJECT_ID` definido y `SERVICE_PREFIX` vacío, `Settings()` lanza `ValueError`.
 - [ ] Con `PROJECT_ID` y `SERVICE_PREFIX` definidos y credenciales locales (`gcloud auth application-default login`), `Settings().DB_NAME` es el valor del secreto `pjecz_plataforma_web_api_key_db_name`, aunque exista `DB_NAME` en el entorno.
 - [ ] En el mismo escenario, un campo sin secreto en GCP (p. ej. `GCP_BUCKET_OFICIOS`) toma el valor de la variable de entorno si existe, y si no, su valor por defecto.
 - [ ] El secreto de `DB_PORT` se convierte a `int` (`type(Settings().DB_PORT) is int`).
 - [ ] Un valor de secreto con salto de línea final (`"abc\n"`) se lee como `"abc"`.
 - [ ] Con `PROJECT_ID` definido y credenciales sin permiso de lectura, `Settings()` lanza la excepción de Google (`PermissionDenied`) en vez de usar valores por defecto.
 - [ ] Desplegada en App Engine, la API responde 200 en `GET /estados` con una api_key válida (conexión a BD y `SALT` vienen de Secret Manager).
-- [ ] Solo cambiaron `config/setttings.py` y `.env.example` (`git diff --stat` lo confirma).
+- [x] Solo cambiaron `config/setttings.py` y `.env.example` (`git diff --stat` lo confirma).
 
 ---
 
