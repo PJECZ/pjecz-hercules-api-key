@@ -3,14 +3,18 @@ Glosas
 """
 
 from datetime import date
+from io import BytesIO
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import StreamingResponse
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
 
+from pjecz_hercules_api_key.config.setttings import get_settings
 from pjecz_hercules_api_key.core.authentication import UsuarioInDB, get_current_active_user
 from pjecz_hercules_api_key.core.database import Session, get_session
+from pjecz_hercules_api_key.core.google_cloud_storage import get_blob_name_from_url, get_file_from_gcs
 from pjecz_hercules_api_key.core.pagination import CustomPage
 from pjecz_hercules_api_key.core.validation import safe_clave, safe_expediente, safe_string, validate_fechas
 from pjecz_hercules_api_key.models.autoridades import Autoridad
@@ -57,3 +61,28 @@ def glosas_paginado(
         stmt = stmt.where(Glosa.expediente == expediente)
     stmt = stmt.order_by(Glosa.id.desc())
     return paginate(session, stmt)
+
+
+@glosas.get("/visualizar/{id}", response_class=StreamingResponse)
+def glosas_visualizar(
+    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
+    session: Annotated[Session, Depends(get_session)],
+    id: int,
+):
+    """Visualizar el archivo PDF de una Glosa"""
+    if current_user.permissions.get("GLOSAS", 0) < Permiso.VER:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    glosa = session.get(Glosa, id)
+    if glosa is None or glosa.estatus != "A":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    if glosa.url.strip() == "":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File URL is empty")
+    bucket_name = get_settings().GCP_BUCKET_GLOSAS
+    blob_name = get_blob_name_from_url(bucket_name, glosa.url)
+    contenido = get_file_from_gcs(bucket_name, blob_name)
+    nombre = f"glosa-{glosa.autoridad.clave}-{glosa.fecha.isoformat()}.pdf"
+    return StreamingResponse(
+        BytesIO(contenido),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'inline; filename="{nombre}"'},
+    )
