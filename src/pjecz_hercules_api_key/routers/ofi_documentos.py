@@ -86,3 +86,52 @@ def ofi_documentos_mis_oficios(
         stmt = stmt.where(OfiDocumento.folio_num == numero)
     stmt = stmt.order_by(OfiDocumento.creado.desc())
     return paginate(session, stmt)
+
+
+@ofi_documentos.get("/mi_autoridad", response_model=CustomPage[OfiDocumentoOut])
+def ofi_documentos_mi_autoridad(
+    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
+    session: Annotated[Session, Depends(get_session)],
+    anio: Annotated[int | None, Query(ge=1900, le=2100)] = None,
+    creado: Annotated[date | None, Query()] = None,
+    creado_desde: Annotated[date | None, Query()] = None,
+    creado_hasta: Annotated[date | None, Query()] = None,
+    descripcion: Annotated[str | None, Query()] = None,
+    estado: Annotated[str | None, Query()] = None,
+    folio: Annotated[str | None, Query()] = None,
+    numero: Annotated[int | None, Query(ge=1)] = None,
+    usuario_email: Annotated[str | None, Query()] = None,
+):
+    """Oficios Documentos de Mi Autoridad paginado"""
+    if current_user.permissions.get("OFI DOCUMENTOS", 0) < Permiso.VER:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    validate_fechas(creado, creado_desde, creado_hasta)
+    stmt = (
+        select(OfiDocumento)
+        .join(OfiDocumento.usuario)
+        .join(Usuario.autoridad)
+        .where(OfiDocumento.estatus == "A")
+        .where(Usuario.autoridad_id == current_user.autoridad_id)
+    )
+    if anio is not None:
+        stmt = stmt.where(OfiDocumento.folio_anio == anio)
+    if creado is not None:
+        stmt = stmt.where(func.date(OfiDocumento.creado) == creado)
+    if creado_desde is not None:
+        stmt = stmt.where(func.date(OfiDocumento.creado) >= creado_desde)
+    if creado_hasta is not None:
+        stmt = stmt.where(func.date(OfiDocumento.creado) <= creado_hasta)
+    if descripcion and (descripcion := safe_string(descripcion)):
+        stmt = stmt.where(OfiDocumento.descripcion.ilike(f"%{descripcion}%"))
+    if estado and (estado := safe_string(estado)):
+        if estado not in OfiDocumento.ESTADOS:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="El estado no es válido")
+        stmt = stmt.where(OfiDocumento.estado == estado)
+    if folio and (folio := safe_string(folio)):
+        stmt = stmt.where(OfiDocumento.folio.ilike(f"%{folio}%"))
+    if numero is not None:
+        stmt = stmt.where(OfiDocumento.folio_num == numero)
+    if usuario_email and (usuario_email := safe_email(usuario_email)):
+        stmt = stmt.where(Usuario.email == usuario_email)
+    stmt = stmt.order_by(OfiDocumento.creado.desc())
+    return paginate(session, stmt)
