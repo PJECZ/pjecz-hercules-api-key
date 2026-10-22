@@ -1,6 +1,6 @@
 # SPEC 02 — Endpoint visualizar para entregar PDF desde Google Cloud Storage
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** —
 > **Fecha:** 2026-10-21
 > **Objetivo:** Agregar el endpoint `GET /visualizar/{id}` a edictos, glosas, listas de acuerdos y sentencias para entregar en línea el PDF guardado en Google Cloud Storage mediante `StreamingResponse`.
@@ -101,21 +101,21 @@ Cada paso deja la API funcionando y se puede hacer commit de él por separado.
 
 ## Criterios de aceptación
 
-- [ ] Existe `src/pjecz_hercules_api_key/core/google_cloud_storage.py` con `get_blob_name_from_url` y `get_file_from_gcs`.
-- [ ] `get_blob_name_from_url("b", "https://storage.googleapis.com/b/x/y%20z.pdf")` regresa `"x/y z.pdf"`.
-- [ ] `get_blob_name_from_url("b", "https://storage.googleapis.com/otro/x.pdf")` lanza `HTTPException` con 404.
-- [ ] Solo cambiaron los 4 routers de la tabla y el nuevo `core/google_cloud_storage.py` (`git diff --stat` lo confirma).
-- [ ] `/docs` muestra `GET /visualizar/{id}` en `edictos`, `glosas`, `listas_de_acuerdos` y `sentencias`, con `id` obligatorio.
-- [ ] Para un `id` existente con archivo, cada endpoint responde 200 con `Content-Type: application/pdf`.
-- [ ] El encabezado `Content-Disposition` es `inline; filename="lista-de-acuerdos-<AUTORIDAD CLAVE>-<AAAA-MM-DD>.pdf"` (y equivalente con `edicto`, `glosa`, `sentencia`).
-- [ ] El cuerpo descargado abre como PDF y es idéntico al blob en el bucket (mismo tamaño en bytes).
-- [ ] `GET /listas_de_acuerdos/visualizar/999999999` responde 404.
-- [ ] `GET /listas_de_acuerdos/visualizar/abc` responde 422.
-- [ ] Un registro con `estatus == "B"` responde 404.
-- [ ] Un registro con `url == ""` responde 404 con `detail == "File URL is empty"`.
-- [ ] Un registro cuyo blob no existe responde 404 con `detail == "File not found in storage"`.
-- [ ] Un usuario sin permiso `VER` en el módulo responde 403.
-- [ ] Los endpoints paginados `GET ""` de los 4 routers responden igual que antes de esta spec.
+- [x] Existe `src/pjecz_hercules_api_key/core/google_cloud_storage.py` con `get_blob_name_from_url` y `get_file_from_gcs`.
+- [x] `get_blob_name_from_url("b", "https://storage.googleapis.com/b/x/y%20z.pdf")` regresa `"x/y z.pdf"`.
+- [x] `get_blob_name_from_url("b", "https://storage.googleapis.com/otro/x.pdf")` lanza `HTTPException` con 404.
+- [x] Solo cambiaron los 4 routers de la tabla y el nuevo `core/google_cloud_storage.py` (`git diff --stat` lo confirma).
+- [x] `/docs` muestra `GET /visualizar/{id}` en `edictos`, `glosas`, `listas_de_acuerdos` y `sentencias`, con `id` obligatorio.
+- [x] Para un `id` existente con archivo, cada endpoint responde 200 con `Content-Type: application/pdf`.
+- [x] El encabezado `Content-Disposition` es `inline; filename="lista-de-acuerdos-<AUTORIDAD CLAVE>-<AAAA-MM-DD>.pdf"` (y equivalente con `edicto`, `glosa`, `sentencia`).
+- [x] El cuerpo descargado abre como PDF y es idéntico al blob en el bucket (mismo tamaño en bytes).
+- [x] `GET /listas_de_acuerdos/visualizar/999999999` responde 404.
+- [x] `GET /listas_de_acuerdos/visualizar/abc` responde 422.
+- [x] Un registro con `estatus == "B"` responde 404.
+- [x] Un registro con `url == ""` responde 404 con `detail == "File URL is empty"`.
+- [x] Un registro cuyo blob no existe responde 404 con `detail == "File not found in storage"`.
+- [x] Un usuario sin permiso `VER` en el módulo responde 403.
+- [x] Los endpoints paginados `GET ""` de los 4 routers responden igual que antes de esta spec.
 
 ---
 
