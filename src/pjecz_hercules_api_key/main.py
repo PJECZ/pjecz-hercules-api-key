@@ -2,10 +2,12 @@
 Main
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_pagination import add_pagination
+from starlette.concurrency import run_in_threadpool
 
+from pjecz_hercules_api_key.core.bitacora import guardar_bitacora
 from pjecz_hercules_api_key.routers.arc_documentos import arc_documentos
 from pjecz_hercules_api_key.routers.arc_documentos_tipos import arc_documentos_tipos
 from pjecz_hercules_api_key.routers.arc_juzgados_extintos import arc_juzgados_extintos
@@ -61,6 +63,24 @@ app.add_middleware(
     allow_methods=["GET"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def registrar_bitacora(request: Request, call_next):
+    """Registrar en la bitácora cada petición de un usuario identificado"""
+    status_code = 500
+    try:
+        response = await call_next(request)
+        status_code = response.status_code
+        return response
+    finally:
+        usuario_id = getattr(request.state, "usuario_id", None)
+        if usuario_id is not None:
+            ruta = request.url.path
+            if request.url.query:
+                ruta = f"{ruta}?{request.url.query}"
+            await run_in_threadpool(guardar_bitacora, usuario_id, ruta, request.method, status_code)
+
 
 # Agregar routers
 app.include_router(arc_documentos)

@@ -10,6 +10,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     """Settings"""
 
+    API_KEY_CUOTA_DIARIA: int = 1000
+    API_NOMBRE: str = "pjecz-hercules-api-key"
     DB_USER: str = ""
     DB_PASS: str = ""
     DB_HOST: str = ""

@@ -6,20 +6,24 @@ import re
 from datetime import datetime
 from typing import Annotated
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Request
 from fastapi.security.api_key import APIKeyHeader
 from hashids import Hashids
-from sqlalchemy import select
-from starlette.status import HTTP_403_FORBIDDEN
+from sqlalchemy import func, select
+from starlette.status import HTTP_403_FORBIDDEN, HTTP_429_TOO_MANY_REQUESTS
 from unidecode import unidecode
 
+from pjecz_hercules_api_key.config.setttings import get_settings
 from pjecz_hercules_api_key.core.database import Session, get_session
 from pjecz_hercules_api_key.core.exceptions import MyAuthenticationError
+from pjecz_hercules_api_key.models.bitacoras_apis import BitacoraAPI
 from pjecz_hercules_api_key.models.usuarios import Usuario
 from pjecz_hercules_api_key.schemas.usuarios import UsuarioInDB
 
 API_KEY_REGEXP = r"^\w+\.\w+\.\w+$"
 X_API_KEY = APIKeyHeader(name="X-Api-Key")
+
+settings = get_settings()
 
 
 def get_user(
@@ -53,12 +57,14 @@ def get_user(
         disabled=usuario.estatus != "A",
         api_key=usuario.api_key if usuario.api_key else "",
         api_key_expiracion=usuario.api_key_expiracion if usuario.api_key_expiracion else datetime.min,
+        api_key_cuota_diaria=usuario.api_key_cuota_diaria if usuario.api_key_cuota_diaria else settings.API_KEY_CUOTA_DIARIA,
     )
 
 
 def authenticate_user(
     api_key: str,
     session: Annotated[Session, Depends(get_session)],
+    request: Request | None = None,
 ) -> UsuarioInDB:
     """Autentificar un usuario por su api_key"""
 
@@ -80,6 +86,10 @@ def authenticate_user(
     if usuario is None:
         raise MyAuthenticationError("No se encontro el usuario")
 
+    # Identificar al usuario en la petición para que la bitácora registre los éxitos y los fallos
+    if request is not None:
+        request.state.usuario_id = usuario.id
+
     # Validar el api_key
     if usuario.api_key != api_key:
         raise MyAuthenticationError("No es igual la api_key al dato en la base de datos")
@@ -100,7 +110,23 @@ def authenticate_user(
     return usuario
 
 
+def count_today_requests(
+    usuario_id: int,
+    session: Annotated[Session, Depends(get_session)],
+) -> int:
+    """Contar las peticiones del usuario en el día de hoy"""
+    stmt = (
+        select(func.count())
+        .select_from(BitacoraAPI)
+        .where(BitacoraAPI.usuario_id == usuario_id)
+        .where(BitacoraAPI.api_nombre == settings.API_NOMBRE)
+        .where(BitacoraAPI.creado >= func.date_trunc("day", func.now()))
+    )
+    return session.execute(stmt).scalar_one()
+
+
 async def get_current_active_user(
+    request: Request,
     api_key: Annotated[str, Depends(X_API_KEY)],
     session: Annotated[Session, Depends(get_session)],
 ) -> UsuarioInDB:
@@ -108,9 +134,13 @@ async def get_current_active_user(
 
     # Try-except
     try:
-        usuario = authenticate_user(api_key, session)
+        usuario = authenticate_user(api_key, session, request)
     except MyAuthenticationError as error:
         raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail=str(error)) from error
+
+    # Validar la cuota diaria de consultas
+    if count_today_requests(usuario.id, session) >= usuario.api_key_cuota_diaria:
+        raise HTTPException(status_code=HTTP_429_TOO_MANY_REQUESTS, detail="Ha excedido su cuota diaria de consultas")
 
     # Entregar
     return usuario

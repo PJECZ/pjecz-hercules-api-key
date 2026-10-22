@@ -45,3 +45,4 @@ class UsuarioInDB(UsuarioOut):
     disabled: bool
     api_key: str
     api_key_expiracion: datetime
+    api_key_cuota_diaria: int
