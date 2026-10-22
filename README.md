@@ -71,7 +71,7 @@ fi
 echo
 
 # Google Application Credentials
-export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.google-application-credentials/justicia-digital-gob-mx-guivaloz-en-hereje.json
+export GOOGLE_APPLICATION_CREDENTIALS=
 
 if [ -f .env ]
 then
