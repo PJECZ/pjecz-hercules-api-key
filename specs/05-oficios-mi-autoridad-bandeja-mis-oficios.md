@@ -1,6 +1,6 @@
 # SPEC 05 — Oficios de Mi Autoridad, Mi Bandeja de Entrada y Mis Oficios
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01
 > **Fecha:** 2026-10-22
 > **Objetivo:** Agregar a `routers/ofi_documentos.py` tres endpoints paginados que entregan los oficios de la autoridad del usuario actual, los oficios donde es destinatario y los oficios que él creó.
@@ -101,27 +101,27 @@ Cada paso deja la API funcionando y se puede hacer commit de él por separado.
 
 ## Criterios de aceptación
 
-- [ ] `UsuarioInDB` tiene `autoridad_id` y `get_user` lo llena con `usuario.autoridad_id`.
-- [ ] Los tres endpoints aparecen en `/docs` bajo `/ofi_documentos/mi_autoridad`, `/ofi_documentos/mi_bandeja_de_entrada` y `/ofi_documentos/mis_oficios`.
-- [ ] Un usuario sin permiso `OFI DOCUMENTOS` recibe 403 en los tres.
-- [ ] `GET /ofi_documentos/mis_oficios` solo regresa oficios con `estatus = 'A'` y `usuario_id` igual al del usuario de la api_key.
-- [ ] `GET /ofi_documentos/mi_autoridad` solo regresa oficios con `estatus = 'A'` cuyo usuario creador tiene el mismo `autoridad_id` que el usuario de la api_key.
-- [ ] `GET /ofi_documentos/mi_bandeja_de_entrada` solo regresa oficios con `estatus = 'A'` que tienen un destinatario con `usuario_id` del usuario de la api_key y `estatus = 'A'`.
-- [ ] Un oficio donde el destinatario del usuario tiene `estatus = 'B'` no aparece en `mi_bandeja_de_entrada`.
-- [ ] Los resultados de los tres endpoints vienen ordenados por `creado` descendente.
-- [ ] `?anio=2026&numero=5` regresa solo oficios con `folio_anio = 2026` y `folio_num = 5`.
-- [ ] `?folio=2026` regresa oficios cuyo `folio` contiene `2026`.
-- [ ] `?estado=firmado` regresa solo oficios con `estado = 'FIRMADO'`.
-- [ ] `?estado=PENDIENTE` responde 422 con `detail = 'El estado no es válido'`.
-- [ ] `?creado=2026-10-01` regresa solo oficios creados ese día.
-- [ ] `?creado_desde=2026-10-01&creado_hasta=2026-10-15` regresa oficios creados en ese rango, ambos días incluidos.
-- [ ] `?creado=2026-10-01&creado_desde=2026-09-01` responde 422.
-- [ ] `?creado_desde=2026-10-15&creado_hasta=2026-10-01` responde 422.
-- [ ] `?descripcion=informe` regresa oficios cuya descripción contiene `INFORME`.
-- [ ] `?usuario_email=correo@pjecz.gob.mx` funciona en `mi_autoridad` y `mi_bandeja_de_entrada`, y `?usuario_email=no-es-correo` responde 422.
-- [ ] `?autoridad_clave=...` filtra por la clave de la autoridad del creador en `mi_bandeja_de_entrada`.
-- [ ] `GET /ofi_documentos` responde igual que antes de esta spec.
-- [ ] Solo cambiaron `routers/ofi_documentos.py`, `schemas/usuarios.py` y `core/authentication.py` (`git diff --stat` lo confirma).
+- [x] `UsuarioInDB` tiene `autoridad_id` y `get_user` lo llena con `usuario.autoridad_id`.
+- [x] Los tres endpoints aparecen en `/docs` bajo `/ofi_documentos/mi_autoridad`, `/ofi_documentos/mi_bandeja_de_entrada` y `/ofi_documentos/mis_oficios`.
+- [x] Un usuario sin permiso `OFI DOCUMENTOS` recibe 403 en los tres.
+- [x] `GET /ofi_documentos/mis_oficios` solo regresa oficios con `estatus = 'A'` y `usuario_id` igual al del usuario de la api_key.
+- [x] `GET /ofi_documentos/mi_autoridad` solo regresa oficios con `estatus = 'A'` cuyo usuario creador tiene el mismo `autoridad_id` que el usuario de la api_key.
+- [x] `GET /ofi_documentos/mi_bandeja_de_entrada` solo regresa oficios con `estatus = 'A'` que tienen un destinatario con `usuario_id` del usuario de la api_key y `estatus = 'A'`.
+- [x] Un oficio donde el destinatario del usuario tiene `estatus = 'B'` no aparece en `mi_bandeja_de_entrada`.
+- [x] Los resultados de los tres endpoints vienen ordenados por `creado` descendente.
+- [x] `?anio=2026&numero=5` regresa solo oficios con `folio_anio = 2026` y `folio_num = 5`.
+- [x] `?folio=2026` regresa oficios cuyo `folio` contiene `2026`.
+- [x] `?estado=firmado` regresa solo oficios con `estado = 'FIRMADO'`.
+- [x] `?estado=PENDIENTE` responde 422 con `detail = 'El estado no es válido'`.
+- [x] `?creado=2026-10-01` regresa solo oficios creados ese día.
+- [x] `?creado_desde=2026-10-01&creado_hasta=2026-10-15` regresa oficios creados en ese rango, ambos días incluidos.
+- [x] `?creado=2026-10-01&creado_desde=2026-09-01` responde 422.
+- [x] `?creado_desde=2026-10-15&creado_hasta=2026-10-01` responde 422.
+- [x] `?descripcion=informe` regresa oficios cuya descripción contiene `INFORME`.
+- [x] `?usuario_email=correo@pjecz.gob.mx` funciona en `mi_autoridad` y `mi_bandeja_de_entrada`, y `?usuario_email=no-es-correo` responde 422.
+- [x] `?autoridad_clave=...` filtra por la clave de la autoridad del creador en `mi_bandeja_de_entrada`.
+- [x] `GET /ofi_documentos` responde igual que antes de esta spec.
+- [x] Solo cambiaron `routers/ofi_documentos.py`, `schemas/usuarios.py` y `core/authentication.py` (`git diff --stat` lo confirma).
 
 ---
 
