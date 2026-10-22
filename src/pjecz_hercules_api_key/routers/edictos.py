@@ -3,14 +3,18 @@ Edictos
 """
 
 from datetime import date
+from io import BytesIO
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import StreamingResponse
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
 
+from pjecz_hercules_api_key.config.setttings import get_settings
 from pjecz_hercules_api_key.core.authentication import UsuarioInDB, get_current_active_user
 from pjecz_hercules_api_key.core.database import Session, get_session
+from pjecz_hercules_api_key.core.google_cloud_storage import get_blob_name_from_url, get_file_from_gcs
 from pjecz_hercules_api_key.core.pagination import CustomPage
 from pjecz_hercules_api_key.core.validation import safe_clave, safe_expediente, safe_string, validate_fechas
 from pjecz_hercules_api_key.models.autoridades import Autoridad
@@ -57,3 +61,28 @@ def edictos_paginado(
         stmt = stmt.where(Edicto.expediente == expediente)
     stmt = stmt.order_by(Edicto.id.desc())
     return paginate(session, stmt)
+
+
+@edictos.get("/visualizar/{id}", response_class=StreamingResponse)
+def edictos_visualizar(
+    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
+    session: Annotated[Session, Depends(get_session)],
+    id: int,
+):
+    """Visualizar el archivo PDF de un Edicto"""
+    if current_user.permissions.get("EDICTOS", 0) < Permiso.VER:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    edicto = session.get(Edicto, id)
+    if edicto is None or edicto.estatus != "A":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    if edicto.url.strip() == "":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File URL is empty")
+    bucket_name = get_settings().GCP_BUCKET_EDICTOS
+    blob_name = get_blob_name_from_url(bucket_name, edicto.url)
+    contenido = get_file_from_gcs(bucket_name, blob_name)
+    nombre = f"edicto-{edicto.autoridad.clave}-{edicto.fecha.isoformat()}.pdf"
+    return StreamingResponse(
+        BytesIO(contenido),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'inline; filename="{nombre}"'},
+    )
