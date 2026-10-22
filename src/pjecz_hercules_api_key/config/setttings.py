@@ -2,9 +2,45 @@
 Settings
 """
 
+import os
 from functools import lru_cache
+from typing import Any
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic.fields import FieldInfo
+from pydantic_settings import BaseSettings, PydanticBaseSettingsSource, SettingsConfigDict
+
+
+class SecretManagerSettingsSource(PydanticBaseSettingsSource):
+    """Fuente de configuración desde Google Cloud Secret Manager"""
+
+    def get_field_value(self, field: FieldInfo, field_name: str) -> tuple[Any, str, bool]:
+        """No se usa, __call__ arma el diccionario completo"""
+        return None, field_name, False
+
+    def __call__(self) -> dict[str, Any]:
+        """Obtener los valores de los secretos si PROJECT_ID está definido"""
+        project_id = os.environ.get("PROJECT_ID", "")
+        if not project_id:
+            return {}
+
+        service_prefix = os.environ.get("SERVICE_PREFIX", "")
+        if not service_prefix:
+            raise ValueError("SERVICE_PREFIX is required when PROJECT_ID is set")
+
+        from google.api_core.exceptions import NotFound
+        from google.cloud import secretmanager
+
+        client = secretmanager.SecretManagerServiceClient()
+        data: dict[str, Any] = {}
+        for field_name in self.settings_cls.model_fields:
+            secret_id = f"{service_prefix}_{field_name}".lower()
+            name = f"projects/{project_id}/secrets/{secret_id}/versions/latest"
+            try:
+                response = client.access_secret_version(name=name)
+            except NotFound:
+                continue
+            data[field_name] = response.payload.data.decode("utf-8").strip()
+        return data
 
 
 class Settings(BaseSettings):
