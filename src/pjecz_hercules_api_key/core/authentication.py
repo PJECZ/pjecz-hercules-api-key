@@ -37,6 +37,7 @@ def get_user(
         return None
     return UsuarioInDB(
         id=usuario.id,
+        autoridad_id=usuario.autoridad_id,
         autoridad_clave=usuario.autoridad_clave,
         autoridad_descripcion=usuario.autoridad_descripcion,
         autoridad_descripcion_corta=usuario.autoridad_descripcion_corta,
