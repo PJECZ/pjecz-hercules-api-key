@@ -120,7 +120,7 @@ def count_today_requests(
         .select_from(BitacoraAPI)
         .where(BitacoraAPI.usuario_id == usuario_id)
         .where(BitacoraAPI.api_nombre == settings.API_NOMBRE)
-        .where(BitacoraAPI.creado >= func.date_trunc("day", func.now()))
+        .where(BitacoraAPI.creado >= func.timezone(settings.TZ, func.date_trunc("day", func.timezone(settings.TZ, func.now()))))
     )
     return session.execute(stmt).scalar_one()
 

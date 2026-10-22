@@ -1,6 +1,6 @@
 # SPEC 03 — Bitácora de operaciones y cuota diaria por usuario
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** —
 > **Fecha:** 2026-10-21
 > **Objetivo:** Registrar en la tabla `bitacoras_apis` cada petición de un usuario identificado (tiempo, usuario, ruta, petición y éxito o fallo) y usar ese registro para imponer una cuota diaria de consultas por usuario.
@@ -77,7 +77,7 @@ Se reutiliza tal como está en `pjecz-hercules-flask`. `creado`, `modificado` y 
 
 | Función | Archivo | Regla |
 | --- | --- | --- |
-| `count_today_requests(usuario_id, session)` | `core/authentication.py` | `count(*)` de `bitacoras_apis` con ese `usuario_id`, `api_nombre == settings.API_NOMBRE` y `creado >= date_trunc('day', now())`. |
+| `count_today_requests(usuario_id, session)` | `core/authentication.py` | `count(*)` de `bitacoras_apis` con ese `usuario_id`, `api_nombre == settings.API_NOMBRE` y `creado >= date_trunc('day', now() AT TIME ZONE settings.TZ) AT TIME ZONE settings.TZ` (medianoche local, comparable con `creado` aunque PostgreSQL esté en UTC). |
 | `guardar_bitacora(usuario_id, ruta, peticion, status_code)` | `core/bitacora.py` | Inserta con `session_scope()`; cualquier excepción se registra con `logging` y no se propaga. |
 | `registrar_bitacora(request, call_next)` | `main.py` | Middleware `http`. Si `call_next` lanza una excepción, el código es 500. En `finally`, si existe `request.state.usuario_id`, llama `await run_in_threadpool(guardar_bitacora, ...)`. |
 
@@ -125,19 +125,20 @@ Cada paso deja la API funcionando, siempre que el SQL ya esté aplicado en la BD
 
 ## Criterios de aceptación
 
-- [ ] El SQL de esta spec está aplicado en la base de datos.
-- [ ] Existe `src/pjecz_hercules_api_key/models/bitacoras_apis.py` y `BitacoraAPI` está en `models/__init__.py`.
-- [ ] `GET /estados` con api_key válida responde 200 y crea una fila con `usuario_id` correcto, `api_nombre = 'pjecz-hercules-api-key'`, `api_ruta = '/estados'`, `peticion = 'GET'`, `respuesta_exitosa = true` y `respuesta_mensaje = '200 OK'`.
-- [ ] `GET /estados?clave=05` guarda `api_ruta = '/estados?clave=05'`.
-- [ ] Una petición a un módulo sin permiso responde 403 y crea una fila con `respuesta_exitosa = false` y `respuesta_mensaje = '403 Forbidden'`.
-- [ ] Una api_key expirada de un usuario existente responde 403 y crea una fila con `respuesta_exitosa = false`.
-- [ ] Una api_key con formato inválido responde 403 y no crea ninguna fila.
-- [ ] Con `api_key_cuota_diaria = 3` y sin filas del día, las peticiones 1 a 3 pasan la validación de cuota y la cuarta responde 429 con `detail = 'Ha excedido su cuota diaria de consultas'`.
-- [ ] La petición rechazada con 429 también queda registrada.
-- [ ] Con `api_key_cuota_diaria` nula, la cuota aplicada es `API_KEY_CUOTA_DIARIA` (1000 por defecto).
-- [ ] `GET /edictos/visualizar/{id}` entrega el PDF igual que en SPEC 02 y queda registrado con 200.
-- [ ] Si la inserción en `bitacoras_apis` falla, la respuesta al cliente no cambia y el error aparece en el log.
-- [ ] Los endpoints paginados responden igual que antes de esta spec para usuarios bajo su cuota.
+- [x] El SQL de esta spec está aplicado en la base de datos.
+- [x] Existe `src/pjecz_hercules_api_key/models/bitacoras_apis.py` y `BitacoraAPI` está en `models/__init__.py`.
+- [x] `GET /estados` con api_key válida responde 200 y crea una fila con `usuario_id` correcto, `api_nombre = 'pjecz-hercules-api-key'`, `api_ruta = '/estados'`, `peticion = 'GET'`, `respuesta_exitosa = true` y `respuesta_mensaje = '200 OK'`.
+- [x] `GET /estados?clave=05` guarda `api_ruta = '/estados?clave=05'`.
+- [x] Una petición a un módulo sin permiso responde 403 y crea una fila con `respuesta_exitosa = false` y `respuesta_mensaje = '403 Forbidden'`.
+- [x] Una api_key expirada de un usuario existente responde 403 y crea una fila con `respuesta_exitosa = false`.
+- [x] Una api_key con formato inválido responde 403 y no crea ninguna fila.
+- [x] Con `api_key_cuota_diaria = 3` y sin filas del día, las peticiones 1 a 3 pasan la validación de cuota y la cuarta responde 429 con `detail = 'Ha excedido su cuota diaria de consultas'`.
+- [x] La petición rechazada con 429 también queda registrada.
+- [x] Con PostgreSQL en `Etc/UTC`, el límite inferior del conteo es la medianoche de `America/Mexico_City` (06:00 UTC), no la medianoche UTC.
+- [x] Con `api_key_cuota_diaria` nula, la cuota aplicada es `API_KEY_CUOTA_DIARIA` (1000 por defecto).
+- [x] `GET /edictos/visualizar/{id}` entrega el PDF igual que en SPEC 02 y queda registrado con 200.
+- [x] Si la inserción en `bitacoras_apis` falla, la respuesta al cliente no cambia y el error aparece en el log.
+- [x] Los endpoints paginados responden igual que antes de esta spec para usuarios bajo su cuota.
 
 ---
 
@@ -156,7 +157,8 @@ Cada paso deja la API funcionando, siempre que el SQL ya esté aplicado en la BD
 - **No:** registrar peticiones sin usuario identificado. `usuario_id` es NOT NULL.
 - **Sí:** escribir con `run_in_threadpool` y una sesión propia (`session_scope()`). La sesión de la dependencia ya está cerrada y no se bloquea el event loop.
 - **Sí:** si falla la escritura de la bitácora, solo se registra en el log. La bitácora no debe tumbar la API.
-- **Sí:** el día de la cuota se calcula con `date_trunc('day', now())` en PostgreSQL. Usa el índice `(usuario_id, creado)`.
+- **Sí:** el día de la cuota empieza a la medianoche de `settings.TZ`, calculada en PostgreSQL con `date_trunc('day', now() AT TIME ZONE TZ) AT TIME ZONE TZ`. Usa el índice `(usuario_id, creado)`.
+- **No:** `date_trunc('day', now())`. En la verificación PostgreSQL resultó estar en `Etc/UTC` y la cuota se reiniciaba a las 18:00 de Coahuila.
 - **Sí:** `respuesta_errores` y `respuesta_datos` se guardan como `[]`. Son NOT NULL y no se quiere guardar el contenido de las respuestas.
 - **Sí:** `api_key_creado` se documenta como requisito de esquema, pero esta API no la usa; la consumirá el CLI.
 - **No:** tests automatizados. Igual que SPEC 01 y 02, la verificación es manual.
@@ -168,7 +170,7 @@ Cada paso deja la API funcionando, siempre que el SQL ya esté aplicado en la BD
 | Riesgo | Mitigación |
 | --- | --- |
 | Desplegar antes de aplicar el SQL: `usuarios.api_key_cuota_diaria` no existe y todas las peticiones fallan. | Aplicar el SQL en producción antes del despliegue. |
-| La zona horaria de PostgreSQL no es `America/Mexico_City` y el día de la cuota se corta a otra hora. | Revisar `SHOW timezone;`. Si difiere, cambiar a `func.timezone(settings.TZ, func.now())` en una spec futura. |
+| La zona horaria de PostgreSQL no es `America/Mexico_City` (en desarrollo es `Etc/UTC`). | El límite del día se calcula explícitamente con `settings.TZ`. Esto supone que `creado` se guarda en la zona de la sesión de PostgreSQL, que es lo que hace `now()`. |
 | La tabla crece con cada petición. | El CLI tendrá un comando para depurar registros viejos (spec futura en `pjecz-hercules-cli-typer`). |
 | Dos peticiones simultáneas pueden pasar la cuota por una o dos consultas. | Se acepta; la cuota es un límite de uso razonable, no de facturación. |
 | Una falla en la consulta de conteo responde 500. | Se acepta; si la BD no responde, los endpoints tampoco podrían funcionar. |
