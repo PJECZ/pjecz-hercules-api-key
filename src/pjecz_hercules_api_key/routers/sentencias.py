@@ -3,14 +3,18 @@ Sentencias
 """
 
 from datetime import date
+from io import BytesIO
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import StreamingResponse
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
 
+from pjecz_hercules_api_key.config.setttings import get_settings
 from pjecz_hercules_api_key.core.authentication import UsuarioInDB, get_current_active_user
 from pjecz_hercules_api_key.core.database import Session, get_session
+from pjecz_hercules_api_key.core.google_cloud_storage import get_blob_name_from_url, get_file_from_gcs
 from pjecz_hercules_api_key.core.pagination import CustomPage
 from pjecz_hercules_api_key.core.validation import safe_clave, safe_expediente, safe_string, validate_fechas
 from pjecz_hercules_api_key.models.autoridades import Autoridad
@@ -72,3 +76,28 @@ def sentencias_paginado(
         stmt = stmt.where(Sentencia.expediente_num == expediente_num)
     stmt = stmt.order_by(Sentencia.id.desc())
     return paginate(session, stmt)
+
+
+@sentencias.get("/visualizar/{id}", response_class=StreamingResponse)
+def sentencias_visualizar(
+    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
+    session: Annotated[Session, Depends(get_session)],
+    id: int,
+):
+    """Visualizar el archivo PDF de una Sentencia"""
+    if current_user.permissions.get("SENTENCIAS", 0) < Permiso.VER:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    sentencia = session.get(Sentencia, id)
+    if sentencia is None or sentencia.estatus != "A":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    if sentencia.url.strip() == "":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File URL is empty")
+    bucket_name = get_settings().GCP_BUCKET_SENTENCIAS
+    blob_name = get_blob_name_from_url(bucket_name, sentencia.url)
+    contenido = get_file_from_gcs(bucket_name, blob_name)
+    nombre = f"sentencia-{sentencia.autoridad.clave}-{sentencia.fecha.isoformat()}.pdf"
+    return StreamingResponse(
+        BytesIO(contenido),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'inline; filename="{nombre}"'},
+    )
