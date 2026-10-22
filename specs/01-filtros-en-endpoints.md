@@ -1,6 +1,6 @@
 # SPEC 01 — Filtros opcionales en los endpoints paginados
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** —
 > **Fecha:** 2026-10-18
 > **Objetivo:** Agregar parámetros de consulta opcionales a los endpoints paginados para filtrar por clave, fragmento de texto, fecha y expediente, validados con funciones de `core/validation.py`.
@@ -155,23 +155,23 @@ Cada paso deja la API funcionando y se puede hacer commit de él por separado.
 
 ## Criterios de aceptación
 
-- [ ] Existe `src/pjecz_hercules_api_key/core/validation.py` con `safe_string`, `safe_clave`, `safe_expediente` y `validate_fechas`.
-- [ ] `safe_string("  José   Peña  Güémez ")` regresa `"JOSE PEÑA GÜEMEZ"`.
-- [ ] Solo cambiaron archivos en `routers/` y el nuevo `core/validation.py` (`git diff --stat` lo confirma).
-- [ ] Cada router de la tabla expone en `/docs` exactamente los parámetros listados, todos opcionales.
-- [ ] Sin parámetros, cada endpoint responde lo mismo que antes de esta spec (mismo `total` y orden).
-- [ ] `GET /distritos?clave=<clave existente>` regresa `total == 1`.
-- [ ] `GET /edictos?descripcion=<fragmento en minúsculas con acentos>` regresa los mismos resultados que con el fragmento en mayúsculas sin acentos.
-- [ ] `GET /edictos?fecha=2025-01-15` solo regresa registros con `fecha == "2025-01-15"`.
-- [ ] `GET /edictos?fecha_desde=2025-01-01&fecha_hasta=2025-01-31` solo regresa registros dentro de ese rango.
-- [ ] `GET /edictos?fecha=2025-01-15&fecha_desde=2025-01-01` responde 422.
-- [ ] `GET /edictos?fecha_desde=2025-02-01&fecha_hasta=2025-01-01` responde 422.
-- [ ] `GET /sentencias?expediente=abc` responde 422.
-- [ ] `GET /sentencias?expediente=0123/2024` filtra igual que `expediente=123/2024`.
-- [ ] `GET /sentencias?expediente_anio=1800` responde 422.
-- [ ] `GET /autoridades?clave=A%20B!` responde 422.
-- [ ] `GET /sentencias?distrito_clave=<clave>&materia_clave=<clave>` solo regresa sentencias de ese distrito y esa materia.
-- [ ] `GET /edictos?descripcion=%20%20%20` responde igual que `GET /edictos` (el filtro vacío se ignora).
+- [x] Existe `src/pjecz_hercules_api_key/core/validation.py` con `safe_string`, `safe_clave`, `safe_expediente` y `validate_fechas`.
+- [x] `safe_string("  José   Peña  Güémez ")` regresa `"JOSE PEÑA GÜEMEZ"`.
+- [x] Solo cambiaron archivos en `routers/` y el nuevo `core/validation.py` (`git diff --stat` lo confirma).
+- [x] Cada router de la tabla expone en `/docs` exactamente los parámetros listados, todos opcionales.
+- [x] Sin parámetros, cada endpoint responde lo mismo que antes de esta spec (mismo `total` y orden).
+- [x] `GET /distritos?clave=<clave existente>` regresa `total == 1`.
+- [x] `GET /edictos?descripcion=<fragmento en minúsculas con acentos>` regresa los mismos resultados que con el fragmento en mayúsculas sin acentos.
+- [x] `GET /edictos?fecha=2025-01-15` solo regresa registros con `fecha == "2025-01-15"`.
+- [x] `GET /edictos?fecha_desde=2025-01-01&fecha_hasta=2025-01-31` solo regresa registros dentro de ese rango.
+- [x] `GET /edictos?fecha=2025-01-15&fecha_desde=2025-01-01` responde 422.
+- [x] `GET /edictos?fecha_desde=2025-02-01&fecha_hasta=2025-01-01` responde 422.
+- [x] `GET /sentencias?expediente=abc` responde 422.
+- [x] `GET /sentencias?expediente=0123/2024` filtra igual que `expediente=123/2024`.
+- [x] `GET /sentencias?expediente_anio=1800` responde 422.
+- [x] `GET /autoridades?clave=A%20B!` responde 422.
+- [x] `GET /sentencias?distrito_clave=<clave>&materia_clave=<clave>` solo regresa sentencias de ese distrito y esa materia.
+- [x] `GET /edictos?descripcion=%20%20%20` responde igual que `GET /edictos` (el filtro vacío se ignora).
 
 ---
 
