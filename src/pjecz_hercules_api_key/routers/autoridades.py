@@ -32,6 +32,7 @@ def autoridades_paginado(
     es_jurisdiccional: Annotated[bool | None, Query()] = None,
     es_notaria: Annotated[bool | None, Query()] = None,
     es_extinto: Annotated[bool | None, Query()] = None,
+    organo_jurisdiccional: Annotated[str | None, Query()] = None,
 ):
     """Autoridades paginado"""
     if current_user.permissions.get("AUTORIDADES", 0) < Permiso.VER:
@@ -51,5 +52,9 @@ def autoridades_paginado(
         stmt = stmt.where(Autoridad.es_notaria == es_notaria)
     if es_extinto is not None:
         stmt = stmt.where(Autoridad.es_extinto == es_extinto)
+    if organo_jurisdiccional and (organo_jurisdiccional := safe_string(organo_jurisdiccional)):
+        if organo_jurisdiccional not in Autoridad.ORGANOS_JURISDICCIONALES:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="El órgano jurisdiccional no es válido")
+        stmt = stmt.where(Autoridad.organo_jurisdiccional == organo_jurisdiccional)
     stmt = stmt.order_by(Autoridad.clave)
     return paginate(session, stmt)
