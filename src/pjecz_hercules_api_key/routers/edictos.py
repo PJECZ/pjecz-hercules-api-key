@@ -21,7 +21,7 @@ from pjecz_hercules_api_key.models.autoridades import Autoridad
 from pjecz_hercules_api_key.models.distritos import Distrito
 from pjecz_hercules_api_key.models.edictos import Edicto
 from pjecz_hercules_api_key.models.permisos import Permiso
-from pjecz_hercules_api_key.schemas.edictos import EdictoOut
+from pjecz_hercules_api_key.schemas.edictos import EdictoOut, OneEdictoOut
 
 edictos = APIRouter(prefix="/edictos")
 
@@ -86,3 +86,18 @@ def edictos_visualizar(
         media_type="application/pdf",
         headers={"Content-Disposition": f'inline; filename="{nombre}"'},
     )
+
+
+@edictos.get("/{id}", response_model=OneEdictoOut)
+def edictos_detalle(
+    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
+    session: Annotated[Session, Depends(get_session)],
+    id: int,
+):
+    """Detalle de un Edicto"""
+    if current_user.permissions.get("EDICTOS", 0) < Permiso.VER:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    edicto = session.get(Edicto, id)
+    if edicto is None or edicto.estatus != "A":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    return OneEdictoOut(success=True, message="Success", data=EdictoOut.model_validate(edicto))
