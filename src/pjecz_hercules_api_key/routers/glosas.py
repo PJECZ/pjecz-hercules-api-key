@@ -21,7 +21,7 @@ from pjecz_hercules_api_key.models.autoridades import Autoridad
 from pjecz_hercules_api_key.models.distritos import Distrito
 from pjecz_hercules_api_key.models.glosas import Glosa
 from pjecz_hercules_api_key.models.permisos import Permiso
-from pjecz_hercules_api_key.schemas.glosas import GlosaOut
+from pjecz_hercules_api_key.schemas.glosas import GlosaOut, OneGlosaOut
 
 glosas = APIRouter(prefix="/glosas")
 
@@ -86,3 +86,18 @@ def glosas_visualizar(
         media_type="application/pdf",
         headers={"Content-Disposition": f'inline; filename="{nombre}"'},
     )
+
+
+@glosas.get("/{id}", response_model=OneGlosaOut)
+def glosas_detalle(
+    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
+    session: Annotated[Session, Depends(get_session)],
+    id: int,
+):
+    """Detalle de una Glosa"""
+    if current_user.permissions.get("GLOSAS", 0) < Permiso.VER:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    glosa = session.get(Glosa, id)
+    if glosa is None or glosa.estatus != "A":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    return OneGlosaOut(success=True, message="Success", data=GlosaOut.model_validate(glosa))
