@@ -1,6 +1,6 @@
 # SPEC 07 — Filtro por órgano jurisdiccional en autoridades
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01
 > **Fecha:** 2026-10-23
 > **Objetivo:** Agregar al endpoint `GET /autoridades` el parámetro opcional `organo_jurisdiccional`, que acepta uno o más valores separados por comas, cada uno normalizado con `safe_string` y validado contra `Autoridad.ORGANOS_JURISDICCIONALES`.
@@ -82,19 +82,19 @@ if organo_jurisdiccional:
 
 ## Criterios de aceptación
 
-- [ ] `GET /autoridades` muestra en `/docs` el parámetro opcional `organo_jurisdiccional`.
-- [ ] `GET /autoridades` sin parámetros responde lo mismo que antes de esta spec (mismo `total` y orden).
-- [ ] `GET /autoridades?organo_jurisdiccional=JUZGADO%20DE%20PRIMERA%20INSTANCIA` solo regresa registros con `organo_jurisdiccional == "JUZGADO DE PRIMERA INSTANCIA"` (no incluye `JUZGADO DE PRIMERA INSTANCIA ORAL`).
-- [ ] `GET /autoridades?organo_jurisdiccional=tribunal%20de%20conciliación%20y%20arbitraje` regresa los mismos resultados que con `TRIBUNAL DE CONCILIACION Y ARBITRAJE`.
-- [ ] `GET /autoridades?organo_jurisdiccional=PLENO%20O%20SALA%20DEL%20TSJ,TRIBUNAL%20DE%20CONCILIACION%20Y%20ARBITRAJE` regresa autoridades de ambos órganos; su `total` es la suma de los `total` de cada valor por separado.
-- [ ] `GET /autoridades?organo_jurisdiccional=pleno%20o%20sala%20del%20tsj%20,%20%20tribunal%20distrital` (minúsculas y espacios alrededor de la coma) funciona igual que con los valores normalizados.
-- [ ] `GET /autoridades?organo_jurisdiccional=TRIBUNAL%20DISTRITAL,TRIBUNAL%20DISTRITAL` regresa lo mismo que con un solo `TRIBUNAL DISTRITAL`.
-- [ ] `GET /autoridades?organo_jurisdiccional=TRIBUNAL%20DISTRITAL,,` regresa lo mismo que con un solo `TRIBUNAL DISTRITAL` (los vacíos se ignoran).
-- [ ] `GET /autoridades?organo_jurisdiccional=XYZ` responde 422 con `detail = "El órgano jurisdiccional no es válido"`.
-- [ ] `GET /autoridades?organo_jurisdiccional=TRIBUNAL%20DISTRITAL,XYZ` responde 422 con `detail = "El órgano jurisdiccional no es válido"` (basta un valor inválido).
-- [ ] `GET /autoridades?organo_jurisdiccional=%20%20%20` y `GET /autoridades?organo_jurisdiccional=,,` responden igual que `GET /autoridades` (el filtro vacío se ignora).
-- [ ] `GET /autoridades?organo_jurisdiccional=TRIBUNAL%20DISTRITAL&distrito_clave=<clave>` combina ambos filtros.
-- [ ] Solo cambió `routers/autoridades.py` (`git diff --stat` lo confirma).
+- [x] `GET /autoridades` muestra en `/docs` el parámetro opcional `organo_jurisdiccional`.
+- [x] `GET /autoridades` sin parámetros responde lo mismo que antes de esta spec (mismo `total` y orden).
+- [x] `GET /autoridades?organo_jurisdiccional=JUZGADO%20DE%20PRIMERA%20INSTANCIA` solo regresa registros con `organo_jurisdiccional == "JUZGADO DE PRIMERA INSTANCIA"` (no incluye `JUZGADO DE PRIMERA INSTANCIA ORAL`).
+- [x] `GET /autoridades?organo_jurisdiccional=tribunal%20de%20conciliación%20y%20arbitraje` regresa los mismos resultados que con `TRIBUNAL DE CONCILIACION Y ARBITRAJE`.
+- [x] `GET /autoridades?organo_jurisdiccional=PLENO%20O%20SALA%20DEL%20TSJ,TRIBUNAL%20DE%20CONCILIACION%20Y%20ARBITRAJE` regresa autoridades de ambos órganos; su `total` es la suma de los `total` de cada valor por separado.
+- [x] `GET /autoridades?organo_jurisdiccional=pleno%20o%20sala%20del%20tsj%20,%20%20tribunal%20distrital` (minúsculas y espacios alrededor de la coma) funciona igual que con los valores normalizados.
+- [x] `GET /autoridades?organo_jurisdiccional=TRIBUNAL%20DISTRITAL,TRIBUNAL%20DISTRITAL` regresa lo mismo que con un solo `TRIBUNAL DISTRITAL`.
+- [x] `GET /autoridades?organo_jurisdiccional=TRIBUNAL%20DISTRITAL,,` regresa lo mismo que con un solo `TRIBUNAL DISTRITAL` (los vacíos se ignoran).
+- [x] `GET /autoridades?organo_jurisdiccional=XYZ` responde 422 con `detail = "El órgano jurisdiccional no es válido"`.
+- [x] `GET /autoridades?organo_jurisdiccional=TRIBUNAL%20DISTRITAL,XYZ` responde 422 con `detail = "El órgano jurisdiccional no es válido"` (basta un valor inválido).
+- [x] `GET /autoridades?organo_jurisdiccional=%20%20%20` y `GET /autoridades?organo_jurisdiccional=,,` responden igual que `GET /autoridades` (el filtro vacío se ignora).
+- [x] `GET /autoridades?organo_jurisdiccional=TRIBUNAL%20DISTRITAL&distrito_clave=<clave>` combina ambos filtros.
+- [x] Solo cambió `routers/autoridades.py` (`git diff --stat` lo confirma).
 
 ---
 

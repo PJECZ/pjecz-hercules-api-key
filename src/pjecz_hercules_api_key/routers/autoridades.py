@@ -52,9 +52,13 @@ def autoridades_paginado(
         stmt = stmt.where(Autoridad.es_notaria == es_notaria)
     if es_extinto is not None:
         stmt = stmt.where(Autoridad.es_extinto == es_extinto)
-    if organo_jurisdiccional and (organo_jurisdiccional := safe_string(organo_jurisdiccional)):
-        if organo_jurisdiccional not in Autoridad.ORGANOS_JURISDICCIONALES:
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="El órgano jurisdiccional no es válido")
-        stmt = stmt.where(Autoridad.organo_jurisdiccional == organo_jurisdiccional)
+    if organo_jurisdiccional:
+        organos_jurisdiccionales = list(dict.fromkeys(o for o in map(safe_string, organo_jurisdiccional.split(",")) if o))
+        if organos_jurisdiccionales:
+            if any(o not in Autoridad.ORGANOS_JURISDICCIONALES for o in organos_jurisdiccionales):
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="El órgano jurisdiccional no es válido"
+                )
+            stmt = stmt.where(Autoridad.organo_jurisdiccional.in_(organos_jurisdiccionales))
     stmt = stmt.order_by(Autoridad.clave)
     return paginate(session, stmt)
