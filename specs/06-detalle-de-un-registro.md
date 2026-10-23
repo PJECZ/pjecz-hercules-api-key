@@ -1,6 +1,6 @@
 # SPEC 06 — Detalle de un registro en edictos, glosas, listas de acuerdos y sentencias
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** —
 > **Fecha:** 2026-10-22
 > **Objetivo:** Agregar a los routers de edictos, glosas, listas de acuerdos y sentencias el endpoint `GET /<tabla>/{id}` que entrega un solo registro activo con su esquema `One*Out`.
@@ -91,14 +91,14 @@ Cada paso deja la API funcionando y se puede hacer commit de él por separado.
 
 ## Criterios de aceptación
 
-- [ ] Los cuatro endpoints aparecen en `/docs` como `GET /edictos/{id}`, `GET /glosas/{id}`, `GET /listas_de_acuerdos/{id}` y `GET /sentencias/{id}`.
-- [ ] Con un `id` de un registro activo, cada endpoint responde 200 con `success = true`, `message = "Success"` y `data` con los mismos campos que ese registro tiene en el listado `GET /<tabla>`.
-- [ ] Con un `id` que no existe, cada endpoint responde 404 con `detail = "Not found"`.
-- [ ] Con un `id` de un registro con `estatus = 'B'`, cada endpoint responde 404 con `detail = "Not found"`.
-- [ ] Con `id = abc`, cada endpoint responde 422.
-- [ ] Un usuario sin el permiso del módulo recibe 403 con `detail = "Forbidden"` en el endpoint de ese módulo.
-- [ ] `GET /<tabla>` y `GET /<tabla>/visualizar/{id}` responden igual que antes de esta spec en los cuatro módulos.
-- [ ] Solo cambiaron `routers/edictos.py`, `routers/glosas.py`, `routers/listas_de_acuerdos.py` y `routers/sentencias.py` (`git diff --stat` lo confirma).
+- [x] Los cuatro endpoints aparecen en `/docs` como `GET /edictos/{id}`, `GET /glosas/{id}`, `GET /listas_de_acuerdos/{id}` y `GET /sentencias/{id}`.
+- [x] Con un `id` de un registro activo, cada endpoint responde 200 con `success = true`, `message = "Success"` y `data` con los mismos campos que ese registro tiene en el listado `GET /<tabla>`.
+- [x] Con un `id` que no existe, cada endpoint responde 404 con `detail = "Not found"`.
+- [x] Con un `id` de un registro con `estatus = 'B'`, cada endpoint responde 404 con `detail = "Not found"`.
+- [x] Con `id = abc`, cada endpoint responde 422.
+- [x] Un usuario sin el permiso del módulo recibe 403 con `detail = "Forbidden"` en el endpoint de ese módulo.
+- [x] `GET /<tabla>` y `GET /<tabla>/visualizar/{id}` responden igual que antes de esta spec en los cuatro módulos.
+- [x] Solo cambiaron `routers/edictos.py`, `routers/glosas.py`, `routers/listas_de_acuerdos.py` y `routers/sentencias.py` (`git diff --stat` lo confirma).
 
 ---
 
