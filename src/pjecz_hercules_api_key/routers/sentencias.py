@@ -23,7 +23,7 @@ from pjecz_hercules_api_key.models.materias import Materia
 from pjecz_hercules_api_key.models.materias_tipos_juicios import MateriaTipoJuicio
 from pjecz_hercules_api_key.models.permisos import Permiso
 from pjecz_hercules_api_key.models.sentencias import Sentencia
-from pjecz_hercules_api_key.schemas.sentencias import SentenciaOut
+from pjecz_hercules_api_key.schemas.sentencias import OneSentenciaOut, SentenciaOut
 
 sentencias = APIRouter(prefix="/sentencias")
 
@@ -101,3 +101,18 @@ def sentencias_visualizar(
         media_type="application/pdf",
         headers={"Content-Disposition": f'inline; filename="{nombre}"'},
     )
+
+
+@sentencias.get("/{id}", response_model=OneSentenciaOut)
+def sentencias_detalle(
+    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
+    session: Annotated[Session, Depends(get_session)],
+    id: int,
+):
+    """Detalle de una Sentencia"""
+    if current_user.permissions.get("SENTENCIAS", 0) < Permiso.VER:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    sentencia = session.get(Sentencia, id)
+    if sentencia is None or sentencia.estatus != "A":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    return OneSentenciaOut(success=True, message="Success", data=SentenciaOut.model_validate(sentencia))
