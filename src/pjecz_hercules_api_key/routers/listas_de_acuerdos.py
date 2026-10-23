@@ -21,7 +21,7 @@ from pjecz_hercules_api_key.models.autoridades import Autoridad
 from pjecz_hercules_api_key.models.distritos import Distrito
 from pjecz_hercules_api_key.models.listas_de_acuerdos import ListaDeAcuerdo
 from pjecz_hercules_api_key.models.permisos import Permiso
-from pjecz_hercules_api_key.schemas.listas_de_acuerdos import ListaDeAcuerdoOut
+from pjecz_hercules_api_key.schemas.listas_de_acuerdos import ListaDeAcuerdoOut, OneListaDeAcuerdoOut
 
 listas_de_acuerdos = APIRouter(prefix="/listas_de_acuerdos")
 
@@ -83,3 +83,18 @@ def listas_de_acuerdos_visualizar(
         media_type="application/pdf",
         headers={"Content-Disposition": f'inline; filename="{nombre}"'},
     )
+
+
+@listas_de_acuerdos.get("/{id}", response_model=OneListaDeAcuerdoOut)
+def listas_de_acuerdos_detalle(
+    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
+    session: Annotated[Session, Depends(get_session)],
+    id: int,
+):
+    """Detalle de una Lista de Acuerdos"""
+    if current_user.permissions.get("LISTAS DE ACUERDOS", 0) < Permiso.VER:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden")
+    lista_de_acuerdo = session.get(ListaDeAcuerdo, id)
+    if lista_de_acuerdo is None or lista_de_acuerdo.estatus != "A":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    return OneListaDeAcuerdoOut(success=True, message="Success", data=ListaDeAcuerdoOut.model_validate(lista_de_acuerdo))
