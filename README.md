@@ -2,6 +2,8 @@
 
 API de uso público para consultar edictos, listas de acuerdos, sentencias, etc.
 
+Para solicitar un _api-key_ escriba a `informatica` en `pjecz.gob.mx`.
+
 ## Objetivo
 
 El objetivo de este proyecto es proporcionar datos abiertos e información pública sobre los procesos judiciales del Poder Judicial del Estado de Coahuila de Zaragoza.
@@ -80,16 +82,15 @@ fi
 
 if [ -f .env ]
 then
-    export $(grep -v '^#' .env | xargs)
     echo "-- Variables de entorno"
+    export $(grep -v '^#' .env | xargs)
     echo "   DB_HOST: ${DB_HOST}"
     echo "   DB_PORT: ${DB_PORT}"
     echo "   DB_NAME: ${DB_NAME}"
     echo "   DB_USER: ${DB_USER}"
     echo "   DB_PASS: ${DB_PASS}"
+    echo "   ORIGINS: ${ORIGINS}"
     echo "   SALT: ${SALT}"
-    echo "   SQLALCHEMY_DATABASE_URI: ${SQLALCHEMY_DATABASE_URI}"
-    echo "   TZ: ${TZ}"
     echo
     export PGHOST=$DB_HOST
     export PGPORT=$DB_PORT
@@ -106,10 +107,16 @@ then
     export PYTHONPATH=$(pwd)
     echo "   PYTHONPATH: ${PYTHONPATH}"
     echo
-    alias arrancar="uv run uvicorn pjecz_hercules_api_key.main:app"
-    echo "-- Arrancar FasAPI"
+    echo "-- FastAPI 127.0.0.1:8000"
+    alias arrancar="uvicorn --host=127.0.0.1 --port 8000 --reload src.pjecz_hercules_api_key.main:app"
     echo "   arrancar"
     echo
+    if [ -d tests ]
+    then
+        echo "-- Pruebas unitarias"
+        echo "   python3 -m unittest discover"
+        echo
+    fi
 fi
 ```
 
@@ -130,7 +137,3 @@ arrancar
 ## Licencia
 
 GNU Affero General Public License v3.0
-
-## Contacto
-
-Si tienes alguna pregunta o problema, no dudes en contactarnos a través de nuestro correo electrónico o nuestro sitio web.

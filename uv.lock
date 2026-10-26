@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.14"
 
 [[package]]
@@ -663,7 +663,7 @@ wheels = [
 
 [[package]]
 name = "pjecz-hercules-api-key"
-version = "0.1.0"
+version = "5.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "cryptography" },

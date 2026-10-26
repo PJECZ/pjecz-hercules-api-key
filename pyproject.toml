@@ -1,7 +1,7 @@
 [project]
 name = "pjecz-hercules-api-key"
-version = "0.1.0"
-description = "Hércules API-key."
+version = "5.1.0"
+description = "API del Poder Judicial del Estado de Coahuila de Zaragoza. Solicitudes a informatica en pjecz.gob.mx."
 readme = "README.md"
 authors = [
     { name = "Guillermo Valdes", email = "guillermo.valdes@pjecz.gob.mx" }
