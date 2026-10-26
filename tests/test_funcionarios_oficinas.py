@@ -1,5 +1,5 @@
 """
-Unit tests for funcionarios-oficinas
+Unit tests for funcionarios_oficinas
 """
 
 import unittest
@@ -10,15 +10,15 @@ from tests import config
 
 
 class TestFuncionariosOficinas(unittest.TestCase):
-    """Tests for funcionarios-oficinas"""
+    """Tests for funcionarios_oficinas"""
 
     def test_get_funcionarios_oficinas(self):
-        """Test GET method for funcionarios-oficinas"""
+        """Test GET method for funcionarios_oficinas"""
 
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/funcionarios_oficinas",
+                f"{config['api_base_url']}/funcionarios_oficinas",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )
@@ -37,12 +37,12 @@ class TestFuncionariosOficinas(unittest.TestCase):
 
         # Validar los datos
         self.assertEqual(type(contenido["data"]), list)
-        for itme in contenido["data"]:
-            self.assertEqual("funcionario_id" in itme, True)
-            self.assertEqual("funcionario_nombre" in itme, True)
-            self.assertEqual("oficina_id" in itme, True)
-            self.assertEqual("oficina_clave" in itme, True)
-            self.assertEqual("descripcion" in itme, True)
+        for item in contenido["data"]:
+            self.assertEqual("funcionario_id" in item, True)
+            self.assertEqual("funcionario_nombre" in item, True)
+            self.assertEqual("oficina_id" in item, True)
+            self.assertEqual("oficina_clave" in item, True)
+            self.assertEqual("descripcion" in item, True)
 
 
 if __name__ == "__main__":

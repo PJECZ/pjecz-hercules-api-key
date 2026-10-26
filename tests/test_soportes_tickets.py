@@ -1,5 +1,5 @@
 """
-Unit tests for soportes tickets
+Unit tests for soportes_tickets
 """
 
 import unittest
@@ -10,15 +10,15 @@ from tests import config
 
 
 class TestSoportesTickets(unittest.TestCase):
-    """Tests for soportes tickets"""
+    """Tests for soportes_tickets"""
 
     def test_get_soportes_tickets(self):
-        """Test GET method for soportes tickets"""
+        """Test GET method for soportes_tickets"""
 
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/soportes_tickets",
+                f"{config['api_base_url']}/soportes_tickets",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )
@@ -39,8 +39,11 @@ class TestSoportesTickets(unittest.TestCase):
         self.assertEqual(type(contenido["data"]), list)
         for item in contenido["data"]:
             self.assertEqual("id" in item, True)
+            self.assertEqual("funcionario_id" in item, True)
             self.assertEqual("funcionario_nombre" in item, True)
+            self.assertEqual("soporte_categoria_id" in item, True)
             self.assertEqual("soporte_categoria_nombre" in item, True)
+            self.assertEqual("usuario_email" in item, True)
             self.assertEqual("usuario_nombre" in item, True)
             self.assertEqual("descripcion" in item, True)
             self.assertEqual("estado" in item, True)

@@ -18,7 +18,7 @@ class TestDistritos(unittest.TestCase):
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/distritos",
+                f"{config['api_base_url']}/distritos",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )

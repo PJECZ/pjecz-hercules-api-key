@@ -1,5 +1,5 @@
 """
-Unit tests for soportes categorias
+Unit tests for soportes_categorias
 """
 
 import unittest
@@ -10,15 +10,15 @@ from tests import config
 
 
 class TestSoportesCategorias(unittest.TestCase):
-    """Tests for soportes categorias"""
+    """Tests for soportes_categorias"""
 
     def test_get_soportes_categorias(self):
-        """Test GET method for soportes categorias"""
+        """Test GET method for soportes_categorias"""
 
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/soportes_categorias",
+                f"{config['api_base_url']}/soportes_categorias",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )

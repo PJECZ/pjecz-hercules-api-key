@@ -18,7 +18,7 @@ class TestOficinas(unittest.TestCase):
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/oficinas",
+                f"{config['api_base_url']}/oficinas",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )

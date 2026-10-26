@@ -18,7 +18,7 @@ class TestRoles(unittest.TestCase):
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/roles",
+                f"{config['api_base_url']}/roles",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )

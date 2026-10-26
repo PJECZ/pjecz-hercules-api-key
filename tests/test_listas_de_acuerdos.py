@@ -18,7 +18,7 @@ class TestListasDeAcuerdos(unittest.TestCase):
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/listas_de_acuerdos",
+                f"{config['api_base_url']}/listas_de_acuerdos",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )

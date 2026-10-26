@@ -18,7 +18,7 @@ class TestModulos(unittest.TestCase):
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/modulos",
+                f"{config['api_base_url']}/modulos",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )

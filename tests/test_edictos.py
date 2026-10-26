@@ -18,7 +18,7 @@ class TestEdictos(unittest.TestCase):
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/edictos",
+                f"{config['api_base_url']}/edictos",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )

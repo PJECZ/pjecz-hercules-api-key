@@ -18,7 +18,7 @@ class TestPermisos(unittest.TestCase):
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/permisos",
+                f"{config['api_base_url']}/permisos",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )

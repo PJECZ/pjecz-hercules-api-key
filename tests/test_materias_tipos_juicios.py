@@ -18,7 +18,7 @@ class TestMateriasTiposJuicios(unittest.TestCase):
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/materias_tipos_juicios",
+                f"{config['api_base_url']}/materias_tipos_juicios",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )

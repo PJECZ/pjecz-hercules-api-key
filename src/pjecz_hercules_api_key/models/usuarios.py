@@ -1,0 +1,121 @@
+"""
+Usuarios
+"""
+
+from datetime import datetime
+from typing import Optional
+
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from pjecz_hercules_api_key.core.database import Base
+
+
+class Usuario(Base):
+    """Usuario"""
+
+    # Nombre de la tabla
+    __tablename__ = "usuarios"
+
+    # Clave primaria
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    # Claves foráneas
+    autoridad_id: Mapped[int] = mapped_column(ForeignKey("autoridades.id"))
+    autoridad: Mapped["Autoridad"] = relationship(back_populates="usuarios")
+    oficina_id: Mapped[int] = mapped_column(ForeignKey("oficinas.id"))
+    oficina: Mapped["Oficina"] = relationship(back_populates="usuarios")
+
+    # Columnas
+    email: Mapped[str] = mapped_column(String(256), unique=True, index=True)
+    email_personal: Mapped[str] = mapped_column(String(256))
+    nombres: Mapped[str] = mapped_column(String(256))
+    apellido_paterno: Mapped[str] = mapped_column(String(256))
+    apellido_materno: Mapped[str] = mapped_column(String(256))
+    curp: Mapped[str] = mapped_column(String(18))
+    puesto: Mapped[str] = mapped_column(String(256))
+    titulo: Mapped[Optional[str]] = mapped_column(String(32))
+    api_key: Mapped[Optional[str]] = mapped_column(String(128))
+    api_key_expiracion: Mapped[Optional[datetime]]
+    api_key_cuota_diaria: Mapped[Optional[int]]
+    contrasena: Mapped[Optional[str]] = mapped_column(String(256))
+
+    # Hijos
+    arc_remesas: Mapped[list["ArcRemesa"]] = relationship(back_populates="usuario_asignado")
+    bitacoras_apis: Mapped[list["BitacoraAPI"]] = relationship(back_populates="usuario")
+    ofi_documentos: Mapped[list["OfiDocumento"]] = relationship(back_populates="usuario")
+    ofi_documentos_destinatarios: Mapped[list["OfiDocumentoDestinatario"]] = relationship(back_populates="usuario")
+    soportes_tickets: Mapped[list["SoporteTicket"]] = relationship(back_populates="usuario")
+    usuarios_roles: Mapped[list["UsuarioRol"]] = relationship(back_populates="usuario")
+
+    # Propiedades
+    permisos_consultados = {}
+
+    @property
+    def nombre(self):
+        """Junta nombres, apellido_paterno y apellido materno"""
+        return self.nombres + " " + self.apellido_paterno + " " + self.apellido_materno
+
+    @property
+    def permissions(self):
+        """Entrega un diccionario con todos los permisos"""
+        if len(self.permisos_consultados) > 0:
+            return self.permisos_consultados
+        self.permisos_consultados = {}
+        for usuario_rol in self.usuarios_roles:
+            if usuario_rol.estatus == "A":
+                for permiso in usuario_rol.rol.permisos:
+                    if permiso.estatus == "A":
+                        etiqueta = permiso.modulo.nombre
+                        if etiqueta not in self.permisos_consultados or permiso.nivel > self.permisos_consultados[etiqueta]:
+                            self.permisos_consultados[etiqueta] = permiso.nivel
+        return self.permisos_consultados
+
+    @property
+    def distrito_clave(self):
+        """Distrito clave"""
+        return self.autoridad.distrito.clave
+
+    @property
+    def distrito_nombre(self):
+        """Distrito nombre"""
+        return self.autoridad.distrito.nombre
+
+    @property
+    def distrito_nombre_corto(self):
+        """Distrito nombre corto"""
+        return self.autoridad.distrito.nombre_corto
+
+    @property
+    def autoridad_clave(self):
+        """Autoridad clave"""
+        return self.autoridad.clave
+
+    @property
+    def autoridad_descripcion(self):
+        """Autoridad descripción"""
+        return self.autoridad.descripcion
+
+    @property
+    def autoridad_descripcion_corta(self):
+        """Autoridad descripción corta"""
+        return self.autoridad.descripcion_corta
+
+    @property
+    def oficina_clave(self):
+        """Oficina clave"""
+        return self.oficina.clave
+
+    @property
+    def oficina_descripcion(self):
+        """Oficina descripción"""
+        return self.oficina.descripcion
+
+    @property
+    def oficina_descripcion_corta(self):
+        """Oficina descripción corta"""
+        return self.oficina.descripcion_corta
+
+    def __repr__(self):
+        """Representación"""
+        return f"<Usuario {self.email}>"

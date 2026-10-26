@@ -4,12 +4,21 @@ API de uso público para consultar edictos, listas de acuerdos, sentencias, etc.
 
 Para solicitar un _api-key_ escriba a `informatica` en `pjecz.gob.mx`.
 
+## Objetivo
+
+El objetivo de este proyecto es proporcionar datos abiertos e información pública sobre los procesos judiciales del Poder Judicial del Estado de Coahuila de Zaragoza.
+
+## Descripción
+
+El proyecto `pjecz-hercules-api-key` es una interfaz de acceso a una base de datos de edictos, listas de acuerdos, sentencias y otros documentos judiciales.
+
 ## Requerimientos
 
 Los requerimientos son
 
-- Python 3.11
-- PostgreSQL 15
+- Python 3.14
+- PostgreSQL 18
+- Gestor de paquetes **uv**
 
 ## Instalación
 
@@ -28,63 +37,28 @@ source venv/bin/activate
 Actualizar el gestor de paquetes **pip**
 
 ```bash
-pip install --upgrade pip setuptools
+pip install --upgrade pip
 ```
 
-Instalar el paquete **wheel** para compilar las dependencias
+Instalar las dependencias
 
 ```bash
-pip install wheel
-```
-
-Instalar **poetry 2** en el entorno virtual si no lo tiene desde el sistema operativo
-
-```bash
-pip install poetry
-```
-
-Configurar **poetry** para que use el entorno virtual dentro del directorio del proyecto
-
-```bash
-poetry config virtualenvs.in-project true
-```
-
-Instalar las dependencias por medio de **poetry**
-
-```bash
-poetry install
+uv sync
 ```
 
 ## Configuración
 
-Crear un archivo `.env` en la raíz del proyecto con las variables de entorno
-
-```ini
-# Base de datos
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_NAME=pjecz_plataforma_web
-DB_USER=XXXXXXXXXXXX
-DB_PASS=XXXXXXXXXXXX
-
-# Google Cloud Storage
-CLOUD_STORAGE_DEPOSITO=XXXXXXXXXXXX
-CLOUD_STORAGE_DEPOSITO_EDICTOS=XXXXXXXXXXXX
-CLOUD_STORAGE_DEPOSITO_GLOSAS=XXXXXXXXXXXX
-CLOUD_STORAGE_DEPOSITO_LISTAS_DE_ACUERDOS=XXXXXXXXXXXX
-CLOUD_STORAGE_DEPOSITO_SENTENCIAS=XXXXXXXXXXXX
-CLOUD_STORAGE_DEPOSITO_USUARIOS=XXXXXXXXXXXX
-
-# Origins
-ORIGINS=http://localhost:3000
-
-# Salt sirve para cifrar el ID con HashID, debe ser igual en la API
-SALT=XXXXXXXXXXXX
-```
-
-Crear un archivo `.bashrc` que cargue las variables de entorno y el entorno virtual
+Copiar el archivo `.env.example` a `.env` y modificar los valores según sea necesario.
 
 ```bash
+cp .env.example .env
+```
+
+Crear un archivo `.bashrc` para cargar las variables de entorno y el entorno virtual
+
+```bash
+# pjecz-hercules-api-key
+
 if [ -f ~/.bashrc ]
 then
     . ~/.bashrc
@@ -92,17 +66,24 @@ fi
 
 if command -v figlet &> /dev/null
 then
-    figlet Hercules API key
+    figlet Hercules API-key
 else
-    echo "== Hercules API key"
+    echo "== Hercules API-key"
 fi
 echo
+
+export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.google-application-credentials/service-account.json
+if [ -f $GOOGLE_APPLICATION_CREDENTIALS ]
+then
+    echo "-- Google Application Credentials"
+    echo "   ${GOOGLE_APPLICATION_CREDENTIALS}"
+    echo
+fi
 
 if [ -f .env ]
 then
     echo "-- Variables de entorno"
     export $(grep -v '^#' .env | xargs)
-    # source .env && export $(sed '/^#/d' .env | cut -d= -f1)
     echo "   DB_HOST: ${DB_HOST}"
     echo "   DB_PORT: ${DB_PORT}"
     echo "   DB_NAME: ${DB_NAME}"
@@ -126,12 +107,8 @@ then
     export PYTHONPATH=$(pwd)
     echo "   PYTHONPATH: ${PYTHONPATH}"
     echo
-    echo "-- Poetry"
-    export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
-    echo "   $(poetry --version)"
-    echo
     echo "-- FastAPI 127.0.0.1:8000"
-    alias arrancar="uvicorn --host=127.0.0.1 --port 8000 --reload pjecz_hercules_api_key.app:app"
+    alias arrancar="uvicorn --host=127.0.0.1 --port 8000 --reload src.pjecz_hercules_api_key.main:app"
     echo "   arrancar"
     echo
     if [ -d tests ]
@@ -143,7 +120,7 @@ then
 fi
 ```
 
-## Arrancar
+## Uso
 
 Cargar las variables de entorno y el entorno virtual
 
@@ -156,3 +133,7 @@ Lanzar **FastAPI** por medio del _alias_ que se cargó en el `source .bashrc`
 ```bash
 arrancar
 ```
+
+## Licencia
+
+GNU Affero General Public License v3.0

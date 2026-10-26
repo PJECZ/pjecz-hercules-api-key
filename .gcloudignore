@@ -17,12 +17,15 @@
 
 __pycache__/
 
-/.idea
+/.agents
+/.claude
 /.git
 /.github
 /.poetry
+/.pytest_cache
+/.ruff_cache
 /.venv
 /.vscode
-/poetry.lock
+/specs
 /tests
 /venv

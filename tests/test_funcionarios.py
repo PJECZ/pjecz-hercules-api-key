@@ -18,7 +18,7 @@ class TestFuncionarios(unittest.TestCase):
         # Consultar
         try:
             response = requests.get(
-                f"{config['api_base_url']}/api/v5/funcionarios",
+                f"{config['api_base_url']}/funcionarios",
                 headers={"X-Api-Key": config["api_key"]},
                 timeout=config["timeout"],
             )
