@@ -59,6 +59,11 @@ def get_user(
         api_key=usuario.api_key if usuario.api_key else "",
         api_key_expiracion=usuario.api_key_expiracion if usuario.api_key_expiracion else datetime.min,
         api_key_cuota_diaria=usuario.api_key_cuota_diaria if usuario.api_key_cuota_diaria else settings.API_KEY_CUOTA_DIARIA,
+        api_key_visualizaciones_por_hora=(
+            usuario.api_key_visualizaciones_por_hora
+            if usuario.api_key_visualizaciones_por_hora
+            else settings.API_KEY_VISUALIZACIONES_POR_HORA
+        ),
     )
 
 

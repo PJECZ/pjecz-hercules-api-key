@@ -47,6 +47,7 @@ class Settings(BaseSettings):
     """Settings"""
 
     API_KEY_CUOTA_DIARIA: int = 1000
+    API_KEY_VISUALIZACIONES_POR_HORA: int = 20
     API_NOMBRE: str = "pjecz-hercules-api-key"
     DB_USER: str = ""
     DB_PASS: str = ""
