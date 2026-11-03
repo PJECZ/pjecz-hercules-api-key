@@ -1,6 +1,6 @@
 # SPEC 08 — Límite de visualizaciones de PDF por hora
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 02, SPEC 03
 > **Fecha:** 2026-11-03
 > **Objetivo:** Limitar a cada usuario a un número de visualizaciones de PDF (`GET /<tabla>/visualizar/{id}` de edictos, glosas, listas de acuerdos y sentencias) en los últimos 60 minutos, tomado de la nueva columna `usuarios.api_key_visualizaciones_por_hora` o, si no está definida, de `API_KEY_VISUALIZACIONES_POR_HORA` (20 por defecto).
@@ -146,23 +146,23 @@ Cada paso deja la API funcionando, siempre que el SQL ya esté aplicado en la BD
 
 ## Criterios de aceptación
 
-- [ ] El SQL de esta spec está aplicado en la base de datos.
-- [ ] Con `api_key_visualizaciones_por_hora` nula, el límite aplicado es `API_KEY_VISUALIZACIONES_POR_HORA` (20 sin definir la variable).
-- [ ] Con `api_key_visualizaciones_por_hora = 0`, el límite aplicado también es `API_KEY_VISUALIZACIONES_POR_HORA`.
-- [ ] Con `API_KEY_VISUALIZACIONES_POR_HORA=5` en `.env` y la columna nula, la sexta visualización en una hora responde 429.
-- [ ] Con `api_key_visualizaciones_por_hora = 3` y sin visualizaciones en la última hora, las visualizaciones 1 a 3 responden 200 y la cuarta responde 429 con `detail = "Ha excedido su límite de visualizaciones por hora"`.
-- [ ] El 429 por límite de visualizaciones incluye el encabezado `Retry-After` con un entero entre 1 y 3600.
-- [ ] El límite es combinado: con límite 3, una visualización de edicto, una de glosa y una de sentencia hacen que la siguiente de lista de acuerdos responda 429.
-- [ ] Una visualización que responde 404 (p. ej. `id` inexistente) cuenta para el límite.
-- [ ] Las filas con `respuesta_mensaje` que empieza con `429` no cuentan: después de varios 429, el usuario vuelve a obtener 200 en cuanto la visualización más vieja cumple 60 minutos.
-- [ ] Una visualización de hace 61 minutos no cuenta para el límite.
-- [ ] Las filas de `/listas_de_acuerdos/...` que no son `/visualizar/` (p. ej. `/listas_de_acuerdos/123`, `/listas_de_acuerdos?autoridad_clave=X`) no cuentan.
-- [ ] Las filas de otro `api_nombre` no cuentan.
-- [ ] Un usuario que alcanzó el límite por hora sigue obteniendo 200 en `GET /edictos`, `GET /edictos/{id}` y demás endpoints que no son de visualización.
-- [ ] Un usuario sin permiso `VER` en `EDICTOS` y con el límite excedido recibe 429 (el límite se valida antes del permiso).
-- [ ] La petición rechazada con 429 por el límite queda registrada en `bitacoras_apis` con `respuesta_mensaje = '429 Too Many Requests'`.
-- [ ] Con la cuota diaria excedida, `GET /edictos/visualizar/{id}` responde 429 con `detail = "Ha excedido su cuota diaria de consultas"`, igual que antes de esta spec.
-- [ ] Solo cambiaron `models/usuarios.py`, `schemas/usuarios.py`, `config/setttings.py`, `.env.example`, `core/authentication.py` y los 4 routers `edictos`, `glosas`, `listas_de_acuerdos` y `sentencias` (`git diff --stat` lo confirma).
+- [x] El SQL de esta spec está aplicado en la base de datos.
+- [x] Con `api_key_visualizaciones_por_hora` nula, el límite aplicado es `API_KEY_VISUALIZACIONES_POR_HORA` (20 sin definir la variable).
+- [x] Con `api_key_visualizaciones_por_hora = 0`, el límite aplicado también es `API_KEY_VISUALIZACIONES_POR_HORA`.
+- [x] Con `API_KEY_VISUALIZACIONES_POR_HORA=5` en `.env` y la columna nula, la sexta visualización en una hora responde 429.
+- [x] Con `api_key_visualizaciones_por_hora = 3` y sin visualizaciones en la última hora, las visualizaciones 1 a 3 responden 200 y la cuarta responde 429 con `detail = "Ha excedido su límite de visualizaciones por hora"`.
+- [x] El 429 por límite de visualizaciones incluye el encabezado `Retry-After` con un entero entre 1 y 3600.
+- [x] El límite es combinado: con límite 3, una visualización de edicto, una de glosa y una de sentencia hacen que la siguiente de lista de acuerdos responda 429.
+- [x] Una visualización que responde 404 (p. ej. `id` inexistente) cuenta para el límite.
+- [x] Las filas con `respuesta_mensaje` que empieza con `429` no cuentan: después de varios 429, el usuario vuelve a obtener 200 en cuanto la visualización más vieja cumple 60 minutos.
+- [x] Una visualización de hace 61 minutos no cuenta para el límite.
+- [x] Las filas de `/listas_de_acuerdos/...` que no son `/visualizar/` (p. ej. `/listas_de_acuerdos/123`, `/listas_de_acuerdos?autoridad_clave=X`) no cuentan.
+- [x] Las filas de otro `api_nombre` no cuentan.
+- [x] Un usuario que alcanzó el límite por hora sigue obteniendo 200 en `GET /edictos`, `GET /edictos/{id}` y demás endpoints que no son de visualización.
+- [x] Un usuario sin permiso `VER` en `EDICTOS` y con el límite excedido recibe 429 (el límite se valida antes del permiso).
+- [x] La petición rechazada con 429 por el límite queda registrada en `bitacoras_apis` con `respuesta_mensaje = '429 Too Many Requests'`.
+- [x] Con la cuota diaria excedida, `GET /edictos/visualizar/{id}` responde 429 con `detail = "Ha excedido su cuota diaria de consultas"`, igual que antes de esta spec.
+- [x] Solo cambiaron `models/usuarios.py`, `schemas/usuarios.py`, `config/setttings.py`, `.env.example`, `core/authentication.py` y los 4 routers `edictos`, `glosas`, `listas_de_acuerdos` y `sentencias` (`git diff --stat` lo confirma).
 
 ---
 
