@@ -13,6 +13,7 @@ from pjecz_hercules_api_key.routers.arc_documentos_tipos import arc_documentos_t
 from pjecz_hercules_api_key.routers.arc_juzgados_extintos import arc_juzgados_extintos
 from pjecz_hercules_api_key.routers.arc_remesas import arc_remesas
 from pjecz_hercules_api_key.routers.arc_remesas_documentos import arc_remesas_documentos
+from pjecz_hercules_api_key.routers.audiencias import audiencias
 from pjecz_hercules_api_key.routers.autoridades import autoridades
 from pjecz_hercules_api_key.routers.dgt_depositos import dgt_depositos
 from pjecz_hercules_api_key.routers.dgt_digitalizaciones import dgt_digitalizaciones
@@ -88,6 +89,7 @@ app.include_router(arc_documentos_tipos)
 app.include_router(arc_juzgados_extintos)
 app.include_router(arc_remesas)
 app.include_router(arc_remesas_documentos)
+app.include_router(audiencias)
 app.include_router(autoridades)
 app.include_router(dgt_depositos)
 app.include_router(dgt_digitalizaciones)

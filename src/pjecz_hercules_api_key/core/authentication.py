@@ -3,13 +3,13 @@ Authentication
 """
 
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, Request
 from fastapi.security.api_key import APIKeyHeader
 from hashids import Hashids
-from sqlalchemy import func, select
+from sqlalchemy import func, literal, not_, or_, select
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_429_TOO_MANY_REQUESTS
 from unidecode import unidecode
 
@@ -22,6 +22,14 @@ from pjecz_hercules_api_key.schemas.usuarios import UsuarioInDB
 
 API_KEY_REGEXP = r"^\w+\.\w+\.\w+$"
 X_API_KEY = APIKeyHeader(name="X-Api-Key")
+
+# Segmentos de ruta de las visualizaciones de PDF; se buscan con contains porque la bitácora guarda la ruta con root_path (/api/v5)
+VISUALIZAR_RUTAS_PREFIJOS = (
+    "/edictos/visualizar/",
+    "/glosas/visualizar/",
+    "/listas_de_acuerdos/visualizar/",
+    "/sentencias/visualizar/",
+)
 
 settings = get_settings()
 
@@ -59,6 +67,11 @@ def get_user(
         api_key=usuario.api_key if usuario.api_key else "",
         api_key_expiracion=usuario.api_key_expiracion if usuario.api_key_expiracion else datetime.min,
         api_key_cuota_diaria=usuario.api_key_cuota_diaria if usuario.api_key_cuota_diaria else settings.API_KEY_CUOTA_DIARIA,
+        api_key_visualizaciones_por_hora=(
+            usuario.api_key_visualizaciones_por_hora
+            if usuario.api_key_visualizaciones_por_hora
+            else settings.API_KEY_VISUALIZACIONES_POR_HORA
+        ),
     )
 
 
@@ -126,6 +139,24 @@ def count_today_requests(
     return session.execute(stmt).scalar_one()
 
 
+def count_last_hour_views(
+    usuario_id: int,
+    session: Annotated[Session, Depends(get_session)],
+) -> tuple[int, datetime | None]:
+    """Contar las visualizaciones de PDF del usuario en los últimos 60 minutos, sin contar los 429"""
+    stmt = (
+        select(func.count(), func.min(BitacoraAPI.creado))
+        .select_from(BitacoraAPI)
+        .where(BitacoraAPI.usuario_id == usuario_id)
+        .where(BitacoraAPI.api_nombre == settings.API_NOMBRE)
+        .where(BitacoraAPI.creado >= func.now() - timedelta(hours=1))
+        .where(or_(*[BitacoraAPI.api_ruta.contains(prefijo, autoescape=True) for prefijo in VISUALIZAR_RUTAS_PREFIJOS]))
+        .where(not_(BitacoraAPI.respuesta_mensaje.startswith("429")))
+    )
+    conteo, mas_vieja = session.execute(stmt).one()
+    return conteo, mas_vieja
+
+
 async def get_current_active_user(
     request: Request,
     api_key: Annotated[str, Depends(X_API_KEY)],
@@ -142,6 +173,35 @@ async def get_current_active_user(
     # Validar la cuota diaria de consultas
     if count_today_requests(usuario.id, session) >= usuario.api_key_cuota_diaria:
         raise HTTPException(status_code=HTTP_429_TOO_MANY_REQUESTS, detail="Ha excedido su cuota diaria de consultas")
+
+    # Entregar
+    return usuario
+
+
+async def get_current_active_user_visualizar(
+    request: Request,
+    api_key: Annotated[str, Depends(X_API_KEY)],
+    session: Annotated[Session, Depends(get_session)],
+) -> UsuarioInDB:
+    """Obtener el usuario activo actual y validar su límite de visualizaciones de PDF por hora"""
+
+    # Validar el api_key y la cuota diaria
+    usuario = await get_current_active_user(request, api_key, session)
+
+    # Validar el límite de visualizaciones en los últimos 60 minutos
+    conteo, mas_vieja = count_last_hour_views(usuario.id, session)
+    if conteo >= usuario.api_key_visualizaciones_por_hora:
+        # Segundos para que la visualización más vieja salga de la ventana, con now() de PostgreSQL como referencia
+        segundos = 3600
+        if mas_vieja is not None:
+            stmt = select(func.ceil(func.extract("epoch", literal(mas_vieja) + timedelta(hours=1) - func.now())))
+            segundos = int(session.execute(stmt).scalar_one())
+        segundos = min(max(segundos, 1), 3600)
+        raise HTTPException(
+            status_code=HTTP_429_TOO_MANY_REQUESTS,
+            detail="Ha excedido su límite de visualizaciones por hora",
+            headers={"Retry-After": str(segundos)},
+        )
 
     # Entregar
     return usuario

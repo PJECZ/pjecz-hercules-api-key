@@ -38,6 +38,7 @@ class Usuario(Base):
     api_key: Mapped[Optional[str]] = mapped_column(String(128))
     api_key_expiracion: Mapped[Optional[datetime]]
     api_key_cuota_diaria: Mapped[Optional[int]]
+    api_key_visualizaciones_por_hora: Mapped[Optional[int]]
     contrasena: Mapped[Optional[str]] = mapped_column(String(256))
 
     # Hijos

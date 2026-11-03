@@ -60,6 +60,7 @@ class Autoridad(Base):
     # Hijos
     arc_documentos: Mapped[list["ArcDocumento"]] = relationship(back_populates="autoridad")
     arc_remesas: Mapped[list["ArcRemesa"]] = relationship(back_populates="autoridad")
+    audiencias: Mapped[list["Audiencia"]] = relationship(back_populates="autoridad")
     dgt_digitalizaciones: Mapped[list["DgtDigitalizacion"]] = relationship(back_populates="autoridad")
     dgt_plataforma_autoridad: Mapped[Optional["DgtPlataformaAutoridad"]] = relationship(back_populates="autoridad")  # Uno a uno
     dgt_entregas: Mapped[list["DgtEntrega"]] = relationship(back_populates="autoridad")

@@ -9,6 +9,7 @@ from pjecz_hercules_api_key.models.arc_documentos_tipos import ArcDocumentoTipo
 from pjecz_hercules_api_key.models.arc_juzgados_extintos import ArcJuzgadoExtinto
 from pjecz_hercules_api_key.models.arc_remesas import ArcRemesa
 from pjecz_hercules_api_key.models.arc_remesas_documentos import ArcRemesaDocumento
+from pjecz_hercules_api_key.models.audiencias import Audiencia
 from pjecz_hercules_api_key.models.autoridades import Autoridad
 from pjecz_hercules_api_key.models.bitacoras_apis import BitacoraAPI
 from pjecz_hercules_api_key.models.dgt_depositos import DgtDepositos

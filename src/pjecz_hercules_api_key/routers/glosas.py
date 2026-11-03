@@ -12,7 +12,7 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
 
 from pjecz_hercules_api_key.config.setttings import get_settings
-from pjecz_hercules_api_key.core.authentication import UsuarioInDB, get_current_active_user
+from pjecz_hercules_api_key.core.authentication import UsuarioInDB, get_current_active_user, get_current_active_user_visualizar
 from pjecz_hercules_api_key.core.database import Session, get_session
 from pjecz_hercules_api_key.core.google_cloud_storage import get_blob_name_from_url, get_file_from_gcs
 from pjecz_hercules_api_key.core.pagination import CustomPage
@@ -65,7 +65,7 @@ def glosas_paginado(
 
 @glosas.get("/visualizar/{id}", response_class=StreamingResponse)
 def glosas_visualizar(
-    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user)],
+    current_user: Annotated[UsuarioInDB, Depends(get_current_active_user_visualizar)],
     session: Annotated[Session, Depends(get_session)],
     id: int,
 ):

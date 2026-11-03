@@ -46,4 +46,5 @@ class UsuarioInDB(UsuarioOut):
     api_key: str
     api_key_expiracion: datetime
     api_key_cuota_diaria: int
+    api_key_visualizaciones_por_hora: int
     autoridad_id: int
