@@ -3,13 +3,13 @@ Authentication
 """
 
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, Request
 from fastapi.security.api_key import APIKeyHeader
 from hashids import Hashids
-from sqlalchemy import func, select
+from sqlalchemy import func, not_, or_, select
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_429_TOO_MANY_REQUESTS
 from unidecode import unidecode
 
@@ -22,6 +22,14 @@ from pjecz_hercules_api_key.schemas.usuarios import UsuarioInDB
 
 API_KEY_REGEXP = r"^\w+\.\w+\.\w+$"
 X_API_KEY = APIKeyHeader(name="X-Api-Key")
+
+# Segmentos de ruta de las visualizaciones de PDF; se buscan con contains porque la bitácora guarda la ruta con root_path (/api/v5)
+VISUALIZAR_RUTAS_PREFIJOS = (
+    "/edictos/visualizar/",
+    "/glosas/visualizar/",
+    "/listas_de_acuerdos/visualizar/",
+    "/sentencias/visualizar/",
+)
 
 settings = get_settings()
 
@@ -129,6 +137,24 @@ def count_today_requests(
         .where(BitacoraAPI.creado >= func.timezone(settings.TZ, func.date_trunc("day", func.timezone(settings.TZ, func.now()))))
     )
     return session.execute(stmt).scalar_one()
+
+
+def count_last_hour_views(
+    usuario_id: int,
+    session: Annotated[Session, Depends(get_session)],
+) -> tuple[int, datetime | None]:
+    """Contar las visualizaciones de PDF del usuario en los últimos 60 minutos, sin contar los 429"""
+    stmt = (
+        select(func.count(), func.min(BitacoraAPI.creado))
+        .select_from(BitacoraAPI)
+        .where(BitacoraAPI.usuario_id == usuario_id)
+        .where(BitacoraAPI.api_nombre == settings.API_NOMBRE)
+        .where(BitacoraAPI.creado >= func.now() - timedelta(hours=1))
+        .where(or_(*[BitacoraAPI.api_ruta.contains(prefijo, autoescape=True) for prefijo in VISUALIZAR_RUTAS_PREFIJOS]))
+        .where(not_(BitacoraAPI.respuesta_mensaje.startswith("429")))
+    )
+    conteo, mas_vieja = session.execute(stmt).one()
+    return conteo, mas_vieja
 
 
 async def get_current_active_user(

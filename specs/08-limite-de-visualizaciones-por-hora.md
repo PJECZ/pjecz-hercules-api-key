@@ -25,7 +25,7 @@ El esquema de la base de datos lo define `pjecz-hercules-flask`. La columna nuev
 - Agregar `api_key_visualizaciones_por_hora: int` a `UsuarioInDB` (`schemas/usuarios.py`) y llenarlo en `get_user` con el valor de la columna o, si es nula o 0, con `settings.API_KEY_VISUALIZACIONES_POR_HORA`.
 - Agregar `API_KEY_VISUALIZACIONES_POR_HORA: int = 20` a `config/setttings.py` y `API_KEY_VISUALIZACIONES_POR_HORA=20` a `.env.example`.
 - En `core/authentication.py`:
-  - Crear `VISUALIZAR_RUTAS_PREFIJOS` con los 4 prefijos de ruta.
+  - Crear `VISUALIZAR_RUTAS_PREFIJOS` con los 4 segmentos de ruta.
   - Crear `count_last_hour_views(usuario_id, session)`, que regresa el conteo y la fecha más vieja de las visualizaciones en la ventana.
   - Crear la dependencia `get_current_active_user_visualizar`, que reutiliza `get_current_active_user` (api_key y cuota diaria) y después valida el límite por hora.
 - En los 4 endpoints `*_visualizar` cambiar `Depends(get_current_active_user)` por `Depends(get_current_active_user_visualizar)`.
@@ -78,13 +78,15 @@ VISUALIZAR_RUTAS_PREFIJOS = (
 )
 ```
 
-El límite es **uno combinado** para los 4 prefijos.
+El límite es **uno combinado** para los 4 segmentos.
+
+La app se crea con `FastAPI(root_path="/api/v5")` (`main.py`), así que la bitácora guarda rutas como `/api/v5/sentencias/visualizar/153226`. Por eso los segmentos se buscan **dentro** de `api_ruta` con `contains`, no al inicio con `startswith`. Así cuentan las filas con o sin `/api/v5`.
 
 ### Funciones nuevas en `core/authentication.py`
 
 | Función | Regla |
 | --- | --- |
-| `count_last_hour_views(usuario_id, session)` | Una sola consulta a `bitacoras_apis` que regresa `(count(*), min(creado))`. Filtros: `usuario_id`, `api_nombre == settings.API_NOMBRE`, `creado >= now() - interval '1 hour'`, `or_(*[BitacoraAPI.api_ruta.startswith(p, autoescape=True) for p in VISUALIZAR_RUTAS_PREFIJOS])` y `not_(BitacoraAPI.respuesta_mensaje.startswith("429"))`. |
+| `count_last_hour_views(usuario_id, session)` | Una sola consulta a `bitacoras_apis` que regresa `(count(*), min(creado))`. Filtros: `usuario_id`, `api_nombre == settings.API_NOMBRE`, `creado >= now() - interval '1 hour'`, `or_(*[BitacoraAPI.api_ruta.contains(p, autoescape=True) for p in VISUALIZAR_RUTAS_PREFIJOS])` y `not_(BitacoraAPI.respuesta_mensaje.startswith("429"))`. |
 | `get_current_active_user_visualizar(request, api_key, session)` | `async`. Llama `await get_current_active_user(request, api_key, session)`. Si `conteo >= usuario.api_key_visualizaciones_por_hora`, lanza `HTTPException` 429 con `headers={"Retry-After": "<segundos>"}`. Si no, regresa el usuario. |
 
 Reglas del conteo:
@@ -178,7 +180,10 @@ Cada paso deja la API funcionando, siempre que el SQL ya esté aplicado en la BD
 - **Sí:** cuentan todas las respuestas de visualización, exitosas o fallidas. Evita el abuso con `id` inválidos.
 - **Sí:** excluir los 429 del conteo. Si contaran, un cliente que reintenta seguiría bloqueado indefinidamente.
 - **No:** contar solo las exitosas.
-- **Sí:** identificar las visualizaciones por prefijo de `api_ruta` con `startswith(..., autoescape=True)`. No requiere columnas nuevas en la bitácora.
+- **Sí:** identificar las visualizaciones buscando el segmento dentro de `api_ruta` con `contains(..., autoescape=True)`. No requiere columnas nuevas en la bitácora y funciona con o sin el `root_path` `/api/v5`.
+- **No:** `startswith` con los segmentos tal cual. Se descubrió en la implementación que la bitácora guarda la ruta con `/api/v5` y nunca coincidiría.
+- **No:** `startswith(request.scope["root_path"] + segmento)`. Cambiaría la firma de `count_last_hour_views` y no contaría filas guardadas sin el prefijo.
+- **No:** fijar `/api/v5` en `VISUALIZAR_RUTAS_PREFIJOS`. Se rompería en silencio al cambiar la versión del `root_path`.
 - **No:** agregar a `bitacoras_apis` una columna de tipo de operación. Cambiaría el esquema de otra tabla compartida.
 - **Sí:** dependencia nueva `get_current_active_user_visualizar` que envuelve a `get_current_active_user`. Cada endpoint solo cambia su `Depends` y el límite se valida antes del permiso y de consultar el registro.
 - **No:** validar dentro de cada endpoint. Duplicaría código en 4 routers.
@@ -198,8 +203,8 @@ Cada paso deja la API funcionando, siempre que el SQL ya esté aplicado en la BD
 | `creado` es `TIMESTAMP` sin zona y se compara con `now()` (`TIMESTAMPTZ`). | PostgreSQL convierte `creado` con la zona de la sesión, la misma con la que `server_default=now()` lo escribió (ver SPEC 03). Verificar con el criterio de "hace 61 minutos". |
 | Dos peticiones simultáneas pueden pasar el límite por una o dos visualizaciones. | Se acepta; es un límite de uso razonable, igual que la cuota diaria. |
 | Si falla la escritura de la bitácora, esa visualización no cuenta. | Se acepta; la falla queda en el log (SPEC 03). |
-| La consulta extra con `LIKE` sobre `api_ruta` añade latencia a cada visualización. | El índice `(usuario_id, creado)` reduce las filas a las de la última hora del usuario; el filtro por prefijo se aplica sobre pocas filas. |
-| Si un router cambia su prefijo o se agrega otra tabla con `visualizar`, no contaría. | `VISUALIZAR_RUTAS_PREFIJOS` es la única lista; se actualiza junto con la dependencia en la spec que agregue el endpoint. |
+| La consulta extra con `LIKE` sobre `api_ruta` añade latencia a cada visualización. | El índice `(usuario_id, creado)` reduce las filas a las de la última hora del usuario; el filtro por segmento se aplica sobre pocas filas. |
+| Si un router cambia su prefijo o se agrega otra tabla con `visualizar`, no contaría. Si `root_path` cambia, sigue contando gracias a `contains`. | `VISUALIZAR_RUTAS_PREFIJOS` es la única lista; se actualiza junto con la dependencia en la spec que agregue el endpoint. |
 
 ---
 
