@@ -9,7 +9,7 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, Request
 from fastapi.security.api_key import APIKeyHeader
 from hashids import Hashids
-from sqlalchemy import func, not_, or_, select
+from sqlalchemy import func, literal, not_, or_, select
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_429_TOO_MANY_REQUESTS
 from unidecode import unidecode
 
@@ -173,6 +173,35 @@ async def get_current_active_user(
     # Validar la cuota diaria de consultas
     if count_today_requests(usuario.id, session) >= usuario.api_key_cuota_diaria:
         raise HTTPException(status_code=HTTP_429_TOO_MANY_REQUESTS, detail="Ha excedido su cuota diaria de consultas")
+
+    # Entregar
+    return usuario
+
+
+async def get_current_active_user_visualizar(
+    request: Request,
+    api_key: Annotated[str, Depends(X_API_KEY)],
+    session: Annotated[Session, Depends(get_session)],
+) -> UsuarioInDB:
+    """Obtener el usuario activo actual y validar su límite de visualizaciones de PDF por hora"""
+
+    # Validar el api_key y la cuota diaria
+    usuario = await get_current_active_user(request, api_key, session)
+
+    # Validar el límite de visualizaciones en los últimos 60 minutos
+    conteo, mas_vieja = count_last_hour_views(usuario.id, session)
+    if conteo >= usuario.api_key_visualizaciones_por_hora:
+        # Segundos para que la visualización más vieja salga de la ventana, con now() de PostgreSQL como referencia
+        segundos = 3600
+        if mas_vieja is not None:
+            stmt = select(func.ceil(func.extract("epoch", literal(mas_vieja) + timedelta(hours=1) - func.now())))
+            segundos = int(session.execute(stmt).scalar_one())
+        segundos = min(max(segundos, 1), 3600)
+        raise HTTPException(
+            status_code=HTTP_429_TOO_MANY_REQUESTS,
+            detail="Ha excedido su límite de visualizaciones por hora",
+            headers={"Retry-After": str(segundos)},
+        )
 
     # Entregar
     return usuario
